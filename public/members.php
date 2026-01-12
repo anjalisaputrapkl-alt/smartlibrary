@@ -1,0 +1,399 @@
+<?php
+session_start();
+if (empty($_SESSION['user'])) {
+  header('Location: /perpustakaan-online/public/login.php');
+  exit;
+}
+
+$pdo = require __DIR__ . '/../src/db.php';
+$user = $_SESSION['user'];
+$sid = $user['school_id'];
+
+$action = $_GET['action'] ?? 'list';
+
+if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  $stmt = $pdo->prepare(
+    'INSERT INTO members (school_id,name,email,member_no)
+     VALUES (:sid,:name,:email,:no)'
+  );
+  $stmt->execute([
+    'sid' => $sid,
+    'name' => $_POST['name'],
+    'email' => $_POST['email'],
+    'no' => $_POST['member_no']
+  ]);
+  header('Location: members.php');
+  exit;
+}
+
+if ($action === 'edit' && isset($_GET['id'])) {
+  $id = (int) $_GET['id'];
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $stmt = $pdo->prepare(
+      'UPDATE members SET name=:name,email=:email,member_no=:no
+       WHERE id=:id AND school_id=:sid'
+    );
+    $stmt->execute([
+      'name' => $_POST['name'],
+      'email' => $_POST['email'],
+      'no' => $_POST['member_no'],
+      'id' => $id,
+      'sid' => $sid
+    ]);
+    header('Location: members.php');
+    exit;
+  }
+  $stmt = $pdo->prepare('SELECT * FROM members WHERE id=:id AND school_id=:sid');
+  $stmt->execute(['id' => $id, 'sid' => $sid]);
+  $member = $stmt->fetch();
+}
+
+if ($action === 'delete' && isset($_GET['id'])) {
+  $stmt = $pdo->prepare('DELETE FROM members WHERE id=:id AND school_id=:sid');
+  $stmt->execute(['id' => (int) $_GET['id'], 'sid' => $sid]);
+  header('Location: members.php');
+  exit;
+}
+
+$stmt = $pdo->prepare('SELECT * FROM members WHERE school_id=:sid ORDER BY id DESC');
+$stmt->execute(['sid' => $sid]);
+$members = $stmt->fetchAll();
+?>
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kelola Anggota</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f1f4f8;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+      --danger: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px 1fr;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .content {
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 32px;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .card h2 {
+      font-size: 14px;
+      margin: 0 0 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    input {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    /* ========= FIX TABEL (INI YANG PENTING) ========= */
+    .table-wrap {
+      overflow-x: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      /* KUNCI LEBAR KOLOM */
+      font-size: 13px;
+    }
+
+    thead {
+      display: table-header-group
+    }
+
+    tbody {
+      display: table-row-group
+    }
+
+    tr {
+      display: table-row
+    }
+
+    th,
+    td {
+      display: table-cell;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    td strong {
+      font-weight: 500;
+    }
+
+    /* ========= END FIX ========= */
+
+    .btn {
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: white;
+      font-size: 13px;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+    }
+
+    .btn.danger {
+      background: #fee2e2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .menu a {
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+
+    .menu a.active {
+      background: rgba(37, 99, 235, .1);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+    }
+
+    .faq-question {
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .faq-answer {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      display: none;
+      line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+      display: block
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <div class="topbar">
+      <strong>Kelola Anggota</strong>
+      <a href="index.php" class="btn">← Dashboard</a>
+    </div>
+
+    <div class="content">
+      <div class="main">
+
+        <div class="card">
+          <h2><?= $action === 'edit' ? 'Edit Anggota' : 'Tambah Anggota' ?></h2>
+          <form method="post" action="<?= $action === 'edit' ? '' : 'members.php?action=add' ?>">
+            <div class="form-group">
+              <label>Nama Lengkap</label>
+              <input name="name" required value="<?= $member['name'] ?? '' ?>">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" required value="<?= $member['email'] ?? '' ?>">
+            </div>
+            <div class="form-group">
+              <label>No Anggota</label>
+              <input name="member_no" required value="<?= $member['member_no'] ?? '' ?>">
+            </div>
+            <button class="btn primary">
+              <?= $action === 'edit' ? 'Simpan Perubahan' : 'Tambah Anggota' ?>
+            </button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Daftar Anggota (<?= count($members) ?>)</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nama</th>
+                  <th>Email</th>
+                  <th>No Anggota</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($members as $m): ?>
+                  <tr>
+                    <td>#<?= $m['id'] ?></td>
+                    <td><strong><?= htmlspecialchars($m['name']) ?></strong></td>
+                    <td><?= htmlspecialchars($m['email']) ?></td>
+                    <td><?= htmlspecialchars($m['member_no']) ?></td>
+                    <td>
+                      <div class="actions">
+                        <a class="btn" href="members.php?action=edit&id=<?= $m['id'] ?>">Edit</a>
+                        <a class="btn danger" onclick="return confirm('Hapus anggota ini?')"
+                          href="members.php?action=delete&id=<?= $m['id'] ?>">Hapus</a>
+                      </div>
+                    </td>
+                  </tr>
+                <?php endforeach ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sidebar">
+        <div class="panel">
+          <h3 style="font-size:14px">Menu</h3>
+          <div class="menu">
+            <a href="index.php">📊 Dashboard</a>
+            <a href="books.php">📚 Buku</a>
+            <a class="active" href="members.php">👥 Anggota</a>
+            <a href="borrows.php">📖 Peminjaman</a>
+            <a href="reports.php">📈 Laporan</a>
+            <a href="settings.php">⚙️ Pengaturan</a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:14px">FAQ</h3>
+          <div class="faq-item">
+            <div class="faq-question">Bagaimana menambah anggota? <span>+</span></div>
+            <div class="faq-answer">Isi form anggota lalu klik tombol tambah.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">Email wajib diisi? <span>+</span></div>
+            <div class="faq-answer">Ya, email digunakan untuk identifikasi anggota.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">No anggota untuk apa? <span>+</span></div>
+            <div class="faq-answer">Digunakan sebagai identitas unik anggota perpustakaan.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.onclick = () => {
+        const p = q.parentElement;
+        p.classList.toggle('active');
+        q.querySelector('span').textContent = p.classList.contains('active') ? '−' : '+';
+      }
+    });
+  </script>
+
+</body>
+
+</html>
