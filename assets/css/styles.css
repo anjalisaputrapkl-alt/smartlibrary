@@ -830,3 +830,117 @@ button[type="submit"]:hover {
   }
 }
 
+ /* =========================================================
+   🌟 CUSTOM THEME FOR REPORT DASHBOARD (ELEGANT BLUE)
+   ========================================================= */
+
+/* BACKGROUND GRADIENT HALAMAN LAPORAN */
+.dashboard {
+    background: linear-gradient(180deg, #1d4ed8 0%, #3b82f6 40%, #e5f1ff 100%);
+    padding: 40px 20px;
+    border-radius: 18px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.15);
+}
+
+/* WRAPPER UTAMA (KOTAK BESAR PUTIH TRANSPARAN) */
+.dashboard > .content-grid,
+.dashboard > header,
+.dashboard > section,
+.dashboard > div.card {
+    background: #ffffffd9;
+    backdrop-filter: blur(6px);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+}
+
+/* HEADER HALAMAN */
+.dashboard .page-header {
+    background: #ffffffcc;
+    border-radius: 18px;
+    padding: 28px 26px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    backdrop-filter: blur(8px);
+}
+
+/* FILTER PANEL */
+.dashboard .filter-panel {
+    background: #ffffffcc;
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.12);
+}
+
+/* FILTER PANEL INPUT */
+.dashboard .filter-panel input,
+.dashboard .filter-panel select {
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #d0d7e4;
+    font-size: 15px;
+}
+
+/* KPI CARD PREMIUM */
+.dashboard .kpi-card {
+    background: #ffffffee;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 6px 26px rgba(0,0,0,0.12);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(6px);
+    transition: 0.2s ease;
+}
+
+.dashboard .kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+}
+
+/* CARD FLOATING (CHART + TABEL) */
+.dashboard .card,
+.dashboard .chart-card {
+    background: #ffffffee;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    backdrop-filter: blur(6px);
+}
+
+/* JUDUL CARD */
+.dashboard .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 12px;
+}
+
+/* IMPROVED TABLE STYLE */
+.dashboard table {
+    background: #ffffffdd;
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 15px;
+}
+
+.dashboard table thead {
+    background: #1d4ed8;
+    color: white;
+}
+
+.dashboard table tbody tr:hover {
+    background: #e9f1ff;
+}
+
+/* HEATMAP BOX */
+#heatmap {
+    padding: 20px !important;
+    border-radius: 14px;
+    background: #ffffffee;
+    box-shadow: 0 4px 22px rgba(0,0,0,0.1);
+}
