@@ -36,9 +36,9 @@ $school = $stmt->fetch();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pengaturan Sekolah - Perpustakaan Online</title>
-    <link rel="stylesheet" href="/perpustakaan-online/assets/css/theme.css">
-    <link rel="stylesheet" href="/perpustakaan-online/public/assets/css/styles.css">
-     <script src="/perpustakaan-online/public/asets/js/theme.js"></script>
+    <link rel="stylesheet" href="../assets/css/theme.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <script src="../assets/js/theme.js"></script>
 </head>
 
 <body>
@@ -198,11 +198,13 @@ $school = $stmt->fetch();
                     <form method="post" style="max-width: 500px;">
                         <div class="form-group">
                             <label for="name">Nama Sekolah</label>
-                            <input id="name" name="name" required value="<?php echo htmlspecialchars($school['name']); ?>">
+                            <input id="name" name="name" required
+                                value="<?php echo htmlspecialchars($school['name']); ?>">
                         </div>
                         <div class="form-group">
                             <label for="slug">Slug (untuk URL)</label>
-                            <input id="slug" name="slug" required value="<?php echo htmlspecialchars($school['slug']); ?>">
+                            <input id="slug" name="slug" required
+                                value="<?php echo htmlspecialchars($school['slug']); ?>">
                             <small>Gunakan huruf kecil, angka, dan tanda hubung (-)</small>
                         </div>
                         <button type="submit" class="btn btn-block">💾 Simpan Pengaturan</button>
@@ -265,165 +267,165 @@ $school = $stmt->fetch();
     <?php include __DIR__ . '/partials/footer.php'; ?>
 
     <script>
-      (function(){
-        const defaultSettings = {
-          theme: 'blue',
-          primary: '#3A7FF2',
-          secondary: '#7AB8F5',
-          bg: '#F6F9FF',
-          accent: '#0A1A4F',
-          fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
-          fontSize: '16',
-          fontWeight: '600',
-          cornerRadius: '10',
-          shadowStrength: 'soft',
-          dashboardCardBg: '#FFFFFF',
-          catalogMode: 'grid',
-          reportsTableStyle: 'bordered'
-        };
+        (function () {
+            const defaultSettings = {
+                theme: 'blue',
+                primary: '#3A7FF2',
+                secondary: '#7AB8F5',
+                bg: '#F6F9FF',
+                accent: '#0A1A4F',
+                fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto",
+                fontSize: '16',
+                fontWeight: '600',
+                cornerRadius: '10',
+                shadowStrength: 'soft',
+                dashboardCardBg: '#FFFFFF',
+                catalogMode: 'grid',
+                reportsTableStyle: 'bordered'
+            };
 
-        let undoStack = [], redoStack = [];
+            let undoStack = [], redoStack = [];
 
-        function loadSettings(){
-          try {
-            return JSON.parse(localStorage.getItem('smartlib_theme')) || defaultSettings;
-          } catch(e){ return defaultSettings; }
-        }
-
-        function saveToStorage(s){
-          localStorage.setItem('smartlib_theme', JSON.stringify(s));
-        }
-
-        function applySettings(s){
-          document.documentElement.style.setProperty('--primary', s.primary);
-          document.documentElement.style.setProperty('--primary-2', s.secondary);
-          document.documentElement.style.setProperty('--bg', s.bg);
-          document.documentElement.style.setProperty('--primary-dark', s.accent);
-          document.documentElement.style.setProperty('--radius-md', s.cornerRadius + 'px');
-          document.body.style.fontFamily = s.fontFamily;
-          document.body.style.fontSize = s.fontSize + 'px';
-          // shadow classes
-          document.body.classList.remove('shadow-none','shadow-soft','shadow-medium','shadow-deep');
-          document.body.classList.add('shadow-' + s.shadowStrength);
-
-          // preview tweaks
-          var preview = document.getElementById('live-preview');
-          if(preview){
-            preview.querySelectorAll('.card').forEach(c => {
-              c.style.background = s.dashboardCardBg;
-              c.style.borderRadius = s.cornerRadius + 'px';
-            });
-            if(s.reportsTableStyle === 'borderless'){
-              preview.querySelectorAll('table').forEach(t => t.style.border = 'none');
-            } else {
-              preview.querySelectorAll('table').forEach(t => t.style.border = '1px solid var(--border)');
+            function loadSettings() {
+                try {
+                    return JSON.parse(localStorage.getItem('smartlib_theme')) || defaultSettings;
+                } catch (e) { return defaultSettings; }
             }
-          }
-        }
 
-        function pushUndo(s){ undoStack.push(JSON.stringify(s)); if(undoStack.length>50) undoStack.shift(); redoStack = []; }
-        function undo(){ if(!undoStack.length) return; var cur = loadSettings(); redoStack.push(JSON.stringify(cur)); var prev = JSON.parse(undoStack.pop()); saveToStorage(prev); updateControls(prev); applySettings(prev); try{ window.dispatchEvent(new CustomEvent('smartlib_theme:changed',{detail:prev})); }catch(e){} }
-        function redo(){ if(!redoStack.length) return; var cur = loadSettings(); undoStack.push(JSON.stringify(cur)); var nxt = JSON.parse(redoStack.pop()); saveToStorage(nxt); updateControls(nxt); applySettings(nxt); try{ window.dispatchEvent(new CustomEvent('smartlib_theme:changed',{detail:nxt})); }catch(e){} }
+            function saveToStorage(s) {
+                localStorage.setItem('smartlib_theme', JSON.stringify(s));
+            }
 
-        function updateControls(s){
-          document.getElementById('theme-select').value = s.theme;
-          document.getElementById('primary-color').value = s.primary;
-          document.getElementById('secondary-color').value = s.secondary;
-          document.getElementById('bg-color').value = s.bg;
-          document.getElementById('accent-color').value = s.accent;
-          document.getElementById('font-family').value = s.fontFamily;
-          document.getElementById('font-size').value = s.fontSize;
-          document.getElementById('font-weight').value = s.fontWeight;
-          document.getElementById('corner-radius').value = s.cornerRadius;
-          document.getElementById('shadow-strength').value = s.shadowStrength;
-          document.getElementById('dashboard-card-bg').value = s.dashboardCardBg;
-          document.getElementById('catalog-mode').value = s.catalogMode;
-          document.getElementById('reports-table-style').value = s.reportsTableStyle;
-        }
+            function applySettings(s) {
+                document.documentElement.style.setProperty('--primary', s.primary);
+                document.documentElement.style.setProperty('--primary-2', s.secondary);
+                document.documentElement.style.setProperty('--bg', s.bg);
+                document.documentElement.style.setProperty('--primary-dark', s.accent);
+                document.documentElement.style.setProperty('--radius-md', s.cornerRadius + 'px');
+                document.body.style.fontFamily = s.fontFamily;
+                document.body.style.fontSize = s.fontSize + 'px';
+                // shadow classes
+                document.body.classList.remove('shadow-none', 'shadow-soft', 'shadow-medium', 'shadow-deep');
+                document.body.classList.add('shadow-' + s.shadowStrength);
 
-        document.addEventListener('DOMContentLoaded', function(){
-          var settings = loadSettings();
-          updateControls(settings);
-          applySettings(settings);
+                // preview tweaks
+                var preview = document.getElementById('live-preview');
+                if (preview) {
+                    preview.querySelectorAll('.card').forEach(c => {
+                        c.style.background = s.dashboardCardBg;
+                        c.style.borderRadius = s.cornerRadius + 'px';
+                    });
+                    if (s.reportsTableStyle === 'borderless') {
+                        preview.querySelectorAll('table').forEach(t => t.style.border = 'none');
+                    } else {
+                        preview.querySelectorAll('table').forEach(t => t.style.border = '1px solid var(--border)');
+                    }
+                }
+            }
 
-          // wire controls
-          ['theme-select','primary-color','secondary-color','bg-color','accent-color','font-family','font-size','font-weight','corner-radius','shadow-strength','dashboard-card-bg','catalog-mode','reports-table-style'].forEach(id=>{
-            var el = document.getElementById(id);
-            if(!el) return;
-            el.addEventListener('change', function(e){
-              var cur = loadSettings();
-              pushUndo(cur);
-              var key = id.replace(/-/g,'');
-              // map ids to settings
-              switch(id){
-                case 'theme-select': cur.theme = e.target.value; break;
-                case 'primary-color': cur.primary = e.target.value; break;
-                case 'secondary-color': cur.secondary = e.target.value; break;
-                case 'bg-color': cur.bg = e.target.value; break;
-                case 'accent-color': cur.accent = e.target.value; break;
-                case 'font-family': cur.fontFamily = e.target.value; break;
-                case 'font-size': cur.fontSize = e.target.value; break;
-                case 'font-weight': cur.fontWeight = e.target.value; break;
-                case 'corner-radius': cur.cornerRadius = e.target.value; break;
-                case 'shadow-strength': cur.shadowStrength = e.target.value; break;
-                case 'dashboard-card-bg': cur.dashboardCardBg = e.target.value; break;
-                case 'catalog-mode': cur.catalogMode = e.target.value; break;
-                case 'reports-table-style': cur.reportsTableStyle = e.target.value; break;
-                default: break;
-              }
-              saveToStorage(cur);
-              applySettings(cur);
-              try{ window.dispatchEvent(new CustomEvent('smartlib_theme:changed',{detail:cur})); }catch(e){}
+            function pushUndo(s) { undoStack.push(JSON.stringify(s)); if (undoStack.length > 50) undoStack.shift(); redoStack = []; }
+            function undo() { if (!undoStack.length) return; var cur = loadSettings(); redoStack.push(JSON.stringify(cur)); var prev = JSON.parse(undoStack.pop()); saveToStorage(prev); updateControls(prev); applySettings(prev); try { window.dispatchEvent(new CustomEvent('smartlib_theme:changed', { detail: prev })); } catch (e) { } }
+            function redo() { if (!redoStack.length) return; var cur = loadSettings(); undoStack.push(JSON.stringify(cur)); var nxt = JSON.parse(redoStack.pop()); saveToStorage(nxt); updateControls(nxt); applySettings(nxt); try { window.dispatchEvent(new CustomEvent('smartlib_theme:changed', { detail: nxt })); } catch (e) { } }
+
+            function updateControls(s) {
+                document.getElementById('theme-select').value = s.theme;
+                document.getElementById('primary-color').value = s.primary;
+                document.getElementById('secondary-color').value = s.secondary;
+                document.getElementById('bg-color').value = s.bg;
+                document.getElementById('accent-color').value = s.accent;
+                document.getElementById('font-family').value = s.fontFamily;
+                document.getElementById('font-size').value = s.fontSize;
+                document.getElementById('font-weight').value = s.fontWeight;
+                document.getElementById('corner-radius').value = s.cornerRadius;
+                document.getElementById('shadow-strength').value = s.shadowStrength;
+                document.getElementById('dashboard-card-bg').value = s.dashboardCardBg;
+                document.getElementById('catalog-mode').value = s.catalogMode;
+                document.getElementById('reports-table-style').value = s.reportsTableStyle;
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var settings = loadSettings();
+                updateControls(settings);
+                applySettings(settings);
+
+                // wire controls
+                ['theme-select', 'primary-color', 'secondary-color', 'bg-color', 'accent-color', 'font-family', 'font-size', 'font-weight', 'corner-radius', 'shadow-strength', 'dashboard-card-bg', 'catalog-mode', 'reports-table-style'].forEach(id => {
+                    var el = document.getElementById(id);
+                    if (!el) return;
+                    el.addEventListener('change', function (e) {
+                        var cur = loadSettings();
+                        pushUndo(cur);
+                        var key = id.replace(/-/g, '');
+                        // map ids to settings
+                        switch (id) {
+                            case 'theme-select': cur.theme = e.target.value; break;
+                            case 'primary-color': cur.primary = e.target.value; break;
+                            case 'secondary-color': cur.secondary = e.target.value; break;
+                            case 'bg-color': cur.bg = e.target.value; break;
+                            case 'accent-color': cur.accent = e.target.value; break;
+                            case 'font-family': cur.fontFamily = e.target.value; break;
+                            case 'font-size': cur.fontSize = e.target.value; break;
+                            case 'font-weight': cur.fontWeight = e.target.value; break;
+                            case 'corner-radius': cur.cornerRadius = e.target.value; break;
+                            case 'shadow-strength': cur.shadowStrength = e.target.value; break;
+                            case 'dashboard-card-bg': cur.dashboardCardBg = e.target.value; break;
+                            case 'catalog-mode': cur.catalogMode = e.target.value; break;
+                            case 'reports-table-style': cur.reportsTableStyle = e.target.value; break;
+                            default: break;
+                        }
+                        saveToStorage(cur);
+                        applySettings(cur);
+                        try { window.dispatchEvent(new CustomEvent('smartlib_theme:changed', { detail: cur })); } catch (e) { }
+                    });
+                });
+
+                document.getElementById('btn-reset-colors').addEventListener('click', function () {
+                    pushUndo(loadSettings());
+                    var s = loadSettings(); s.primary = defaultSettings.primary; s.secondary = defaultSettings.secondary; s.bg = defaultSettings.bg; s.accent = defaultSettings.accent; saveToStorage(s); updateControls(s); applySettings(s);
+                    try { window.dispatchEvent(new CustomEvent('smartlib_theme:changed', { detail: s })); } catch (e) { }
+                    showToast('Color values reset.');
+                });
+
+                document.getElementById('save-settings').addEventListener('click', function () {
+                    var s = loadSettings(); saveToStorage(s); try { window.dispatchEvent(new CustomEvent('smartlib_theme:changed', { detail: s })); } catch (e) { }; showToast('Settings saved to localStorage. (Server-side save not enabled.)');
+                });
+
+                document.getElementById('reset-settings').addEventListener('click', function () {
+                    pushUndo(loadSettings()); saveToStorage(defaultSettings); updateControls(defaultSettings); applySettings(defaultSettings); try { window.dispatchEvent(new CustomEvent('smartlib_theme:changed', { detail: defaultSettings })); } catch (e) { }; showToast('Settings reset to default.');
+                });
+
+                document.getElementById('undo-settings').addEventListener('click', function () { undo(); });
+                document.getElementById('redo-settings').addEventListener('click', function () { redo(); });
+
+                // theme-mini preview quick click
+                document.querySelectorAll('.theme-mini').forEach(el => {
+                    el.addEventListener('click', function () {
+                        var t = el.getAttribute('data-theme');
+                        var cur = loadSettings();
+                        pushUndo(cur);
+                        if (t === 'dark') {
+                            cur.primary = '#0A1A4F'; cur.secondary = '#3A7FF2'; cur.bg = '#071226'; cur.accent = '#7AB8F5';
+                        } else if (t === 'blue') {
+                            cur.primary = '#3A7FF2'; cur.secondary = '#7AB8F5'; cur.bg = '#F6F9FF'; cur.accent = '#0A1A4F';
+                        } else {
+                            cur = Object.assign({}, defaultSettings);
+                        }
+                        saveToStorage(cur); updateControls(cur); applySettings(cur);
+                        try { window.dispatchEvent(new CustomEvent('smartlib_theme:changed', { detail: cur })); } catch (e) { }
+                    });
+                });
+
+                // toast helper
+                function showToast(msg) {
+                    var t = document.createElement('div');
+                    t.className = 'toast';
+                    t.style.cssText = 'position:fixed;right:18px;bottom:18px;background:#0A1A4F;color:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 8px 20px rgba(10,26,79,0.12);z-index:9999';
+                    t.innerText = msg; document.body.appendChild(t);
+                    setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.remove(), 300); }, 2200);
+                }
+
             });
-          });
-
-          document.getElementById('btn-reset-colors').addEventListener('click', function(){
-            pushUndo(loadSettings());
-            var s = loadSettings(); s.primary = defaultSettings.primary; s.secondary = defaultSettings.secondary; s.bg = defaultSettings.bg; s.accent = defaultSettings.accent; saveToStorage(s); updateControls(s); applySettings(s);
-            try{ window.dispatchEvent(new CustomEvent('smartlib_theme:changed',{detail:s})); }catch(e){}
-            showToast('Color values reset.');
-          });
-
-          document.getElementById('save-settings').addEventListener('click', function(){
-            var s = loadSettings(); saveToStorage(s); try{ window.dispatchEvent(new CustomEvent('smartlib_theme:changed',{detail:s})); }catch(e){}; showToast('Settings saved to localStorage. (Server-side save not enabled.)');
-          });
-
-          document.getElementById('reset-settings').addEventListener('click', function(){
-            pushUndo(loadSettings()); saveToStorage(defaultSettings); updateControls(defaultSettings); applySettings(defaultSettings); try{ window.dispatchEvent(new CustomEvent('smartlib_theme:changed',{detail:defaultSettings})); }catch(e){}; showToast('Settings reset to default.');
-          });
-
-          document.getElementById('undo-settings').addEventListener('click', function(){ undo(); });
-          document.getElementById('redo-settings').addEventListener('click', function(){ redo(); });
-
-          // theme-mini preview quick click
-          document.querySelectorAll('.theme-mini').forEach(el=>{
-            el.addEventListener('click', function(){
-              var t = el.getAttribute('data-theme');
-              var cur = loadSettings();
-              pushUndo(cur);
-              if(t==='dark'){
-                cur.primary = '#0A1A4F'; cur.secondary = '#3A7FF2'; cur.bg = '#071226'; cur.accent = '#7AB8F5';
-              } else if(t==='blue'){
-                cur.primary = '#3A7FF2'; cur.secondary = '#7AB8F5'; cur.bg = '#F6F9FF'; cur.accent = '#0A1A4F';
-              } else {
-                cur = Object.assign({}, defaultSettings);
-              }
-              saveToStorage(cur); updateControls(cur); applySettings(cur);
-              try{ window.dispatchEvent(new CustomEvent('smartlib_theme:changed',{detail:cur})); }catch(e){}
-            });
-          });
-
-          // toast helper
-          function showToast(msg){
-            var t = document.createElement('div');
-            t.className = 'toast';
-            t.style.cssText = 'position:fixed;right:18px;bottom:18px;background:#0A1A4F;color:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 8px 20px rgba(10,26,79,0.12);z-index:9999';
-            t.innerText = msg; document.body.appendChild(t);
-            setTimeout(()=>{ t.style.opacity=0; setTimeout(()=>t.remove(), 300); }, 2200);
-          }
-
-        });
-      })();
+        })();
     </script>
 
 
