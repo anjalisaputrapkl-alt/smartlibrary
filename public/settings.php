@@ -306,7 +306,7 @@ $school = $stmt->fetch();
                                 disimpan secara otomatis</small>
 
                             <h3>Tema Tambahan</h3>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
                                 <button class="btn theme-btn" data-theme="green"
                                     style="padding: 12px; background: #065f46; color: #d1fae5; border: 2px solid #10b981; font-weight: 600;">🟢
                                     Green</button>
@@ -319,6 +319,30 @@ $school = $stmt->fetch();
                                 <button class="btn theme-btn" data-theme="rose"
                                     style="padding: 12px; background: #831843; color: #ffe4e6; border: 2px solid #f43f5e; font-weight: 600;">🌹
                                     Rose</button>
+                                <button class="btn theme-btn" data-theme="indigo"
+                                    style="padding: 12px; background: #312e81; color: #e0e7ff; border: 2px solid #6366f1; font-weight: 600;">💜
+                                    Indigo</button>
+                                <button class="btn theme-btn" data-theme="cyan"
+                                    style="padding: 12px; background: #164e63; color: #cffafe; border: 2px solid #06b6d4; font-weight: 600;">🔷
+                                    Cyan</button>
+                                <button class="btn theme-btn" data-theme="pink"
+                                    style="padding: 12px; background: #831854; color: #fbcfe8; border: 2px solid #ec4899; font-weight: 600;">💖
+                                    Pink</button>
+                                <button class="btn theme-btn" data-theme="amber"
+                                    style="padding: 12px; background: #78350f; color: #fef3c7; border: 2px solid #f59e0b; font-weight: 600;">🟡
+                                    Amber</button>
+                                <button class="btn theme-btn" data-theme="red"
+                                    style="padding: 12px; background: #7f1d1d; color: #fee2e2; border: 2px solid #ef4444; font-weight: 600;">🔴
+                                    Red</button>
+                                <button class="btn theme-btn" data-theme="slate"
+                                    style="padding: 12px; background: #1e293b; color: #e2e8f0; border: 2px solid #64748b; font-weight: 600;">⚫
+                                    Slate</button>
+                                <button class="btn theme-btn" data-theme="teal"
+                                    style="padding: 12px; background: #134e4a; color: #ccfbf1; border: 2px solid #14b8a6; font-weight: 600;">🧊
+                                    Teal</button>
+                                <button class="btn theme-btn" data-theme="lime"
+                                    style="padding: 12px; background: #365314; color: #cdfe56; border: 2px solid #84cc16; font-weight: 600;">🟢
+                                    Lime</button>
                             </div>
                         </div>
 
@@ -331,97 +355,43 @@ $school = $stmt->fetch();
                         <!-- Layout Settings -->
                         <!-- REMOVED -->
 
-                        <!-- School Info -->
-                        <div class="card">
-                            <h2>🏫 Informasi Sekolah</h2>
-
-                            <?php if (!empty($error)): ?>
-                                <div class="alert danger">
-                                    <span>⚠️</span>
-                                    <div><?php echo $error; ?></div>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php if (!empty($success)): ?>
-                                <div class="alert success">
-                                    <span>✓</span>
-                                    <div><?php echo $success; ?></div>
-                                </div>
-                            <?php endif; ?>
-
-                            <form method="post">
-                                <div class="form-group">
-                                    <label for="name">Nama Sekolah</label>
-                                    <input id="name" name="name" required
-                                        value="<?php echo htmlspecialchars($school['name']); ?>">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="slug">Slug (untuk URL)</label>
-                                    <input id="slug" name="slug" required
-                                        value="<?php echo htmlspecialchars($school['slug']); ?>">
-                                    <small>Gunakan huruf kecil, angka, dan tanda hubung (-)</small>
-                                </div>
-
-                                <button type="submit" class="btn primary" style="width: 100%;">💾 Simpan
-                                    Perubahan</button>
-                            </form>
-                        </div>
-
                     </div>
 
-                    <!-- Preview Panel -->
+                    <!-- School Info Panel -->
                     <div class="card preview-card">
-                        <h2>👁️ Pratinjau</h2>
-                        <div class="preview-content">
-                            <div style="padding: 16px; background: #f9fafb; border-radius: 8px; margin-bottom: 12px;">
-                                <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-                                    <div
-                                        style="width: 32px; height: 32px; background: var(--accent); border-radius: 6px;">
-                                    </div>
-                                    <strong>Perpustakaan</strong>
-                                </div>
-                                <div style="display: flex; gap: 8px; flex-direction: column;">
-                                    <div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 100%;">
-                                    </div>
-                                    <div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 80%;">
-                                    </div>
-                                    <div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 60%;">
-                                    </div>
-                                </div>
+                        <h2>🏫 Informasi Sekolah</h2>
+
+                        <?php if (!empty($error)): ?>
+                            <div class="alert danger">
+                                <span>⚠️</span>
+                                <div><?php echo $error; ?></div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($success)): ?>
+                            <div class="alert success">
+                                <span>✓</span>
+                                <div><?php echo $success; ?></div>
+                            </div>
+                        <?php endif; ?>
+
+                        <form method="post">
+                            <div class="form-group">
+                                <label for="name">Nama Sekolah</label>
+                                <input id="name" name="name" required
+                                    value="<?php echo htmlspecialchars($school['name']); ?>">
                             </div>
 
-                            <div style="padding: 12px; background: #f9fafb; border-radius: 8px; margin-bottom: 12px;">
-                                <strong style="font-size: 12px;">Statistik</strong>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-                                    <div
-                                        style="padding: 8px; background: white; border-radius: 6px; border: 1px solid var(--border); text-align: center;">
-                                        <div style="font-size: 18px; font-weight: 600;">24</div>
-                                        <div style="font-size: 11px; color: var(--muted);">Buku</div>
-                                    </div>
-                                    <div
-                                        style="padding: 8px; background: white; border-radius: 6px; border: 1px solid var(--border); text-align: center;">
-                                        <div style="font-size: 18px; font-weight: 600;">18</div>
-                                        <div style="font-size: 11px; color: var(--muted);">Anggota</div>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label for="slug">Slug (untuk URL)</label>
+                                <input id="slug" name="slug" required
+                                    value="<?php echo htmlspecialchars($school['slug']); ?>">
+                                <small>Gunakan huruf kecil, angka, dan tanda hubung (-)</small>
                             </div>
 
-                            <div
-                                style="padding: 12px; background: white; border: 1px solid var(--border); border-radius: 8px; font-size: 12px;">
-                                <strong style="display: block; margin-bottom: 8px;">Tabel Contoh</strong>
-                                <table style="width: 100%; font-size: 11px;">
-                                    <tr style="border-bottom: 1px solid var(--border);">
-                                        <td style="padding: 4px;">Item 1</td>
-                                        <td style="padding: 4px; text-align: right;">4</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px;">Item 2</td>
-                                        <td style="padding: 4px; text-align: right;">2</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+                            <button type="submit" class="btn primary" style="width: 100%;">💾 Simpan
+                                Perubahan</button>
+                        </form>
                     </div>
 
                 </div>
@@ -524,6 +494,110 @@ $school = $stmt->fetch();
                     '--accent': '#f43f5e',
                     '--danger': '#dc2626',
                     '--success': '#be185d'
+                }
+            },
+            indigo: {
+                name: 'Indigo',
+                colors: {
+                    '--bg': '#f0f4ff',
+                    '--surface': '#ffffff',
+                    '--text': '#312e81',
+                    '--muted': '#6b7280',
+                    '--border': '#e0e7ff',
+                    '--accent': '#6366f1',
+                    '--danger': '#dc2626',
+                    '--success': '#4f46e5'
+                }
+            },
+            cyan: {
+                name: 'Cyan',
+                colors: {
+                    '--bg': '#ecf9ff',
+                    '--surface': '#ffffff',
+                    '--text': '#164e63',
+                    '--muted': '#6b7280',
+                    '--border': '#cffafe',
+                    '--accent': '#06b6d4',
+                    '--danger': '#dc2626',
+                    '--success': '#0891b2'
+                }
+            },
+            pink: {
+                name: 'Pink',
+                colors: {
+                    '--bg': '#fdf2f8',
+                    '--surface': '#ffffff',
+                    '--text': '#831854',
+                    '--muted': '#6b7280',
+                    '--border': '#fbcfe8',
+                    '--accent': '#ec4899',
+                    '--danger': '#dc2626',
+                    '--success': '#db2777'
+                }
+            },
+            amber: {
+                name: 'Amber',
+                colors: {
+                    '--bg': '#fffbeb',
+                    '--surface': '#ffffff',
+                    '--text': '#78350f',
+                    '--muted': '#6b7280',
+                    '--border': '#fef3c7',
+                    '--accent': '#f59e0b',
+                    '--danger': '#dc2626',
+                    '--success': '#d97706'
+                }
+            },
+            red: {
+                name: 'Red',
+                colors: {
+                    '--bg': '#fef2f2',
+                    '--surface': '#ffffff',
+                    '--text': '#7f1d1d',
+                    '--muted': '#6b7280',
+                    '--border': '#fee2e2',
+                    '--accent': '#ef4444',
+                    '--danger': '#dc2626',
+                    '--success': '#dc2626'
+                }
+            },
+            slate: {
+                name: 'Slate',
+                colors: {
+                    '--bg': '#f8fafc',
+                    '--surface': '#ffffff',
+                    '--text': '#1e293b',
+                    '--muted': '#64748b',
+                    '--border': '#e2e8f0',
+                    '--accent': '#64748b',
+                    '--danger': '#dc2626',
+                    '--success': '#475569'
+                }
+            },
+            teal: {
+                name: 'Teal',
+                colors: {
+                    '--bg': '#f0fdfa',
+                    '--surface': '#ffffff',
+                    '--text': '#134e4a',
+                    '--muted': '#6b7280',
+                    '--border': '#ccfbf1',
+                    '--accent': '#14b8a6',
+                    '--danger': '#dc2626',
+                    '--success': '#0d9488'
+                }
+            },
+            lime: {
+                name: 'Lime',
+                colors: {
+                    '--bg': '#f7fee7',
+                    '--surface': '#ffffff',
+                    '--text': '#365314',
+                    '--muted': '#6b7280',
+                    '--border': '#dcfce7',
+                    '--accent': '#84cc16',
+                    '--danger': '#dc2626',
+                    '--success': '#65a30d'
                 }
             }
         };

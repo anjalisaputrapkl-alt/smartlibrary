@@ -72,6 +72,86 @@
             '--accent': '#f43f5e',
             '--danger': '#dc2626',
             '--success': '#be185d'
+        },
+        indigo: {
+            '--bg': '#f0f4ff',
+            '--surface': '#ffffff',
+            '--text': '#312e81',
+            '--muted': '#6b7280',
+            '--border': '#e0e7ff',
+            '--accent': '#6366f1',
+            '--danger': '#dc2626',
+            '--success': '#4f46e5'
+        },
+        cyan: {
+            '--bg': '#ecf9ff',
+            '--surface': '#ffffff',
+            '--text': '#164e63',
+            '--muted': '#6b7280',
+            '--border': '#cffafe',
+            '--accent': '#06b6d4',
+            '--danger': '#dc2626',
+            '--success': '#0891b2'
+        },
+        pink: {
+            '--bg': '#fdf2f8',
+            '--surface': '#ffffff',
+            '--text': '#831854',
+            '--muted': '#6b7280',
+            '--border': '#fbcfe8',
+            '--accent': '#ec4899',
+            '--danger': '#dc2626',
+            '--success': '#db2777'
+        },
+        amber: {
+            '--bg': '#fffbeb',
+            '--surface': '#ffffff',
+            '--text': '#78350f',
+            '--muted': '#6b7280',
+            '--border': '#fef3c7',
+            '--accent': '#f59e0b',
+            '--danger': '#dc2626',
+            '--success': '#d97706'
+        },
+        red: {
+            '--bg': '#fef2f2',
+            '--surface': '#ffffff',
+            '--text': '#7f1d1d',
+            '--muted': '#6b7280',
+            '--border': '#fee2e2',
+            '--accent': '#ef4444',
+            '--danger': '#dc2626',
+            '--success': '#dc2626'
+        },
+        slate: {
+            '--bg': '#f8fafc',
+            '--surface': '#ffffff',
+            '--text': '#1e293b',
+            '--muted': '#64748b',
+            '--border': '#e2e8f0',
+            '--accent': '#64748b',
+            '--danger': '#dc2626',
+            '--success': '#475569'
+        },
+        teal: {
+            '--bg': '#f0fdfa',
+            '--surface': '#ffffff',
+            '--text': '#134e4a',
+            '--muted': '#6b7280',
+            '--border': '#ccfbf1',
+            '--accent': '#14b8a6',
+            '--danger': '#dc2626',
+            '--success': '#0d9488'
+        },
+        lime: {
+            '--bg': '#f7fee7',
+            '--surface': '#ffffff',
+            '--text': '#365314',
+            '--muted': '#6b7280',
+            '--border': '#dcfce7',
+            '--accent': '#84cc16',
+            '--danger': '#dc2626',
+            '--success': '#65a30d'
         }
     };
 
