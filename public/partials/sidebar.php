@@ -15,11 +15,7 @@ function _is_active_sidebar($path, $current)
 <aside class="sidebar">
     <div class="sidebar-header">
         <a href="<?php echo $base; ?>/" class="sidebar-brand">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-            <span>Perpustakaan</span>
+            <span>Perpustakaan Online</span>
         </a>
     </div>
 

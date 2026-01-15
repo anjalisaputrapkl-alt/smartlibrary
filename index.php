@@ -18,10 +18,11 @@
   <header class="site-header">
     <div class="container">
       <a href="index.php" class="brand">
-        <div class="logo">📖</div>
+        <img src="img/logo.png" alt="Logo Perpustakaan Digital" class="logo-img"
+          style="width: 50px; height: 50px; object-fit: contain;">
         <div class="brand-text">
-          <div class="site-title">Perpustakaan Digital</div>
-          <div class="site-sub">Sistem Manajemen Sekolah</div>
+          <div class="site-title">AS Library</div>
+          <div class="site-sub">Sistem Manajemen Perpustakaan Sekolah</div>
         </div>
       </a>
 
@@ -72,20 +73,25 @@
 
         <div class="values-grid">
           <article class="value">
-            <h3>📚 Pencatatan Manual</h3>
-            <p>Proses pencatatan buku dan peminjaman masih dilakukan secara manual dan rentan kesalahan.</p>
+            <h3>Pencatatan Manual</h3>
+            <p>Tanpa sistem otomatis yang handal, proses pencatatan buku dan peminjaman masih dilakukan secara manual
+              dan sangat rentan terhadap kesalahan data.</p>
           </article>
           <article class="value">
-            <h3>⏱️ Waktu Hilang</h3>
-            <p>Pencarian buku dan data anggota memakan waktu lama tanpa sistem digital yang tepat.</p>
+            <h3>Waktu Hilang</h3>
+            <p>Proses pencarian buku dan data anggota memakan waktu yang sangat lama ketika tidak didukung oleh sistem
+              digital yang tepat dan terintegrasi.</p>
           </article>
           <article class="value">
-            <h3>📊 Laporan Sulit</h3>
-            <p>Kesulitan membuat laporan dan analisis penggunaan perpustakaan untuk evaluasi.</p>
+            <h3>Laporan Sulit</h3>
+            <p>Tanpa sistem analitik yang memadai, sekolah kesulitan membuat laporan komprehensif dan melakukan evaluasi
+              penggunaan perpustakaan.</p>
           </article>
           <article class="value">
-            <h3>🔒 Data Tidak Aman</h3>
-            <p>Data perpustakaan berisiko hilang atau tidak terorganisir dengan baik.</p>
+            <h3>Data Tidak Aman</h3>
+            <p>Tanpa sistem digital yang terorganisir, data perpustakaan berisiko hilang atau tidak terstruktur dengan
+              rapih dan dengan baik
+              baik.</p>
           </article>
         </div>
       </div>
@@ -103,10 +109,10 @@
           </p>
 
           <ul class="story">
-            <li>✔️ Kelola koleksi buku dengan mudah dan terstruktur</li>
-            <li>✔️ Catat anggota perpustakaan secara digital</li>
-            <li>✔️ Proses peminjaman dan pengembalian otomatis</li>
-            <li>✔️ Laporan statistik dan analisis penggunaan real-time</li>
+            <li> Kelola koleksi buku dengan mudah dan terstruktur</li>
+            <li> Catat anggota perpustakaan secara digital</li>
+            <li> Proses peminjaman dan pengembalian otomatis</li>
+            <li> Laporan statistik dan analisis penggunaan real-time</li>
           </ul>
         </div>
         <div class="col">
@@ -116,24 +122,49 @@
     </section>
 
     <!-- STATS -->
-    <section class="section stats">
-      <div class="container values-grid">
-        <article class="value">
-          <h3>50+</h3>
-          <p>Sekolah Terdaftar</p>
-        </article>
-        <article class="value">
-          <h3>25.000+</h3>
-          <p>Koleksi Buku</p>
-        </article>
-        <article class="value">
-          <h3>15.000+</h3>
-          <p>Pengguna Aktif</p>
-        </article>
-        <article class="value">
-          <h3>99%</h3>
-          <p>Uptime Sistem</p>
-        </article>
+    <section class="section stats"
+      style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding: 80px 0; position: relative; overflow: hidden;">
+      <div
+        style="position: absolute; top: -40px; right: -40px; width: 300px; height: 300px; background: rgba(255,255,255,0.05); border-radius: 50%; z-index: 0;">
+      </div>
+      <div
+        style="position: absolute; bottom: -60px; left: -60px; width: 250px; height: 250px; background: rgba(255,255,255,0.05); border-radius: 50%; z-index: 0;">
+      </div>
+
+      <div class="container" style="position: relative; z-index: 1;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
+          <div style="text-align: center;">
+            <div style="font-size: 48px; font-weight: 700; color: #fff; margin-bottom: 8px;" class="stat-number"
+              data-target="50">0</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; letter-spacing: 0.5px;">SEKOLAH
+              TERDAFTAR</div>
+            <div style="width: 40px; height: 2px; background: rgba(255,255,255,0.3); margin: 12px auto 0;"></div>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="font-size: 48px; font-weight: 700; color: #fff; margin-bottom: 8px;" class="stat-number"
+              data-target="25000">0</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; letter-spacing: 0.5px;">KOLEKSI
+              BUKU</div>
+            <div style="width: 40px; height: 2px; background: rgba(255,255,255,0.3); margin: 12px auto 0;"></div>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="font-size: 48px; font-weight: 700; color: #fff; margin-bottom: 8px;" class="stat-number"
+              data-target="15000">0</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; letter-spacing: 0.5px;">
+              PENGGUNA AKTIF</div>
+            <div style="width: 40px; height: 2px; background: rgba(255,255,255,0.3); margin: 12px auto 0;"></div>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="font-size: 48px; font-weight: 700; color: #fff; margin-bottom: 8px;" class="stat-number-percent"
+              data-target="99">0</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; letter-spacing: 0.5px;">UPTIME
+              SISTEM</div>
+            <div style="width: 40px; height: 2px; background: rgba(255,255,255,0.3); margin: 12px auto 0;"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -142,55 +173,122 @@
       <div class="container">
         <h2>Fitur-Fitur Utama Sistem</h2>
 
-        <div class="values-grid">
-          <article class="value">
-            <div class="feature-icon">📖</div>
-            <h3>Manajemen Buku</h3>
-            <p>Kelola koleksi buku dengan pencarian mudah, kategori, dan informasi lengkap setiap judul.</p>
-          </article>
-          <article class="value">
-            <div class="feature-icon">👥</div>
-            <h3>Manajemen Anggota</h3>
-            <p>Pendaftaran anggota digital, tracking aktivitas, dan identitas terverifikasi.</p>
-          </article>
-          <article class="value">
-            <div class="feature-icon">📤</div>
-            <h3>Peminjaman & Pengembalian</h3>
-            <p>Proses peminjaman cepat dengan notifikasi otomatis dan manajemen tenggat waktu.</p>
-          </article>
-          <article class="value">
-            <div class="feature-icon">📊</div>
-            <h3>Laporan & Analitik</h3>
-            <p>Dashboard interaktif dengan laporan statistik penggunaan perpustakaan real-time.</p>
-          </article>
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 48px;">
+          <div
+            style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(37, 99, 235, 0) 100%); border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; border-left: 4px solid #2563eb; transition: all 0.3s ease; cursor: pointer; position: relative;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.15)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <div
+              style="display: inline-block; width: 40px; height: 40px; background: #2563eb; color: white; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+              01</div>
+            <h3 style="font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 12px 0;">Manajemen Buku</h3>
+            <p style="font-size: 14px; color: #6b7280; line-height: 1.6; margin: 0;">Kelola koleksi buku dengan
+              pencarian mudah, kategori, dan informasi lengkap setiap judul.</p>
+          </div>
+
+          <div
+            style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(37, 99, 235, 0) 100%); border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; border-left: 4px solid #2563eb; transition: all 0.3s ease; cursor: pointer; position: relative;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.15)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <div
+              style="display: inline-block; width: 40px; height: 40px; background: #2563eb; color: white; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+              02</div>
+            <h3 style="font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 12px 0;">Manajemen Anggota</h3>
+            <p style="font-size: 14px; color: #6b7280; line-height: 1.6; margin: 0;">Pendaftaran anggota digital,
+              tracking aktivitas, dan identitas terverifikasi dengan aman.</p>
+          </div>
+
+          <div
+            style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(37, 99, 235, 0) 100%); border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; border-left: 4px solid #2563eb; transition: all 0.3s ease; cursor: pointer; position: relative;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.15)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <div
+              style="display: inline-block; width: 40px; height: 40px; background: #2563eb; color: white; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+              03</div>
+            <h3 style="font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 12px 0;">Peminjaman & Pengembalian
+            </h3>
+            <p style="font-size: 14px; color: #6b7280; line-height: 1.6; margin: 0;">Proses peminjaman cepat dengan
+              notifikasi otomatis dan manajemen tenggat waktu.</p>
+          </div>
+
+          <div
+            style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(37, 99, 235, 0) 100%); border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; border-left: 4px solid #2563eb; transition: all 0.3s ease; cursor: pointer; position: relative;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.15)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <div
+              style="display: inline-block; width: 40px; height: 40px; background: #2563eb; color: white; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+              04</div>
+            <h3 style="font-size: 18px; font-weight: 600; color: #2563eb; margin: 0 0 12px 0;">Laporan & Analitik</h3>
+            <p style="font-size: 14px; color: #6b7280; line-height: 1.6; margin: 0;">Dashboard interaktif dengan laporan
+              statistik penggunaan perpustakaan real-time.</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- AUDIENCE -->
-    <section id="audience" class="section audience">
+    <section id="audience" class="section audience" style="background: #f9fafb; padding: 80px 0;">
       <div class="container">
         <h2>Untuk Siapa Sistem Ini?</h2>
-        <div class="audience-grid">
-          <div class="aud-item">
-            <div class="aud-icon">🏫</div>
-            <div>Admin Sekolah</div>
+        <p class="microcopy">Dirancang untuk memenuhi kebutuhan semua pihak yang terlibat dalam ekosistem perpustakaan
+          sekolah.</p>
+
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 48px;">
+          <div
+            style="background: #fff; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; text-align: center; transition: all 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.12)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <img src="img/admin-sekolah.jpg" alt="Admin Sekolah"
+              style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; margin: 0 auto 16px; display: block;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Admin Sekolah</h3>
+            <p style="font-size: 13px; color: #6b7280; line-height: 1.6; margin: 0;">Kelola seluruh sistem, user, dan
+              laporan operasional perpustakaan dengan mudah.</p>
           </div>
-          <div class="aud-item">
-            <div class="aud-icon">📚</div>
-            <div>Pustakawan</div>
+
+          <div
+            style="background: #fff; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; text-align: center; transition: all 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.12)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <img src="img/pustakawan.jpg" alt="Pustakawan"
+              style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; margin: 0 auto 16px; display: block;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Pustakawan</h3>
+            <p style="font-size: 13px; color: #6b7280; line-height: 1.6; margin: 0;">Kelola inventaris buku, proses
+              peminjaman, dan pengembalian dalam satu dashboard.</p>
           </div>
-          <div class="aud-item">
-            <div class="aud-icon">👨‍🏫</div>
-            <div>Guru & Dosen</div>
+
+          <div
+            style="background: #fff; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; text-align: center; transition: all 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.12)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <img src="img/guru.jpg" alt="Guru & Dosen"
+              style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; margin: 0 auto 16px; display: block;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Guru & Dosen</h3>
+            <p style="font-size: 13px; color: #6b7280; line-height: 1.6; margin: 0;">Akses mudah ke koleksi buku dan
+              rekomendasi sumber pembelajaran untuk kelas.</p>
           </div>
-          <div class="aud-item">
-            <div class="aud-icon">👨‍🎓</div>
-            <div>Siswa & Mahasiswa</div>
+
+          <div
+            style="background: #fff; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; text-align: center; transition: all 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.12)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <img src="img/murid.jpg" alt="Siswa & Mahasiswa"
+              style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; margin: 0 auto 16px; display: block;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Siswa & Mahasiswa</h3>
+            <p style="font-size: 13px; color: #6b7280; line-height: 1.6; margin: 0;">Cari dan pinjam buku online,
+              tracking status peminjaman, dan perpanjangan otomatis.</p>
           </div>
-          <div class="aud-item">
-            <div class="aud-icon">🎓</div>
-            <div>Institusi Pendidikan</div>
+
+          <div
+            style="background: #fff; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb; text-align: center; transition: all 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.boxShadow='0 10px 30px rgba(37, 99, 235, 0.12)'; this.style.transform='translateY(-4px)'"
+            onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            <img src="img/institusi.jpg" alt="Institusi Pendidikan"
+              style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; margin: 0 auto 16px; display: block;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">Institusi Pendidikan</h3>
+            <p style="font-size: 13px; color: #6b7280; line-height: 1.6; margin: 0;">Solusi enterprise dengan analitik
+              mendalam dan integrasi sistem sekolah yang komprehensif.</p>
           </div>
         </div>
       </div>
@@ -562,6 +660,59 @@
           alert('Terjadi kesalahan: ' + error.message);
         }
       });
+
+      // Stat Counter Animation
+      function animateCounter(element, target, duration = 2000) {
+        let current = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          element.textContent = Math.floor(current).toLocaleString('id-ID');
+        }, 16);
+      }
+
+      function animateCounterPercent(element, target, duration = 2000) {
+        let current = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          element.textContent = Math.floor(current) + '%';
+        }, 16);
+      }
+
+      // Intersection Observer for triggering animation when section is visible
+      const observerOptions = {
+        threshold: 0.5
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = 'true';
+            document.querySelectorAll('.stat-number').forEach(el => {
+              const target = parseInt(el.dataset.target);
+              animateCounter(el, target);
+            });
+            document.querySelectorAll('.stat-number-percent').forEach(el => {
+              const target = parseInt(el.dataset.target);
+              animateCounterPercent(el, target);
+            });
+          }
+        });
+      }, observerOptions);
+
+      const statsSection = document.querySelector('.stats');
+      if (statsSection) {
+        observer.observe(statsSection);
+      }
     </script>
 </body>
 

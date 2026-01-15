@@ -7,16 +7,87 @@ require_once __DIR__ . '/../src/maintenance/MaintenanceController.php';
 
 $controller = new MaintenanceController($pdo);
 
-// Handle AJAX requests - SEBELUM include header!
+// Get all records and books FIRST
+$records = $controller->getAll();
+$books = $controller->getBooks();
+$totalRecords = $controller->getCount();
+
+// Handle AJAX requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['action'])) {
   $controller->handleAjax();
   exit;
 }
 
-// Get all records and books
-$records = $controller->getAll();
-$books = $controller->getBooks();
-$totalRecords = $controller->getCount();
+// Handle Export CSV
+if (isset($_GET['export']) && $_GET['export'] === 'csv') {
+  header('Content-Type: application/vnd.ms-excel; charset=utf-8');
+  header('Content-Disposition: attachment; filename="maintenance-' . date('Y-m-d-H-i-s') . '.xls"');
+
+  echo '<!DOCTYPE html>';
+  echo '<html>';
+  echo '<head>';
+  echo '<meta charset="UTF-8">';
+  echo '<style>';
+  echo 'table { border-collapse: collapse; width: 100%; }';
+  echo 'th { background-color: #2563eb; color: white; padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold; }';
+  echo 'td { padding: 10px; border: 1px solid #ddd; }';
+  echo 'tr:nth-child(even) { background-color: #f9fafb; }';
+  echo 'col.id { width: 50px; }';
+  echo 'col.title { width: 200px; }';
+  echo 'col.author { width: 150px; }';
+  echo 'col.status { width: 100px; }';
+  echo 'col.priority { width: 100px; }';
+  echo 'col.notes { width: 200px; }';
+  echo 'col.followup { width: 120px; }';
+  echo 'col.date { width: 120px; }';
+  echo '</style>';
+  echo '</head>';
+  echo '<body>';
+  echo '<table>';
+  echo '<colgroup>';
+  echo '<col class="id">';
+  echo '<col class="title">';
+  echo '<col class="author">';
+  echo '<col class="status">';
+  echo '<col class="priority">';
+  echo '<col class="notes">';
+  echo '<col class="followup">';
+  echo '<col class="date">';
+  echo '</colgroup>';
+  echo '<thead>';
+  echo '<tr>';
+  echo '<th>ID</th>';
+  echo '<th>Judul Buku</th>';
+  echo '<th>Penulis</th>';
+  echo '<th>Status</th>';
+  echo '<th>Prioritas</th>';
+  echo '<th>Catatan</th>';
+  echo '<th>Follow-up</th>';
+  echo '<th>Tanggal Update</th>';
+  echo '</tr>';
+  echo '</thead>';
+  echo '<tbody>';
+
+  foreach ($records as $r) {
+    echo '<tr>';
+    echo '<td>' . htmlspecialchars($r['id']) . '</td>';
+    echo '<td>' . htmlspecialchars($r['book_title']) . '</td>';
+    echo '<td>' . htmlspecialchars($r['book_author']) . '</td>';
+    echo '<td>' . htmlspecialchars($r['status']) . '</td>';
+    echo '<td>' . htmlspecialchars($r['priority'] ?? 'Normal') . '</td>';
+    echo '<td>' . htmlspecialchars($r['notes'] ?? '') . '</td>';
+    echo '<td>' . (isset($r['follow_up_date']) && $r['follow_up_date'] ? date('d-m-Y', strtotime($r['follow_up_date'])) : '') . '</td>';
+    echo '<td>' . date('d-m-Y', strtotime($r['updated_at'])) . '</td>';
+    echo '</tr>';
+  }
+
+  echo '</tbody>';
+  echo '</table>';
+  echo '</body>';
+  echo '</html>';
+
+  exit;
+}
 
 ?>
 <!doctype html>
@@ -173,43 +244,53 @@ $totalRecords = $controller->getCount();
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: 12.5px;
       table-layout: fixed;
     }
 
     col.id {
-      width: 60px
+      width: 5%
     }
 
     col.title {
-      width: 25%
+      width: 22%
     }
 
     col.author {
-      width: 20%
+      width: 18%
     }
 
     col.status {
-      width: 120px
+      width: 10%
+    }
+
+    col.priority {
+      width: 10%
     }
 
     col.notes {
-      width: 25%
+      width: 15%
+    }
+
+    col.followup {
+      width: 10%
     }
 
     col.date {
-      width: 140px
+      width: 10%
     }
 
     col.action {
-      width: 120px
+      width: 12%
     }
 
     th,
     td {
-      padding: 12px;
+      padding: 10px 8px;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     th {
@@ -226,6 +307,41 @@ $totalRecords = $controller->getCount();
       display: flex;
       gap: 6px;
       justify-content: center
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .filter-bar select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      min-width: 140px;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-buttons .btn {
+      padding: 10px 14px;
+      font-size: 13px;
     }
 
     .sidebar {
@@ -357,7 +473,10 @@ $totalRecords = $controller->getCount();
 
     <div class="topbar">
       <strong>Pemeliharaan Buku</strong>
-      <button class="btn primary" onclick="openAddModal()">+ Tambah Catatan</button>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn primary" onclick="exportCSV()">📥 Export Excel</button>
+        <button class="btn primary" onclick="openAddModal()">+ Tambah Catatan</button>
+      </div>
     </div>
 
     <div class="content">
@@ -365,6 +484,31 @@ $totalRecords = $controller->getCount();
 
         <div class="card">
           <h2>Daftar Catatan Maintenance (<?= $totalRecords ?>)</h2>
+
+          <!-- Filter Bar -->
+          <div class="filter-bar">
+            <input type="text" id="searchInput" placeholder="Cari judul buku atau penulis..." onkeyup="filterTable()">
+            <select id="statusFilter" onchange="filterTable()">
+              <option value="">-- Semua Status --</option>
+              <option value="Good">Good (Bagus)</option>
+              <option value="Worn Out">Worn Out (Aus)</option>
+              <option value="Damaged">Damaged (Rusak)</option>
+              <option value="Missing">Missing (Hilang)</option>
+              <option value="Need Repair">Need Repair (Perlu Perbaikan)</option>
+              <option value="Replaced">Replaced (Diganti)</option>
+            </select>
+            <select id="priorityFilter" onchange="filterTable()">
+              <option value="">-- Semua Prioritas --</option>
+              <option value="Low">Low</option>
+              <option value="Normal">Normal</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+            <div class="filter-buttons">
+              <button class="btn" onclick="resetFilter();"
+                style="background: var(--danger); color: #fff; border: none;">Reset</button>
+            </div>
+          </div>
 
           <?php if (empty($records)): ?>
             <p style="text-align: center; color: var(--muted); padding: 32px 0;">
@@ -379,7 +523,9 @@ $totalRecords = $controller->getCount();
                   <col class="title">
                   <col class="author">
                   <col class="status">
+                  <col class="priority">
                   <col class="notes">
+                  <col class="followup">
                   <col class="date">
                   <col class="action">
                 </colgroup>
@@ -390,7 +536,9 @@ $totalRecords = $controller->getCount();
                     <th>Judul Buku</th>
                     <th>Penulis</th>
                     <th>Status</th>
+                    <th>Prioritas</th>
                     <th>Catatan</th>
+                    <th>Follow-up</th>
                     <th>Update</th>
                     <th class="text-center">Aksi</th>
                   </tr>
@@ -408,9 +556,29 @@ $totalRecords = $controller->getCount();
                         </span>
                       </td>
                       <td>
-                        <?= $r['notes'] ? htmlspecialchars(substr($r['notes'], 0, 35)) . (strlen($r['notes']) > 35 ? '...' : '') : '-' ?>
+                        <?php
+                        $priority = $r['priority'] ?? 'Normal';
+                        $priority_color = $priority === 'Urgent' ? '#dc2626' : ($priority === 'High' ? '#f59e0b' : '#6b7280');
+                        ?>
+                        <span
+                          style="display: inline-block; padding: 4px 8px; background: rgba(220, 38, 38, 0.1); color: <?= $priority_color ?>; border-radius: 4px; font-size: 11px; font-weight: 600;">
+                          <?= htmlspecialchars($priority) ?>
+                        </span>
                       </td>
-                      <td><?= date('d M Y H:i', strtotime($r['updated_at'])) ?></td>
+                      <td>
+                        <?= $r['notes'] ? htmlspecialchars(substr($r['notes'], 0, 30)) . (strlen($r['notes']) > 30 ? '...' : '') : '-' ?>
+                      </td>
+                      <td style="font-size: 12px;">
+                        <?php
+                        $followup = $r['follow_up_date'] ?? null;
+                        if ($followup) {
+                          echo date('d M Y', strtotime($followup));
+                        } else {
+                          echo '-';
+                        }
+                        ?>
+                      </td>
+                      <td style="font-size: 12px;"><?= date('d M Y', strtotime($r['updated_at'])) ?></td>
                       <td class="text-center">
                         <div class="actions">
                           <button class="btn" onclick="openEditModal(<?= $r['id'] ?>)">Edit</button>
@@ -482,6 +650,21 @@ $totalRecords = $controller->getCount();
           </div>
 
           <div class="form-group">
+            <label for="priority">Prioritas</label>
+            <select id="priority" name="priority">
+              <option value="Normal">Normal</option>
+              <option value="Low">Low</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="followUpDate">Tanggal Follow-up (Opsional)</label>
+            <input type="date" id="followUpDate" name="follow_up_date">
+          </div>
+
+          <div class="form-group">
             <label for="notes">Catatan / Keterangan</label>
             <textarea id="notes" name="notes" placeholder="Deskripsikan kondisi buku..."></textarea>
           </div>
@@ -495,10 +678,7 @@ $totalRecords = $controller->getCount();
   </div>
 
   <script>
-
-
-    <script>
-      function showToast(msg, type = 'success') {
+    function showToast(msg, type = 'success') {
       const toast = document.createElement('div');
       toast.className = `toast ${type === 'success' ? 'toast-success' : 'toast-error'}`;
       toast.innerText = msg;
@@ -507,6 +687,37 @@ $totalRecords = $controller->getCount();
         toast.style.animation = 'slideIn 0.3s reverse';
         setTimeout(() => toast.remove(), 300);
       }, 2500);
+    }
+
+    function exportCSV() {
+      window.location.href = '?export=csv';
+    }
+
+    function filterTable() {
+      const searchText = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+      const priorityFilter = document.getElementById('priorityFilter').value;
+      const rows = document.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const title = row.cells[1].textContent.toLowerCase();
+        const author = row.cells[2].textContent.toLowerCase();
+        const status = row.cells[3].textContent.trim();
+        const priority = row.cells[4].textContent.trim();
+
+        const matchSearch = title.includes(searchText) || author.includes(searchText);
+        const matchStatus = !statusFilter || status.includes(statusFilter);
+        const matchPriority = !priorityFilter || priority.includes(priorityFilter);
+
+        row.style.display = matchSearch && matchStatus && matchPriority ? '' : 'none';
+      });
+    }
+
+    function resetFilter() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('priorityFilter').value = '';
+      filterTable();
     }
 
     function openAddModal() {
@@ -525,6 +736,8 @@ $totalRecords = $controller->getCount();
             document.getElementById('recordId').value = record.id;
             document.getElementById('bookId').value = record.book_id;
             document.getElementById('status').value = record.status;
+            document.getElementById('priority').value = record.priority || 'Normal';
+            document.getElementById('followUpDate').value = record.follow_up_date || '';
             document.getElementById('notes').value = record.notes || '';
             document.getElementById('modalTitle').innerText = 'Edit Catatan Maintenance';
             document.getElementById('maintenanceModal').classList.add('active');
@@ -540,6 +753,8 @@ $totalRecords = $controller->getCount();
       const id = document.getElementById('recordId').value;
       const bookId = document.getElementById('bookId').value;
       const status = document.getElementById('status').value;
+      const priority = document.getElementById('priority').value;
+      const followUpDate = document.getElementById('followUpDate').value;
       const notes = document.getElementById('notes').value;
 
       if (!bookId || !status) {
@@ -551,6 +766,8 @@ $totalRecords = $controller->getCount();
       formData.append('action', id ? 'update' : 'add');
       formData.append('book_id', bookId);
       formData.append('status', status);
+      formData.append('priority', priority);
+      formData.append('follow_up_date', followUpDate);
       formData.append('notes', notes);
       if (id) formData.append('id', id);
 
@@ -608,10 +825,10 @@ $totalRecords = $controller->getCount();
     document.addEventListener('DOMContentLoaded', () => {
       const records = <?php echo json_encode($records); ?>;
       const good = records.filter(r => r.status === 'Good').length;
-      const damaged = records.filter(r => 
+      const damaged = records.filter(r =>
         ['Damaged', 'Need Repair', 'Missing'].includes(r.status)
       ).length;
-      
+
       document.getElementById('goodCount').innerText = good;
       document.getElementById('damagedCount').innerText = damaged;
     });
