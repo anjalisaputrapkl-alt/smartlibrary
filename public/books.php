@@ -80,8 +80,12 @@ $books = $stmt->fetchAll();
       box-sizing: border-box
     }
 
+    html,
     body {
       margin: 0;
+    }
+
+    body {
       font-family: Inter, sans-serif;
       background: var(--bg);
       color: var(--text)
@@ -90,23 +94,30 @@ $books = $stmt->fetchAll();
     .app {
       min-height: 100vh;
       display: grid;
-      grid-template-rows: 64px 1fr
+      grid-template-rows: 64px 1fr;
+      margin-left: 260px;
     }
 
     .topbar {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0 32px;
+      padding: 22px 32px;
       display: flex;
       justify-content: space-between;
-      align-items: center
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 260px;
+      right: 0;
+      z-index: 999;
     }
 
     .content {
       padding: 32px;
       display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 32px
+      grid-template-columns: 1fr;
+      gap: 32px;
+      margin-top: 64px;
     }
 
     .main {
@@ -226,9 +237,7 @@ $books = $stmt->fetchAll();
     }
 
     .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 24px
+      display: none;
     }
 
     .panel {
@@ -285,11 +294,12 @@ $books = $stmt->fetchAll();
 </head>
 
 <body>
+  <?php require __DIR__ . '/partials/sidebar.php'; ?>
+
   <div class="app">
 
     <div class="topbar">
       <strong>Kelola Buku</strong>
-      <a href="index.php" class="btn">← Dashboard</a>
     </div>
 
     <div class="content">
@@ -361,32 +371,6 @@ $books = $stmt->fetchAll();
           </div>
         </div>
 
-      </div>
-
-      <div class="sidebar">
-        <div class="panel">
-          <h3 style="font-size:14px">Menu</h3>
-          <div class="menu">
-            <a href="index.php">📊 Dashboard</a>
-            <a class="active" href="books.php">📚 Buku</a>
-            <a href="members.php">👥 Anggota</a>
-            <a href="borrows.php">📖 Peminjaman</a>
-            <a href="reports.php">📈 Laporan</a>
-            <a href="settings.php">⚙️ Pengaturan</a>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h3 style="font-size:14px">FAQ</h3>
-          <div class="faq-item">
-            <div class="faq-question">Bagaimana menambah buku? <span>+</span></div>
-            <div class="faq-answer">Isi form lalu klik tambah.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">ISBN wajib? <span>+</span></div>
-            <div class="faq-answer">Tidak wajib.</div>
-          </div>
-        </div>
       </div>
 
     </div>

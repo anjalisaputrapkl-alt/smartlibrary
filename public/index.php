@@ -21,6 +21,44 @@ if ($is_authenticated) {
     $total_borrowed = countData($pdo, "SELECT COUNT(*) FROM borrows WHERE school_id = :sid AND returned_at IS NULL", $school_id);
     $total_overdue = countData($pdo, "SELECT COUNT(*) FROM borrows WHERE school_id = :sid AND status='overdue'", $school_id);
 
+    // Recent borrows
+    $stmt = $pdo->prepare("SELECT b.title, m.name, br.borrowed_at as timestamp, 'borrow' as type FROM borrows br 
+        JOIN books b ON br.book_id = b.id 
+        JOIN members m ON br.member_id = m.id 
+        WHERE br.school_id = :sid AND br.returned_at IS NULL 
+        ORDER BY br.borrowed_at DESC LIMIT 10");
+    $stmt->execute(['sid' => $school_id]);
+    $recent_borrows = $stmt->fetchAll();
+
+    // Recent returns
+    $stmt = $pdo->prepare("SELECT b.title, m.name, br.returned_at as timestamp, 'return' as type FROM borrows br 
+        JOIN books b ON br.book_id = b.id 
+        JOIN members m ON br.member_id = m.id 
+        WHERE br.school_id = :sid AND br.returned_at IS NOT NULL 
+        ORDER BY br.returned_at DESC LIMIT 10");
+    $stmt->execute(['sid' => $school_id]);
+    $recent_returns = $stmt->fetchAll();
+
+    // New members
+    $stmt = $pdo->prepare("SELECT name as title, '' as name, created_at as timestamp, 'member' as type FROM members 
+        WHERE school_id = :sid 
+        ORDER BY created_at DESC LIMIT 10");
+    $stmt->execute(['sid' => $school_id]);
+    $new_members = $stmt->fetchAll();
+
+    // New books
+    $stmt = $pdo->prepare("SELECT title, '' as name, created_at as timestamp, 'book' as type FROM books 
+        WHERE school_id = :sid 
+        ORDER BY created_at DESC LIMIT 10");
+    $stmt->execute(['sid' => $school_id]);
+    $new_books = $stmt->fetchAll();
+
+    // Merge and sort all activities
+    $all_activities = array_merge($recent_borrows, $recent_returns, $new_members, $new_books);
+    usort($all_activities, function ($a, $b) {
+        return strtotime($b['timestamp']) - strtotime($a['timestamp']);
+    });
+
     $monthly_borrows = [12, 18, 25, 20, 30, 28, 35, 40, 38, 32, 26, 22];
 }
 ?>
@@ -52,11 +90,11 @@ if ($is_authenticated) {
 
         html,
         body {
-            height: 100%
+            height: 100%;
+            margin: 0;
         }
 
         body {
-            margin: 0;
             font-family: Inter, system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
@@ -78,10 +116,15 @@ if ($is_authenticated) {
         .topbar {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
-            padding: 0 32px;
+            padding: 23px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 260px;
+            right: 0;
+            z-index: 999;
         }
 
         .topbar strong {
@@ -92,8 +135,9 @@ if ($is_authenticated) {
         .content {
             padding: 32px;
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 1fr;
             gap: 32px;
+            margin-top: 64px;
         }
 
         /* Main */
@@ -169,15 +213,133 @@ if ($is_authenticated) {
             border: 1px dashed var(--border);
             border-radius: 10px;
             font-size: 13px;
+            transition: all 0.2s;
         }
 
-        /* Sidebar */
-        .sidebar {
+        .action:hover {
+            background: #f9fafb;
+            border-color: var(--accent);
+        }
+
+        /* Activity Section */
+        .activity-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .activity-section h2 {
+            font-size: 14px;
+            margin: 0 0 16px;
+        }
+
+        .activity-list {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 12px;
         }
 
+        .activity-item {
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .activity-item .details {
+            flex: 1;
+        }
+
+        .activity-item .book-title {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .activity-item .member-name {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .activity-item .time {
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
+            margin-left: 12px;
+        }
+
+        .empty-activity {
+            color: var(--muted);
+            text-align: center;
+            padding: 24px 16px;
+            font-size: 13px;
+        }
+
+        /* Activity Tabs */
+        .activity-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .activity-tab {
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            color: var(--muted);
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .activity-tab:hover {
+            color: var(--text);
+        }
+
+        .activity-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .activity-content {
+            display: none;
+        }
+
+        .activity-content.active {
+            display: block;
+        }
+
+        /* Scrollable Activity List */
+        .activity-scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .activity-scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .activity-scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .activity-scroll-container::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+
+        .activity-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Panel */
         .panel {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -191,33 +353,6 @@ if ($is_authenticated) {
             background: #f9fafb;
             border-radius: 8px;
             margin-top: 8px;
-        }
-
-        /* Menu */
-        .menu {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 12px;
-        }
-
-        .menu a {
-            font-size: 13px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .menu a:hover {
-            background: #f3f4f6;
-        }
-
-        .menu a.active {
-            background: rgba(37, 99, 235, .1);
-            color: var(--accent);
-            font-weight: 500;
         }
 
         /* Button */
@@ -265,11 +400,12 @@ if ($is_authenticated) {
 <body>
 
     <?php if ($is_authenticated): ?>
+        <?php require __DIR__ . '/partials/sidebar.php'; ?>
+
         <div class="app">
 
             <div class="topbar">
                 <strong>Dashboard Perpustakaan</strong>
-                <a href="logout.php" class="btn">Logout</a>
             </div>
 
             <div class="content">
@@ -294,75 +430,141 @@ if ($is_authenticated) {
                         </div>
                     </div>
 
-                    <div class="actions">
-                        <h2 style="font-size:14px;margin-bottom:16px">Tindakan Cepat</h2>
-                        <div class="action-grid">
-                            <a href="books.php" class="action">📚 Kelola Buku</a>
-                            <a href="members.php" class="action">👥 Kelola Anggota</a>
-                            <a href="borrows.php" class="action">📖 Peminjaman</a>
-                            <a href="reports.php" class="action">📈 Laporan</a>
+                    <div class="activity-section">
+                        <h2>📋 Aktivitas Terbaru</h2>
+
+                        <div class="activity-tabs">
+                            <button class="activity-tab active" data-tab="all">🔀 Semua</button>
+                            <button class="activity-tab" data-tab="borrows">📖 Peminjaman</button>
+                            <button class="activity-tab" data-tab="returns">📥 Pengembalian</button>
+                            <button class="activity-tab" data-tab="members">👥 Anggota Baru</button>
+                            <button class="activity-tab" data-tab="books">📚 Buku Baru</button>
+                        </div>
+
+                        <!-- All Activities Tab -->
+                        <div class="activity-content active" id="all-content">
+                            <div class="activity-scroll-container">
+                                <div class="activity-list">
+                                    <?php if (!empty($all_activities)): ?>
+                                        <?php foreach ($all_activities as $activity): ?>
+                                            <div class="activity-item">
+                                                <div class="details">
+                                                    <div class="book-title"><?= htmlspecialchars($activity['title']) ?></div>
+                                                    <div class="member-name">
+                                                        <?php
+                                                        switch ($activity['type']) {
+                                                            case 'borrow':
+                                                                echo '📖 Dipinjam oleh ' . htmlspecialchars($activity['name']);
+                                                                break;
+                                                            case 'return':
+                                                                echo '📥 Dikembalikan oleh ' . htmlspecialchars($activity['name']);
+                                                                break;
+                                                            case 'member':
+                                                                echo '👥 Anggota baru terdaftar';
+                                                                break;
+                                                            case 'book':
+                                                                echo '📚 Buku baru ditambahkan';
+                                                                break;
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                </div>
+                                                <div class="time"><?= date('d M', strtotime($activity['timestamp'])) ?></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="empty-activity">Tidak ada aktivitas terbaru</div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Borrows Tab -->
+                        <div class="activity-content" id="borrows-content">
+                            <div class="activity-scroll-container">
+                                <div class="activity-list">
+                                    <?php if (!empty($recent_borrows)): ?>
+                                        <?php foreach ($recent_borrows as $activity): ?>
+                                            <div class="activity-item">
+                                                <div class="details">
+                                                    <div class="book-title"><?= htmlspecialchars($activity['title']) ?></div>
+                                                    <div class="member-name">Dipinjam oleh
+                                                        <?= htmlspecialchars($activity['name']) ?></div>
+                                                </div>
+                                                <div class="time"><?= date('d M', strtotime($activity['timestamp'])) ?></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="empty-activity">Tidak ada peminjaman terbaru</div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Returns Tab -->
+                        <div class="activity-content" id="returns-content">
+                            <div class="activity-scroll-container">
+                                <div class="activity-list">
+                                    <?php if (!empty($recent_returns)): ?>
+                                        <?php foreach ($recent_returns as $activity): ?>
+                                            <div class="activity-item">
+                                                <div class="details">
+                                                    <div class="book-title"><?= htmlspecialchars($activity['title']) ?></div>
+                                                    <div class="member-name">Dikembalikan oleh
+                                                        <?= htmlspecialchars($activity['name']) ?></div>
+                                                </div>
+                                                <div class="time"><?= date('d M', strtotime($activity['timestamp'])) ?></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="empty-activity">Tidak ada pengembalian terbaru</div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Members Tab -->
+                        <div class="activity-content" id="members-content">
+                            <div class="activity-scroll-container">
+                                <div class="activity-list">
+                                    <?php if (!empty($new_members)): ?>
+                                        <?php foreach ($new_members as $activity): ?>
+                                            <div class="activity-item">
+                                                <div class="details">
+                                                    <div class="book-title"><?= htmlspecialchars($activity['title']) ?></div>
+                                                    <div class="member-name">Anggota baru terdaftar</div>
+                                                </div>
+                                                <div class="time"><?= date('d M', strtotime($activity['timestamp'])) ?></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="empty-activity">Tidak ada anggota baru</div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Books Tab -->
+                        <div class="activity-content" id="books-content">
+                            <div class="activity-scroll-container">
+                                <div class="activity-list">
+                                    <?php if (!empty($new_books)): ?>
+                                        <?php foreach ($new_books as $activity): ?>
+                                            <div class="activity-item">
+                                                <div class="details">
+                                                    <div class="book-title"><?= htmlspecialchars($activity['title']) ?></div>
+                                                    <div class="member-name">Buku baru ditambahkan</div>
+                                                </div>
+                                                <div class="time"><?= date('d M', strtotime($activity['timestamp'])) ?></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="empty-activity">Tidak ada buku baru</div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                </div>
-
-                <div class="sidebar">
-
-                    <div class="panel">
-                        <h3 style="font-size:14px">Ringkasan</h3>
-                        <div class="list-item"><?= $total_borrowed ?> buku masih dipinjam</div>
-                        <div class="list-item"><?= $total_overdue ?> buku terlambat</div>
-                    </div>
-
-                    <div class="panel">
-                        <h3 style="font-size:14px">Menu</h3>
-                        <div class="menu">
-                            <a href="index.php" class="active">📊 Dashboard</a>
-                            <a href="books.php">📚 Buku</a>
-                            <a href="members.php">👥 Anggota</a>
-                            <a href="borrows.php">📖 Peminjaman</a>
-                            <a href="reports.php">📈 Laporan</a>
-                            <a href="settings.php">⚙️ Pengaturan</a>
-                        </div>
-                    </div>
-
-                    <div class="panel">
-                        <h3 style="font-size:14px">FAQ</h3>
-
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                Bagaimana cara menambah buku?
-                                <span>+</span>
-                            </div>
-                            <div class="faq-answer">
-                                Masuk ke menu <b>Buku</b>, lalu klik tombol tambah untuk menambahkan data buku baru.
-                            </div>
-                        </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                Bagaimana proses peminjaman buku?
-                                <span>+</span>
-                            </div>
-                            <div class="faq-answer">
-                                Peminjaman dilakukan melalui menu <b>Peminjaman</b> dengan memilih anggota dan buku yang
-                                tersedia.
-                            </div>
-                        </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                Apa arti status terlambat?
-                                <span>+</span>
-                            </div>
-                            <div class="faq-answer">
-                                Status terlambat muncul jika buku belum dikembalikan melewati tanggal jatuh tempo.
-                            </div>
-                        </div>
-
-                    </div>
-
-
 
                 </div>
 
@@ -370,6 +572,21 @@ if ($is_authenticated) {
         </div>
 
         <script>
+            // Activity tabs functionality
+            document.querySelectorAll('.activity-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.activity-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.activity-content').forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and its content
+                    tab.classList.add('active');
+                    document.getElementById(tabName + '-content').classList.add('active');
+                });
+            });
+
             document.querySelectorAll('.faq-question').forEach(item => {
                 item.addEventListener('click', () => {
                     const parent = item.parentElement;

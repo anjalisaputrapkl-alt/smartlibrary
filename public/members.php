@@ -83,11 +83,10 @@ $members = $stmt->fetchAll();
 
     html,
     body {
-      height: 100%
+      margin: 0;
     }
 
     body {
-      margin: 0;
       font-family: Inter, system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
@@ -97,196 +96,201 @@ $members = $stmt->fetchAll();
       min-height: 100vh;
       display: grid;
       grid-template-rows: 64px 1fr;
+      margin-left: 260px;
     }
 
     .topbar {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0 32px;
+      padding: 22px 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 260px;
+      right: 0;
+      z-index: 999;
     }
 
     .content {
       padding: 32px;
       display: grid;
-      grid-template-columns: 1fr 320px;
+      grid-template-columns: 1fr;
       gap: 32px;
-    }
+      margin-top: 64px;
 
-    .main {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
+      .main {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-    }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+      }
 
-    .card h2 {
-      font-size: 14px;
-      margin: 0 0 16px;
-    }
+      .card h2 {
+        font-size: 14px;
+        margin: 0 0 16px;
+      }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
 
-    label {
-      font-size: 12px;
-      color: var(--muted)
-    }
+      label {
+        font-size: 12px;
+        color: var(--muted)
+      }
 
-    input {
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 13px;
-    }
+      input {
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+      }
 
-    /* ========= FIX TABEL (INI YANG PENTING) ========= */
-    .table-wrap {
-      overflow-x: auto
-    }
+      /* ========= FIX TABEL (INI YANG PENTING) ========= */
+      .table-wrap {
+        overflow-x: auto
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      /* KUNCI LEBAR KOLOM */
-      font-size: 13px;
-    }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        /* KUNCI LEBAR KOLOM */
+        font-size: 13px;
+      }
 
-    thead {
-      display: table-header-group
-    }
+      thead {
+        display: table-header-group
+      }
 
-    tbody {
-      display: table-row-group
-    }
+      tbody {
+        display: table-row-group
+      }
 
-    tr {
-      display: table-row
-    }
+      tr {
+        display: table-row
+      }
 
-    th,
-    td {
-      display: table-cell;
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-      text-align: left;
-    }
+      th,
+      td {
+        display: table-cell;
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        text-align: left;
+      }
 
-    th {
-      color: var(--muted);
-      font-weight: 500;
-      white-space: nowrap;
-    }
+      th {
+        color: var(--muted);
+        font-weight: 500;
+        white-space: nowrap;
+      }
 
-    td strong {
-      font-weight: 500;
-    }
+      td strong {
+        font-weight: 500;
+      }
 
-    /* ========= END FIX ========= */
+      /* ========= END FIX ========= */
 
-    .btn {
-      padding: 7px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: white;
-      font-size: 13px;
-    }
+      .btn {
+        padding: 7px 14px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: white;
+        font-size: 13px;
+      }
 
-    .btn.primary {
-      background: var(--accent);
-      color: white;
-      border: none;
-    }
+      .btn.primary {
+        background: var(--accent);
+        color: white;
+        border: none;
+      }
 
-    .btn.danger {
-      background: #fee2e2;
-      color: var(--danger);
-      border: 1px solid #fecaca;
-    }
+      .btn.danger {
+        background: #fee2e2;
+        color: var(--danger);
+        border: 1px solid #fecaca;
+      }
 
-    .actions {
-      display: flex;
-      gap: 6px;
-    }
+      .actions {
+        display: flex;
+        gap: 6px;
+      }
 
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
+      .sidebar {
+        display: none;
+      }
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-    }
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+      }
 
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 12px;
-    }
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 12px;
+      }
 
-    .menu a {
-      font-size: 13px;
-      padding: 10px 12px;
-      border-radius: 8px;
-    }
+      .menu a {
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 8px;
+      }
 
-    .menu a.active {
-      background: rgba(37, 99, 235, .1);
-      color: var(--accent);
-      font-weight: 500;
-    }
+      .menu a.active {
+        background: rgba(37, 99, 235, .1);
+        color: var(--accent);
+        font-weight: 500;
+      }
 
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-      padding: 10px 0;
-    }
+      .faq-item {
+        border-bottom: 1px solid var(--border);
+        padding: 10px 0;
+      }
 
-    .faq-question {
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-    }
+      .faq-question {
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+      }
 
-    .faq-answer {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 6px;
-      display: none;
-      line-height: 1.6;
-    }
+      .faq-answer {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+        display: none;
+        line-height: 1.6;
+      }
 
-    .faq-item.active .faq-answer {
-      display: block
-    }
+      .faq-item.active .faq-answer {
+        display: block
+      }
   </style>
 </head>
 
 <body>
+  <?php require __DIR__ . '/partials/sidebar.php'; ?>
+
   <div class="app">
 
     <div class="topbar">
       <strong>Kelola Anggota</strong>
-      <a href="index.php" class="btn">← Dashboard</a>
     </div>
 
     <div class="content">
@@ -349,35 +353,6 @@ $members = $stmt->fetchAll();
 
       </div>
 
-      <div class="sidebar">
-        <div class="panel">
-          <h3 style="font-size:14px">Menu</h3>
-          <div class="menu">
-            <a href="index.php">📊 Dashboard</a>
-            <a href="books.php">📚 Buku</a>
-            <a class="active" href="members.php">👥 Anggota</a>
-            <a href="borrows.php">📖 Peminjaman</a>
-            <a href="reports.php">📈 Laporan</a>
-            <a href="settings.php">⚙️ Pengaturan</a>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h3 style="font-size:14px">FAQ</h3>
-          <div class="faq-item">
-            <div class="faq-question">Bagaimana menambah anggota? <span>+</span></div>
-            <div class="faq-answer">Isi form anggota lalu klik tombol tambah.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Email wajib diisi? <span>+</span></div>
-            <div class="faq-answer">Ya, email digunakan untuk identifikasi anggota.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">No anggota untuk apa? <span>+</span></div>
-            <div class="faq-answer">Digunakan sebagai identitas unik anggota perpustakaan.</div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 

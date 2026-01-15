@@ -86,8 +86,12 @@ $members = $members->fetchAll();
       box-sizing: border-box
     }
 
+    html,
     body {
       margin: 0;
+    }
+
+    body {
       font-family: Inter, sans-serif;
       background: var(--bg);
       color: var(--text)
@@ -96,225 +100,230 @@ $members = $members->fetchAll();
     .app {
       min-height: 100vh;
       display: grid;
-      grid-template-rows: 64px 1fr
+      grid-template-rows: 64px 1fr;
+      margin-left: 260px;
     }
 
     .topbar {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0 32px;
+      padding: 22px 32px;
       display: flex;
       align-items: center;
-      justify-content: space-between
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 260px;
+      right: 0;
+      z-index: 999;
     }
 
     .content {
       padding: 32px;
       display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 32px
-    }
+      grid-template-columns: 1fr;
+      gap: 32px;
+      margin-top: 64px;
 
-    .main {
-      display: flex;
-      flex-direction: column;
-      gap: 32px
-    }
+      .main {
+        display: flex;
+        flex-direction: column;
+        gap: 32px
+      }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px
-    }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px
+      }
 
-    .card h2 {
-      font-size: 14px;
-      margin: 0 0 16px
-    }
+      .card h2 {
+        font-size: 14px;
+        margin: 0 0 16px
+      }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px
-    }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px
+      }
 
-    label {
-      font-size: 12px;
-      color: var(--muted)
-    }
+      label {
+        font-size: 12px;
+        color: var(--muted)
+      }
 
-    input,
-    select {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 13px
-    }
+      input,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px
+      }
 
-    .btn {
-      padding: 7px 14px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 13px
-    }
+      .btn {
+        padding: 7px 14px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: #fff;
+        font-size: 13px
+      }
 
-    .btn.primary {
-      background: var(--accent);
-      color: #fff;
-      border: none
-    }
+      .btn.primary {
+        background: var(--accent);
+        color: #fff;
+        border: none
+      }
 
-    .btn.success {
-      background: #dcfce7;
-      color: var(--success);
-      border: 1px solid #bbf7d0
-    }
+      .btn.success {
+        background: #dcfce7;
+        color: var(--success);
+        border: 1px solid #bbf7d0
+      }
 
-    .table-wrap {
-      overflow-x: auto
-    }
+      .table-wrap {
+        overflow-x: auto
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      table-layout: fixed;
-      /* 🔒 KUNCI */
-    }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        table-layout: fixed;
+        /* 🔒 KUNCI */
+      }
 
-    col.id {
-      width: 70px
-    }
+      col.id {
+        width: 70px
+      }
 
-    col.book {
-      width: 28%
-    }
+      col.book {
+        width: 28%
+      }
 
-    col.member {
-      width: 22%
-    }
+      col.member {
+        width: 22%
+      }
 
-    col.date {
-      width: 120px
-    }
+      col.date {
+        width: 120px
+      }
 
-    col.status {
-      width: 140px
-    }
+      col.status {
+        width: 140px
+      }
 
-    col.action {
-      width: 140px
-    }
+      col.action {
+        width: 140px
+      }
 
-    th,
-    td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-      /* 🔒 KUNCI */
-    }
+      th,
+      td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        /* 🔒 KUNCI */
+      }
 
-    th {
-      color: var(--muted);
-      font-weight: 500;
-      text-align: left
-    }
+      th {
+        color: var(--muted);
+        font-weight: 500;
+        text-align: left
+      }
 
-    .text-center {
-      text-align: center
-    }
+      .text-center {
+        text-align: center
+      }
 
-    .status {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500
-    }
+      .status {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500
+      }
 
-    .status.borrowed {
-      background: #e0f2fe;
-      color: var(--info)
-    }
+      .status.borrowed {
+        background: #e0f2fe;
+        color: var(--info)
+      }
 
-    .status.overdue {
-      background: #fee2e2;
-      color: var(--danger)
-    }
+      .status.overdue {
+        background: #fee2e2;
+        color: var(--danger)
+      }
 
-    .status.returned {
-      background: #dcfce7;
-      color: var(--success)
-    }
+      .status.returned {
+        background: #dcfce7;
+        color: var(--success)
+      }
 
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 24px
-    }
+      .sidebar {
+        display: none;
+      }
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px
-    }
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px
+      }
 
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 12px
-    }
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 12px
+      }
 
-    .menu a {
-      font-size: 13px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      text-decoration: none;
-      color: inherit
-    }
+      .menu a {
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: inherit
+      }
 
-    .menu a.active {
-      background: rgba(37, 99, 235, .1);
-      color: var(--accent);
-      font-weight: 500
-    }
+      .menu a.active {
+        background: rgba(37, 99, 235, .1);
+        color: var(--accent);
+        font-weight: 500
+      }
 
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-      padding: 10px 0
-    }
+      .faq-item {
+        border-bottom: 1px solid var(--border);
+        padding: 10px 0
+      }
 
-    .faq-question {
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between
-    }
+      .faq-question {
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between
+      }
 
-    .faq-answer {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 6px;
-      display: none
-    }
+      .faq-answer {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+        display: none
+      }
 
-    .faq-item.active .faq-answer {
-      display: block
-    }
+      .faq-item.active .faq-answer {
+        display: block
+      }
   </style>
 </head>
 
 <body>
+  <?php require __DIR__ . '/partials/sidebar.php'; ?>
+
   <div class="app">
 
     <div class="topbar">
       <strong>Pinjam & Kembalikan</strong>
-      <a href="index.php" class="btn">← Dashboard</a>
     </div>
 
     <div class="content">
@@ -406,32 +415,6 @@ $members = $members->fetchAll();
           </div>
         </div>
 
-      </div>
-
-      <div class="sidebar">
-        <div class="panel">
-          <h3 style="font-size:14px">Menu</h3>
-          <div class="menu">
-            <a href="index.php">📊 Dashboard</a>
-            <a href="books.php">📚 Buku</a>
-            <a href="members.php">👥 Anggota</a>
-            <a class="active" href="borrows.php">📖 Peminjaman</a>
-            <a href="reports.php">📈 Laporan</a>
-            <a href="settings.php">⚙️ Pengaturan</a>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h3 style="font-size:14px">FAQ</h3>
-          <div class="faq-item">
-            <div class="faq-question">Bagaimana meminjam buku? <span>+</span></div>
-            <div class="faq-answer">Pilih buku, anggota, dan jatuh tempo lalu simpan.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Apa itu status terlambat? <span>+</span></div>
-            <div class="faq-answer">Otomatis jika melewati jatuh tempo.</div>
-          </div>
-        </div>
       </div>
 
     </div>
