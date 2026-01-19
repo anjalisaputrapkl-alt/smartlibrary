@@ -3,7 +3,10 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5, user-scalable=yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Perpustakaan Digital — Akses Pengetahuan Modern</title>
   <link rel="stylesheet" href="assets/css/landing.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +14,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@700;900&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <body>
@@ -19,7 +23,7 @@
     <div class="container">
       <a href="index.php" class="brand">
         <img src="img/logo.png" alt="Logo Perpustakaan Digital" class="logo-img"
-          style="width: 50px; height: 50px; object-fit: contain;">
+          style="width: 45px; height: 45px; object-fit: contain;">
         <div class="brand-text">
           <div class="site-title">AS Library</div>
           <div class="site-sub">Sistem Manajemen Perpustakaan Sekolah</div>
@@ -66,7 +70,7 @@
 
     <!-- PROBLEM -->
     <section class="section problem">
-      <div class="container">
+      <div class="container" data-aos="zoom-in">
         <h2>Tantangan Manajemen Perpustakaan Sekolah</h2>
         <p class="microcopy">Banyak sekolah masih menghadapi kesulitan dalam mengelola perpustakaan secara efisien dan
           modern.</p>
@@ -99,7 +103,7 @@
 
     <!-- SOLUTION -->
     <section id="solution" class="section solution">
-      <div class="container split">
+      <div class="container split" data-aos="zoom-in">
         <div class="col">
           <h2>Solusi Perpustakaan Digital Terintegrasi</h2>
           <p>
@@ -170,7 +174,7 @@
 
     <!-- COLLECTIONS -->
     <section id="features" class="section preview">
-      <div class="container">
+      <div class="container" data-aos="zoom-in">
         <h2>Fitur-Fitur Utama Sistem</h2>
 
         <div
@@ -229,7 +233,7 @@
 
     <!-- AUDIENCE -->
     <section id="audience" class="section audience" style="background: #f9fafb; padding: 80px 0;">
-      <div class="container">
+      <div class="container" data-aos="zoom-in">
         <h2>Untuk Siapa Sistem Ini?</h2>
         <p class="microcopy">Dirancang untuk memenuhi kebutuhan semua pihak yang terlibat dalam ekosistem perpustakaan
           sekolah.</p>
@@ -713,6 +717,10 @@
       if (statsSection) {
         observer.observe(statsSection);
       }
+    </script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init();
     </script>
 </body>
 

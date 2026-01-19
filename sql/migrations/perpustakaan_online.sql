@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 15, 2026 at 06:55 AM
+-- Generation Time: Jan 19, 2026 at 02:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,21 +35,17 @@ CREATE TABLE `books` (
   `isbn` varchar(100) DEFAULT NULL,
   `category` varchar(100) NOT NULL,
   `copies` int(11) DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `shelf` varchar(50) DEFAULT NULL,
+  `row_number` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `books`
 --
 
-INSERT INTO `books` (`id`, `school_id`, `title`, `author`, `isbn`, `category`, `copies`, `created_at`) VALUES
-(2, 2, 'Bedebah di ujung tanduk', 'tere liye', '11212123', '', 120, '2026-01-12 07:03:28'),
-(3, 2, 'Seporsi Mie Ayam', 'yyy', '21213123', '', 188, '2026-01-12 07:43:22'),
-(5, 2, 'seporsi mie ayam', 'someone', '1212345', '', 7, '2026-01-13 01:55:32'),
-(6, 2, 'Haha', 'someone', '324234234', '', 1122, '2026-01-15 01:47:03'),
-(7, 2, 'dfsdfsdf', 'yyy', '121234123', '', 112312, '2026-01-15 01:47:11'),
-(8, 2, 'asdasd', 'dfgdfg', '123', '', 1123123, '2026-01-15 01:52:28'),
-(9, 2, 'sdfsdfqweqw', 'tere liye', '1234234234', 'Fiksi', 1123123, '2026-01-15 01:52:47');
+INSERT INTO `books` (`id`, `school_id`, `title`, `author`, `isbn`, `category`, `copies`, `created_at`, `shelf`, `row_number`) VALUES
+(10, 2, 'Bedebah Di Ujung Tanduk', 'Tere Liye', '123993002', 'Fiksi', 10, '2026-01-15 06:09:41', '1A', 3);
 
 -- --------------------------------------------------------
 
@@ -64,6 +60,13 @@ CREATE TABLE `book_maintenance` (
   `notes` text DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `book_maintenance`
+--
+
+INSERT INTO `book_maintenance` (`id`, `book_id`, `status`, `notes`, `updated_at`) VALUES
+(1, 10, 'Damaged', 'rusaK', '2026-01-15 07:33:42');
 
 -- --------------------------------------------------------
 
@@ -87,10 +90,8 @@ CREATE TABLE `borrows` (
 --
 
 INSERT INTO `borrows` (`id`, `school_id`, `book_id`, `member_id`, `borrowed_at`, `due_at`, `returned_at`, `status`) VALUES
-(1, 2, 3, 1, '2026-01-12 14:49:32', '2026-01-13 00:00:00', '2026-01-15 08:42:39', 'returned'),
-(2, 2, 5, 2, '2026-01-13 08:57:10', '2026-01-13 00:00:00', '2026-01-13 08:57:14', 'returned'),
-(3, 2, 7, 1, '2026-01-15 09:34:38', '2026-01-23 00:00:00', NULL, 'borrowed'),
-(4, 2, 5, 2, '2026-01-15 09:35:08', '2026-01-16 00:00:00', NULL, 'borrowed');
+(5, 2, 10, 2, '2026-01-15 13:15:55', '2026-01-15 00:00:00', NULL, 'overdue'),
+(6, 2, 10, 1, '2026-01-15 13:16:09', '2026-01-16 00:00:00', NULL, 'borrowed');
 
 -- --------------------------------------------------------
 
@@ -169,7 +170,7 @@ CREATE TABLE `school_themes` (
 
 INSERT INTO `school_themes` (`id`, `school_id`, `theme_name`, `custom_colors`, `typography`, `created_at`, `updated_at`) VALUES
 (1, 1, 'dark', '{\"color-text\":\"#ffffff\",\"color-muted\":\"#aabbcc\",\"color-accent\":\"#ff0000\",\"color-danger\":\"#dd0000\",\"color-success\":\"#00ff00\",\"color-border\":\"#0000ff\"}', '{\"font-family\":\"Georgia\",\"font-weight\":\"700\"}', '2026-01-15 03:04:29', '2026-01-15 03:24:34'),
-(2, 2, 'dark', NULL, NULL, '2026-01-15 03:04:29', '2026-01-15 05:53:22'),
+(2, 2, 'orange', NULL, NULL, '2026-01-15 03:04:29', '2026-01-15 07:50:13'),
 (4, 5, 'indigo', NULL, NULL, '2026-01-15 03:05:01', '2026-01-15 04:14:18'),
 (7, 4, 'purple', '{\"color-text\":\"#6b21a8\",\"color-muted\":\"#c084fc\",\"color-accent\":\"#d946ef\",\"color-danger\":\"#dc2626\",\"color-success\":\"#a855f7\",\"color-border\":\"#0000FF\"}', '{\"font-family\":\"Merriweather\",\"font-weight\":\"900\"}', '2026-01-15 03:07:50', '2026-01-15 03:13:44');
 
@@ -267,19 +268,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `book_maintenance`
 --
 ALTER TABLE `book_maintenance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `borrows`
 --
 ALTER TABLE `borrows`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `members`

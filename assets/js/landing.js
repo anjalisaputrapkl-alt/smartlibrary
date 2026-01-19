@@ -27,13 +27,29 @@
     // Navigation Toggle
     function toggleNav() {
       const nav = document.querySelector('.main-nav');
+      const toggle = document.querySelector('.nav-toggle');
       nav.classList.toggle('active');
+      
+      // Toggle aria-expanded for accessibility
+      const isActive = nav.classList.contains('active');
+      toggle.setAttribute('aria-expanded', isActive);
+      toggle.setAttribute('aria-label', isActive ? 'Close menu' : 'Open menu');
     }
 
     // Close nav when clicking on a link
-    document.querySelectorAll('.main-nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.querySelector('.main-nav').classList.remove('active');
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.main-nav a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          // Check if it's a same-page link
+          const href = link.getAttribute('href');
+          if (href.startsWith('#')) {
+            // Close menu after clicking a link
+            setTimeout(() => {
+              document.querySelector('.main-nav').classList.remove('active');
+              document.querySelector('.nav-toggle').setAttribute('aria-expanded', 'false');
+            }, 100);
+          }
+        });
       });
     });
 
@@ -41,9 +57,42 @@
     document.addEventListener('click', (e) => {
       const nav = document.querySelector('.main-nav');
       const toggle = document.querySelector('.nav-toggle');
-      if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-        nav.classList.remove('active');
+      
+      // Only close if menu is active and click is outside both nav and toggle
+      if (nav && toggle && nav.classList.contains('active')) {
+        if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+          nav.classList.remove('active');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
       }
+    });
+
+    // Close nav on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const nav = document.querySelector('.main-nav');
+        const toggle = document.querySelector('.nav-toggle');
+        if (nav && toggle) {
+          nav.classList.remove('active');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
+    // Close menu when window is resized to desktop
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const isMobile = window.innerWidth < 900;
+        const nav = document.querySelector('.main-nav');
+        const toggle = document.querySelector('.nav-toggle');
+        
+        if (!isMobile && nav && nav.classList.contains('active')) {
+          nav.classList.remove('active');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      }, 250);
     });
 
     // Scroll Animation Observer
@@ -76,12 +125,15 @@
     });
 
     // Parallax Effect
-    window.addEventListener('scroll', () => {
-      const hero = document.querySelector('.hero');
-      if (hero) {
-        hero.style.backgroundPosition = `0 ${window.scrollY * 0.5}px`;
-      }
-    });
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) {
+      window.addEventListener('scroll', () => {
+        const hero = document.querySelector('.hero');
+        if (hero) {
+          hero.style.backgroundPosition = `0 ${window.scrollY * 0.5}px`;
+        }
+      });
+    }
 
     // Smooth scroll for anchors
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -155,23 +207,37 @@
       });
     }
 
-    // Mouse move parallax on cards
-    document.querySelectorAll('.value').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+    // Mouse move parallax on cards (Desktop only)
+    if (!isMobile) {
+      document.querySelectorAll('.value').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
 
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
 
-        const rotateX = (y - centerY) / 10;
-        const rotateY = (centerX - x) / 10;
+          const rotateX = (y - centerY) / 10;
+          const rotateY = (centerX - x) / 10;
 
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1.02)';
+        });
       });
+    }
 
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1.02)';
-      });
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const isMobileNow = window.innerWidth <= 768;
+        if (isMobileNow !== isMobile) {
+          window.location.reload();
+        }
+      }, 250);
     });
