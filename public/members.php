@@ -63,232 +63,11 @@ $members = $stmt->fetchAll();
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kelola Murid</title>
+  <script src="../assets/js/theme-loader.js"></script>
   <script src="../assets/js/theme.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #f1f4f8;
-      --surface: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --accent: #2563eb;
-      --danger: #dc2626;
-    }
-
-    * {
-      box-sizing: border-box
-    }
-
-    html,
-    body {
-      margin: 0;
-    }
-
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .app {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: 64px 1fr;
-      margin-left: 260px;
-    }
-
-    .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 22px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: fixed;
-      top: 0;
-      left: 260px;
-      right: 0;
-      z-index: 999;
-    }
-
-    .content {
-      padding: 32px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 32px;
-      margin-top: 64px;
-
-      .main {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-      }
-
-      .card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 24px;
-      }
-
-      .card h2 {
-        font-size: 14px;
-        margin: 0 0 16px;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-bottom: 16px;
-      }
-
-      label {
-        font-size: 12px;
-        color: var(--muted)
-      }
-
-      input {
-        padding: 12px 14px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 13px;
-      }
-
-      /* ========= FIX TABEL (INI YANG PENTING) ========= */
-      .table-wrap {
-        overflow-x: auto;
-        max-height: 380px;
-        overflow-y: auto;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-        /* KUNCI LEBAR KOLOM */
-        font-size: 13px;
-      }
-
-      thead {
-        display: table-header-group
-      }
-
-      tbody {
-        display: table-row-group
-      }
-
-      tr {
-        display: table-row
-      }
-
-      th,
-      td {
-        display: table-cell;
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-        vertical-align: middle;
-        text-align: left;
-      }
-
-      th {
-        color: var(--muted);
-        font-weight: 500;
-        white-space: nowrap;
-      }
-
-      td strong {
-        font-weight: 500;
-      }
-
-      /* ========= END FIX ========= */
-
-      .btn {
-        padding: 7px 14px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: white;
-        font-size: 13px;
-      }
-
-      .btn.primary {
-        background: var(--accent);
-        color: white;
-        border: none;
-      }
-
-      .btn.danger {
-        background: #fee2e2;
-        color: var(--danger);
-        border: 1px solid #fecaca;
-      }
-
-      .actions {
-        display: flex;
-        gap: 6px;
-      }
-
-      .sidebar {
-        display: none;
-      }
-
-      .panel {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
-      }
-
-      .menu {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-top: 12px;
-      }
-
-      .menu a {
-        font-size: 13px;
-        padding: 10px 12px;
-        border-radius: 8px;
-      }
-
-      .menu a.active {
-        background: rgba(37, 99, 235, .1);
-        color: var(--accent);
-        font-weight: 500;
-      }
-
-      .faq-item {
-        border-bottom: 1px solid var(--border);
-        padding: 10px 0;
-      }
-
-      .faq-question {
-        font-size: 13px;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .faq-answer {
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: 6px;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease-out;
-        line-height: 1.6;
-      }
-
-      .faq-item.active .faq-answer {
-        max-height: 200px;
-        transition: max-height 0.3s ease-in;
-      }
-  </style>
+  <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/members.css">
 </head>
 
 <body>
@@ -360,20 +139,18 @@ $members = $stmt->fetchAll();
 
         <div class="card" style="grid-column: 1/-1">
           <h2>Statistik Murid</h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px">
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Total Murid</div>
-              <div style="font-size: 24px; font-weight: 600"><?= count($members) ?></div>
+          <div class="stats-container">
+            <div class="stat-card">
+              <div class="stat-label">Total Murid</div>
+              <div class="stat-value"><?= count($members) ?></div>
             </div>
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Murid Baru</div>
-              <div style="font-size: 24px; font-weight: 600">—</div>
+            <div class="stat-card">
+              <div class="stat-label">Murid Baru</div>
+              <div class="stat-value">—</div>
             </div>
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Email Terdaftar</div>
-              <div style="font-size: 24px; font-weight: 600">
-                <?= count(array_filter($members, fn($m) => !empty($m['email']))) ?>
-              </div>
+            <div class="stat-card">
+              <div class="stat-label">Email Terdaftar</div>
+              <div class="stat-value"><?= count(array_filter($members, fn($m) => !empty($m['email']))) ?></div>
             </div>
           </div>
         </div>
@@ -407,15 +184,7 @@ $members = $stmt->fetchAll();
     </div>
   </div>
 
-  <script>
-    document.querySelectorAll('.faq-question').forEach(q => {
-      q.onclick = () => {
-        const p = q.parentElement;
-        p.classList.toggle('active');
-        q.querySelector('span').textContent = p.classList.contains('active') ? '−' : '+';
-      }
-    });
-  </script>
+  <script src="../assets/js/members.js"></script>
 
 </body>
 

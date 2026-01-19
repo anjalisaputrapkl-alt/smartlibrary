@@ -7,10 +7,34 @@ $user = $_SESSION['user'];
 $sid = $user['school_id'];
 $action = $_GET['action'] ?? 'list';
 
+// Create uploads directory if not exists
+$uploadsDir = __DIR__ . '/../img/covers';
+if (!is_dir($uploadsDir)) {
+  mkdir($uploadsDir, 0755, true);
+}
+
 if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  $coverImage = '';
+  
+  // Handle image upload
+  if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+    $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'tiff'];
+    $filename = basename($_FILES['cover_image']['name']);
+    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    
+    if (in_array($ext, $allowed)) {
+      $newFilename = 'book_' . time() . '_' . uniqid() . '.' . $ext;
+      $uploadPath = $uploadsDir . '/' . $newFilename;
+      
+      if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $uploadPath)) {
+        $coverImage = $newFilename;
+      }
+    }
+  }
+  
   $pdo->prepare(
-    'INSERT INTO books (school_id,title,author,isbn,category,shelf,row_number,copies)
-     VALUES (:sid,:title,:author,:isbn,:category,:shelf,:row,:copies)'
+    'INSERT INTO books (school_id,title,author,isbn,category,shelf,row_number,copies,cover_image)
+     VALUES (:sid,:title,:author,:isbn,:category,:shelf,:row,:copies,:cover_image)'
   )->execute([
         'sid' => $sid,
         'title' => $_POST['title'],
@@ -19,7 +43,8 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'category' => $_POST['category'],
         'shelf' => $_POST['shelf'],
         'row' => $_POST['row_number'],
-        'copies' => (int) $_POST['copies']
+        'copies' => (int) $_POST['copies'],
+        'cover_image' => $coverImage
       ]);
   header('Location: books.php');
   exit;
@@ -28,8 +53,33 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($action === 'edit' && isset($_GET['id'])) {
   $id = (int) $_GET['id'];
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $stmt = $pdo->prepare('SELECT cover_image FROM books WHERE id=:id AND school_id=:sid');
+    $stmt->execute(['id' => $id, 'sid' => $sid]);
+    $oldBook = $stmt->fetch();
+    $coverImage = $oldBook['cover_image'] ?? '';
+    
+    // Handle new image upload
+    if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+      $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+      $filename = basename($_FILES['cover_image']['name']);
+      $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+      
+      if (in_array($ext, $allowed)) {
+        $newFilename = 'book_' . time() . '_' . uniqid() . '.' . $ext;
+        $uploadPath = $uploadsDir . '/' . $newFilename;
+        
+        if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $uploadPath)) {
+          // Delete old image if exists
+          if ($coverImage && file_exists($uploadsDir . '/' . $coverImage)) {
+            unlink($uploadsDir . '/' . $coverImage);
+          }
+          $coverImage = $newFilename;
+        }
+      }
+    }
+    
     $pdo->prepare(
-      'UPDATE books SET title=:title,author=:author,isbn=:isbn,category=:category,shelf=:shelf,row_number=:row,copies=:copies
+      'UPDATE books SET title=:title,author=:author,isbn=:isbn,category=:category,shelf=:shelf,row_number=:row,copies=:copies,cover_image=:cover_image
        WHERE id=:id AND school_id=:sid'
     )->execute([
           'title' => $_POST['title'],
@@ -39,6 +89,7 @@ if ($action === 'edit' && isset($_GET['id'])) {
           'shelf' => $_POST['shelf'],
           'row' => $_POST['row_number'],
           'copies' => (int) $_POST['copies'],
+          'cover_image' => $coverImage,
           'id' => $id,
           'sid' => $sid
         ]);
@@ -83,263 +134,11 @@ $categories = [
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kelola Buku</title>
+  <script src="../assets/js/theme-loader.js"></script>
   <script src="../assets/js/theme.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #f1f4f8;
-      --surface: #fff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --accent: #2563eb;
-      --danger: #dc2626;
-    }
-
-    * {
-      box-sizing: border-box
-    }
-
-    html,
-    body {
-      margin: 0;
-    }
-
-    body {
-      font-family: Inter, sans-serif;
-      background: var(--bg);
-      color: var(--text)
-    }
-
-    .app {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: 64px 1fr;
-      margin-left: 260px;
-    }
-
-    .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 22px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      left: 260px;
-      right: 0;
-      z-index: 999;
-    }
-
-    .content {
-      padding: 32px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 32px;
-      margin-top: 64px;
-    }
-
-    .main {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px
-    }
-
-    .card h2 {
-      font-size: 14px;
-      margin: 0 0 16px
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px
-    }
-
-    label {
-      font-size: 12px;
-      color: var(--muted)
-    }
-
-    input {
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 13px
-    }
-
-    select {
-      padding: 12px 14px;
-      padding-right: 30px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 13px;
-      background: var(--surface);
-      color: var(--text);
-      font-family: Inter, sans-serif;
-      cursor: pointer;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
-      background-size: 16px;
-      appearance: none;
-    }
-
-    .btn {
-      padding: 7px 14px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 13px
-    }
-
-    .btn.primary {
-      background: var(--accent);
-      color: #fff;
-      border: none
-    }
-
-    .btn.danger {
-      background: #fee2e2;
-      color: var(--danger);
-      border: 1px solid #fecaca
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      max-height: 380px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-
-    /* 🔒 KUNCI KESELARASAN */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      table-layout: fixed;
-    }
-
-    col.id {
-      width: 70px
-    }
-
-    col.title {
-      width: 30%
-    }
-
-    col.author {
-      width: 22%
-    }
-
-    col.isbn {
-      width: 18%
-    }
-
-    col.category {
-      width: 15%
-    }
-
-    col.qty {
-      width: 90px
-    }
-
-    col.action {
-      width: 160px
-    }
-
-    th,
-    td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-
-    th {
-      color: var(--muted);
-      font-weight: 500;
-      text-align: left
-    }
-
-    .text-center {
-      text-align: center
-    }
-
-    .actions {
-      display: flex;
-      gap: 6px;
-      justify-content: center
-    }
-
-    .sidebar {
-      display: none;
-    }
-
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px
-    }
-
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 12px
-    }
-
-    .menu a {
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      text-decoration: none;
-      color: inherit
-    }
-
-    .menu a.active {
-      background: rgba(37, 99, 235, .1);
-      color: var(--accent);
-      font-weight: 500
-    }
-
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-      padding: 10px 0
-    }
-
-    .faq-question {
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px
-    }
-
-    .faq-answer {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 6px;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-    }
-
-    .faq-item.active .faq-answer {
-      max-height: 200px;
-      transition: max-height 0.3s ease-in;
-    }
-  </style>
+  <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/books.css">
 </head>
 
 <body>
@@ -354,134 +153,122 @@ $categories = [
     <div class="content">
       <div class="main">
 
-        <div class="card">
-          <h2><?= $action === 'edit' ? 'Edit Buku' : 'Tambah Buku' ?></h2>
-          <form method="post" action="<?= $action === 'edit' ? '' : 'books.php?action=add' ?>">
-            <div class="form-group"><label>Judul Buku</label>
-              <input name="title" required value="<?= $book['title'] ?? '' ?>">
-            </div>
-            <div class="form-group"><label>Pengarang</label>
-              <input name="author" required value="<?= $book['author'] ?? '' ?>">
-            </div>
-            <div class="form-group"><label>ISBN</label>
-              <input name="isbn" value="<?= $book['isbn'] ?? '' ?>">
-            </div>
-            <div class="form-group"><label>Kategori</label>
-              <select name="category">
-                <option value="">-- Pilih Kategori --</option>
-                <?php foreach ($categories as $cat): ?>
-                  <option value="<?= $cat ?>" <?= ($book['category'] ?? '') === $cat ? 'selected' : '' ?>><?= $cat ?>
-                  </option>
-                <?php endforeach ?>
-              </select>
-            </div>
-            <div class="form-group"><label>Rak/Lemari</label>
-              <input name="shelf" value="<?= $book['shelf'] ?? '' ?>">
-            </div>
-            <div class="form-group"><label>Baris</label>
-              <input type="number" min="1" name="row_number" value="<?= $book['row_number'] ?? '' ?>">
-            </div>
-            <div class="form-group"><label>Jumlah</label>
-              <input type="number" min="1" name="copies" value="<?= $book['copies'] ?? 1 ?>">
-            </div>
-            <button class="btn primary"><?= $action === 'edit' ? 'Simpan' : 'Tambah Buku' ?></button>
-          </form>
-        </div>
+        <div>
+          <div class="card">
+            <h2><?= $action === 'edit' ? 'Edit Buku' : 'Tambah Buku' ?></h2>
+            <form method="post" action="<?= $action === 'edit' ? '' : 'books.php?action=add' ?>" enctype="multipart/form-data">
+              <div class="form-group"><label>Judul Buku</label>
+                <input name="title" required value="<?= $book['title'] ?? '' ?>">
+              </div>
+              <div class="form-group"><label>Pengarang</label>
+                <input name="author" required value="<?= $book['author'] ?? '' ?>">
+              </div>
+              <div class="form-group"><label>ISBN</label>
+                <input name="isbn" value="<?= $book['isbn'] ?? '' ?>">
+              </div>
+              <div class="form-group"><label>Kategori</label>
+                <select name="category">
+                  <option value="">-- Pilih Kategori --</option>
+                  <?php foreach ($categories as $cat): ?>
+                    <option value="<?= $cat ?>" <?= ($book['category'] ?? '') === $cat ? 'selected' : '' ?>><?= $cat ?>
+                    </option>
+                  <?php endforeach ?>
+                </select>
+              </div>
+              <div class="form-group"><label>Rak/Lemari</label>
+                <input name="shelf" value="<?= $book['shelf'] ?? '' ?>">
+              </div>
+              <div class="form-group"><label>Baris</label>
+                <input type="number" min="1" name="row_number" value="<?= $book['row_number'] ?? '' ?>">
+              </div>
+              <div class="form-group"><label>Jumlah</label>
+                <input type="number" min="1" name="copies" value="<?= $book['copies'] ?? 1 ?>">
+              </div>
+              <div class="form-group"><label>Gambar Buku</label>
+                <input type="file" name="cover_image" accept="image/jpeg,image/png,image/gif" id="imageInput" onchange="previewImage(event)">
+                <small>Format: JPG, PNG, GIF (Max 5MB)</small>
+                <div id="imagePreview" class="image-preview" style="margin-top: 12px;">
+                  <?php if ($action === 'edit' && !empty($book['cover_image'])): ?>
+                    <img src="../img/covers/<?= htmlspecialchars($book['cover_image']) ?>" alt="Preview">
+                  <?php endif; ?>
+                </div>
+              </div>
+              <button class="btn primary"><?= $action === 'edit' ? 'Simpan' : 'Tambah Buku' ?></button>
+            </form>
+          </div>
 
-        <div class="card">
-          <h2>Daftar Buku (<?= count($books) ?>)</h2>
-
-          <div class="table-wrap">
-            <table>
-              <colgroup>
-                <col class="id">
-                <col class="title">
-                <col class="author">
-                <col class="isbn">
-                <col class="category">
-                <col class="qty">
-                <col class="action">
-              </colgroup>
-
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Judul</th>
-                  <th>Pengarang</th>
-                  <th>ISBN</th>
-                  <th>Kategori</th>
-                  <th>Lokasi</th>
-                  <th class="text-center">Jumlah</th>
-                  <th class="text-center">Aksi</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <?php foreach ($books as $b): ?>
-                  <tr>
-                    <td>#<?= $b['id'] ?></td>
-                    <td><strong><?= htmlspecialchars($b['title']) ?></strong></td>
-                    <td><?= htmlspecialchars($b['author']) ?></td>
-                    <td><?= htmlspecialchars($b['isbn']) ?></td>
-                    <td><?= htmlspecialchars($b['category'] ?? '-') ?></td>
-                    <td><?= htmlspecialchars(($b['shelf'] ?? '-') . ' / Baris ' . ($b['row_number'] ?? '-')) ?></td>
-                    <td class="text-center"><?= $b['copies'] ?></td>
-                    <td class="text-center">
-                      <div class="actions">
-                        <a class="btn" href="books.php?action=edit&id=<?= $b['id'] ?>">Edit</a>
-                        <a class="btn danger" onclick="return confirm('Hapus buku ini?')"
-                          href="books.php?action=delete&id=<?= $b['id'] ?>">Hapus</a>
-                      </div>
-                    </td>
-                  </tr>
-                <?php endforeach ?>
-              </tbody>
-            </table>
+          <div class="card">
+            <h2>Pertanyaan Umum</h2>
+            <div class="faq-item">
+              <div class="faq-question">Bagaimana cara menambah buku baru? <span>+</span></div>
+              <div class="faq-answer">Isi form di atas dengan judul, pengarang, ISBN (opsional), dan jumlah salinan,
+                lalu klik tombol "Tambah Buku".</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">Bisakah saya mengedit data buku? <span>+</span></div>
+              <div class="faq-answer">Ya, klik tombol "Edit" pada kartu buku yang ingin diubah di daftar buku, ubah data,
+                lalu klik "Simpan".</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">Apa yang terjadi jika saya menghapus buku? <span>+</span></div>
+              <div class="faq-answer">Buku akan dihapus dari sistem. Pastikan tidak ada peminjaman aktif untuk buku
+                tersebut sebelum menghapus.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">Bagaimana cara menambah salinan buku yang sudah ada? <span>+</span></div>
+              <div class="faq-answer">Klik tombol "Edit" pada buku yang ingin ditambah salinannya, ubah nilai "Jumlah",
+                lalu klik "Simpan".</div>
+            </div>
           </div>
         </div>
 
-        <div class="card" style="grid-column: 1/-1">
-          <h2>Statistik Buku</h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px">
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Total Buku</div>
-              <div style="font-size: 24px; font-weight: 600"><?= count($books) ?></div>
+        <div>
+          <div class="card">
+            <h2>Daftar Buku (<?= count($books) ?>)</h2>
+            <div class="books-grid">
+              <?php foreach ($books as $b): ?>
+                <div class="book-card">
+                  <div class="book-cover">
+                    <?php if (!empty($b['cover_image']) && file_exists(__DIR__ . '/../img/covers/' . $b['cover_image'])): ?>
+                      <img src="../img/covers/<?= htmlspecialchars($b['cover_image']) ?>" alt="<?= htmlspecialchars($b['title']) ?>">
+                    <?php else: ?>
+                      <div class="no-image">📚</div>
+                    <?php endif; ?>
+                  </div>
+                  <div class="book-info">
+                    <div class="book-title"><?= htmlspecialchars($b['title']) ?></div>
+                    <div class="book-author"><?= htmlspecialchars($b['author']) ?></div>
+                    <div class="book-meta">
+                      <span class="badge"><?= htmlspecialchars($b['category'] ?? '-') ?></span>
+                      <span class="copies-badge"><?= $b['copies'] ?> salinan</span>
+                    </div>
+                  </div>
+                  <div class="book-actions">
+                    <button class="btn small" onclick="showDetail(<?= htmlspecialchars(json_encode($b)) ?>)">Detail</button>
+                    <a href="books.php?action=edit&id=<?= $b['id'] ?>" class="btn small">Edit</a>
+                    <a href="books.php?action=delete&id=<?= $b['id'] ?>" class="btn small danger" onclick="return confirm('Hapus buku ini?')">Hapus</a>
+                  </div>
+                </div>
+              <?php endforeach ?>
             </div>
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Total Salinan</div>
-              <div style="font-size: 24px; font-weight: 600"><?= array_sum(array_map(fn($b) => $b['copies'], $books)) ?>
+          </div>
+
+          <div class="card">
+            <h2>Statistik Buku</h2>
+            <div class="stats-container">
+              <div class="stat-card">
+                <div class="stat-label">Total Buku</div>
+                <div class="stat-value"><?= count($books) ?></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Total Salinan</div>
+                <div class="stat-value"><?= array_sum(array_map(fn($b) => $b['copies'], $books)) ?></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Rata-rata Salinan</div>
+                <div class="stat-value"><?= count($books) > 0 ? round(array_sum(array_map(fn($b) => $b['copies'], $books)) / count($books), 1) : 0 ?></div>
               </div>
             </div>
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Rata-rata Salinan</div>
-              <div style="font-size: 24px; font-weight: 600">
-                <?= count($books) > 0 ? round(array_sum(array_map(fn($b) => $b['copies'], $books)) / count($books), 1) : 0 ?>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" style="grid-column: 1/-1">
-          <h2>Pertanyaan Umum</h2>
-          <div class="faq-item">
-            <div class="faq-question">Bagaimana cara menambah buku baru? <span>+</span></div>
-            <div class="faq-answer">Isi form di kolom kiri dengan judul, pengarang, ISBN (opsional), dan jumlah salinan,
-              lalu klik tombol "Tambah Buku".</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Bisakah saya mengedit data buku? <span>+</span></div>
-            <div class="faq-answer">Ya, klik tombol "Edit" pada baris buku yang ingin diubah di daftar buku, ubah data,
-              lalu klik "Simpan".</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Apa yang terjadi jika saya menghapus buku? <span>+</span></div>
-            <div class="faq-answer">Buku akan dihapus dari sistem. Pastikan tidak ada peminjaman aktif untuk buku
-              tersebut sebelum menghapus.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Bagaimana cara menambah salinan buku yang sudah ada? <span>+</span></div>
-            <div class="faq-answer">Klik tombol "Edit" pada buku yang ingin ditambah salinannya, ubah nilai "Jumlah",
-              lalu klik "Simpan".</div>
           </div>
         </div>
 
@@ -490,15 +277,50 @@ $categories = [
     </div>
   </div>
 
-  <script>
-    document.querySelectorAll('.faq-question').forEach(q => {
-      q.onclick = () => {
-        const i = q.parentElement;
-        i.classList.toggle('active');
-        q.querySelector('span').textContent = i.classList.contains('active') ? '−' : '+';
-      }
-    });
-  </script>
+  <!-- Detail Modal -->
+  <div id="detailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Detail Buku</h2>
+        <button class="modal-close" onclick="closeDetail()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-layout">
+          <div class="detail-image">
+            <img id="detailCover" src="" alt="Book Cover">
+          </div>
+          <div class="detail-info">
+            <div class="detail-field">
+              <label>Judul</label>
+              <div id="detailTitle"></div>
+            </div>
+            <div class="detail-field">
+              <label>Pengarang</label>
+              <div id="detailAuthor"></div>
+            </div>
+            <div class="detail-field">
+              <label>ISBN</label>
+              <div id="detailISBN"></div>
+            </div>
+            <div class="detail-field">
+              <label>Kategori</label>
+              <div id="detailCategory"></div>
+            </div>
+            <div class="detail-field">
+              <label>Lokasi</label>
+              <div id="detailLocation"></div>
+            </div>
+            <div class="detail-field">
+              <label>Jumlah Salinan</label>
+              <div id="detailCopies"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/books.js"></script>
 
 </body>
 

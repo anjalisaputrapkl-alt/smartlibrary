@@ -41,7 +41,7 @@ $pdo->prepare(
 )->execute(['sid' => $sid]);
 
 $stmt = $pdo->prepare(
-  'SELECT b.*, bk.title, m.name AS member_name
+  'SELECT b.*, bk.title, bk.cover_image, m.name AS member_name
    FROM borrows b
    JOIN books bk ON b.book_id = bk.id
    JOIN members m ON b.member_id = m.id
@@ -66,262 +66,11 @@ $members = $members->fetchAll();
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pinjam & Kembalikan</title>
+  <script src="../assets/js/theme-loader.js"></script>
   <script src="../assets/js/theme.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #f1f4f8;
-      --surface: #fff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --accent: #2563eb;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --info: #0284c7;
-    }
-
-    * {
-      box-sizing: border-box
-    }
-
-    html,
-    body {
-      margin: 0;
-    }
-
-    body {
-      font-family: Inter, sans-serif;
-      background: var(--bg);
-      color: var(--text)
-    }
-
-    .app {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: 64px 1fr;
-      margin-left: 260px;
-    }
-
-    .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 22px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: fixed;
-      top: 0;
-      left: 260px;
-      right: 0;
-      z-index: 999;
-    }
-
-    .content {
-      padding: 32px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 32px;
-      margin-top: 64px;
-
-      .main {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px
-      }
-
-      .card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 24px
-      }
-
-      .card h2 {
-        font-size: 14px;
-        margin: 0 0 16px
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-bottom: 16px
-      }
-
-      label {
-        font-size: 12px;
-        color: var(--muted)
-      }
-
-      input,
-      select {
-        width: 100%;
-        padding: 12px 14px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 13px
-      }
-
-      .btn {
-        padding: 7px 14px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-        background: #fff;
-        font-size: 13px
-      }
-
-      .btn.primary {
-        background: var(--accent);
-        color: #fff;
-        border: none
-      }
-
-      .btn.success {
-        background: #dcfce7;
-        color: var(--success);
-        border: 1px solid #bbf7d0
-      }
-
-      .table-wrap {
-        overflow-x: auto;
-        max-height: 380px;
-        overflow-y: auto;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-        table-layout: fixed;
-        /* 🔒 KUNCI */
-      }
-
-      col.id {
-        width: 70px
-      }
-
-      col.book {
-        width: 28%
-      }
-
-      col.member {
-        width: 22%
-      }
-
-      col.date {
-        width: 120px
-      }
-
-      col.status {
-        width: 140px
-      }
-
-      col.action {
-        width: 140px
-      }
-
-      th,
-      td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-        vertical-align: middle;
-        /* 🔒 KUNCI */
-      }
-
-      th {
-        color: var(--muted);
-        font-weight: 500;
-        text-align: left
-      }
-
-      .text-center {
-        text-align: center
-      }
-
-      .status {
-        padding: 4px 10px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 500
-      }
-
-      .status.borrowed {
-        background: #e0f2fe;
-        color: var(--info)
-      }
-
-      .status.overdue {
-        background: #fee2e2;
-        color: var(--danger)
-      }
-
-      .status.returned {
-        background: #dcfce7;
-        color: var(--success)
-      }
-
-      .sidebar {
-        display: none;
-      }
-
-      .panel {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px
-      }
-
-      .menu {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-top: 12px
-      }
-
-      .menu a {
-        font-size: 13px;
-        padding: 10px 12px;
-        border-radius: 8px;
-        text-decoration: none;
-        color: inherit
-      }
-
-      .menu a.active {
-        background: rgba(37, 99, 235, .1);
-        color: var(--accent);
-        font-weight: 500
-      }
-
-      .faq-item {
-        border-bottom: 1px solid var(--border);
-        padding: 10px 0
-      }
-
-      .faq-question {
-        font-size: 13px;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between
-      }
-
-      .faq-answer {
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: 6px;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease-out;
-      }
-
-      .faq-item.active .faq-answer {
-        max-height: 200px;
-        transition: max-height 0.3s ease-in;
-      }
-  </style>
+  <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/borrows.css">
 </head>
 
 <body>
@@ -337,134 +86,122 @@ $members = $members->fetchAll();
 
       <div class="main">
 
-        <div class="card">
-          <h2>Pinjam Buku Baru</h2>
-          <form method="post" action="borrows.php?action=new">
-            <div class="form-group">
-              <label>Buku</label>
-              <select name="book_id" required>
-                <option value="">Pilih buku</option>
-                <?php foreach ($books as $b): ?>
-                  <option value="<?= $b['id'] ?>"><?= htmlspecialchars($b['title']) ?></option>
-                <?php endforeach ?>
-              </select>
+        <div>
+          <div class="card">
+            <h2>Pinjam Buku Baru</h2>
+            <form method="post" action="borrows.php?action=new">
+              <div class="form-group">
+                <label>Buku</label>
+                <select name="book_id" required>
+                  <option value="">Pilih buku</option>
+                  <?php foreach ($books as $b): ?>
+                    <option value="<?= $b['id'] ?>"><?= htmlspecialchars($b['title']) ?></option>
+                  <?php endforeach ?>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Anggota</label>
+                <select name="member_id" required>
+                  <option value="">Pilih anggota</option>
+                  <?php foreach ($members as $m): ?>
+                    <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['name']) ?></option>
+                  <?php endforeach ?>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Jatuh Tempo</label>
+                <input type="date" name="due_at">
+              </div>
+              <button class="btn primary">Pinjamkan Buku</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h2>Statistik Peminjaman</h2>
+            <div class="stats-container">
+              <div class="stat-card">
+                <div class="stat-label">Total Peminjaman</div>
+                <div class="stat-value"><?= count($borrows) ?></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Sedang Dipinjam</div>
+                <div class="stat-value"><?= count(array_filter($borrows, fn($b) => $b['status'] !== 'returned')) ?></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Terlambat</div>
+                <div class="stat-value"><?= count(array_filter($borrows, fn($b) => $b['status'] === 'overdue')) ?></div>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Anggota</label>
-              <select name="member_id" required>
-                <option value="">Pilih anggota</option>
-                <?php foreach ($members as $m): ?>
-                  <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['name']) ?></option>
-                <?php endforeach ?>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Jatuh Tempo</label>
-              <input type="date" name="due_at">
-            </div>
-            <button class="btn primary">Pinjamkan Buku</button>
-          </form>
+          </div>
         </div>
 
-        <div class="card">
-          <h2>Daftar Peminjaman (<?= count($borrows) ?>)</h2>
-
-          <div class="table-wrap">
-            <table>
-              <colgroup>
-                <col class="id">
-                <col class="book">
-                <col class="member">
-                <col class="date">
-                <col class="date">
-                <col class="status">
-                <col class="action">
-              </colgroup>
-
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Buku</th>
-                  <th>Anggota</th>
-                  <th>Pinjam</th>
-                  <th>Tempo</th>
-                  <th class="text-center">Status</th>
-                  <th class="text-center">Aksi</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <?php foreach ($borrows as $br): ?>
-                  <tr>
-                    <td>#<?= $br['id'] ?></td>
-                    <td><strong><?= htmlspecialchars($br['title']) ?></strong></td>
-                    <td><?= htmlspecialchars($br['member_name']) ?></td>
-                    <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
-                    <td><?= $br['due_at'] ? date('d/m/Y', strtotime($br['due_at'])) : '-' ?></td>
-                    <td class="text-center">
+        <div>
+          <div class="card">
+            <h2>Daftar Peminjaman (<?= count($borrows) ?>)</h2>
+            <div class="borrows-grid">
+              <?php foreach ($borrows as $br): ?>
+                <div class="borrow-card">
+                  <div class="book-cover">
+                    <?php if (!empty($br['cover_image']) && file_exists(__DIR__ . '/../img/covers/' . $br['cover_image'])): ?>
+                      <img src="../img/covers/<?= htmlspecialchars($br['cover_image']) ?>" alt="<?= htmlspecialchars($br['title']) ?>">
+                    <?php else: ?>
+                      <div class="no-image">📚</div>
+                    <?php endif; ?>
+                  </div>
+                  <div class="borrow-info">
+                    <div class="borrow-title"><?= htmlspecialchars($br['title']) ?></div>
+                    <div class="borrow-member"><?= htmlspecialchars($br['member_name']) ?></div>
+                    <div class="borrow-dates">
+                      <small>📅 <?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></small>
+                      <?php if ($br['due_at']): ?>
+                        <small>⏰ <?= date('d/m/Y', strtotime($br['due_at'])) ?></small>
+                      <?php endif; ?>
+                    </div>
+                    <div class="borrow-status">
                       <?php if ($br['status'] === 'overdue'): ?>
-                        <span class="status overdue">Terlambat</span>
+                        <span class="status-badge overdue">Terlambat</span>
                       <?php elseif ($br['status'] === 'returned'): ?>
-                        <span class="status returned">Dikembalikan</span>
+                        <span class="status-badge returned">Dikembalikan</span>
                       <?php else: ?>
-                        <span class="status borrowed">Dipinjam</span>
+                        <span class="status-badge borrowed">Dipinjam</span>
                       <?php endif ?>
-                    </td>
-                    <td class="text-center">
-                      <?php if ($br['status'] !== 'returned'): ?>
-                        <a class="btn success" href="borrows.php?action=return&id=<?= $br['id'] ?>">Kembalikan</a>
-                      <?php else: ?>—<?php endif ?>
-                    </td>
-                  </tr>
-                <?php endforeach ?>
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                  <div class="borrow-actions">
+                    <button class="btn small" onclick="showBorrowDetail(<?= htmlspecialchars(json_encode($br)) ?>)">Detail</button>
+                    <?php if ($br['status'] !== 'returned'): ?>
+                      <a href="borrows.php?action=return&id=<?= $br['id'] ?>" class="btn small success">Kembalikan</a>
+                    <?php else: ?>
+                      <button class="btn small" disabled>Dikembalikan</button>
+                    <?php endif ?>
+                  </div>
+                </div>
+              <?php endforeach ?>
+            </div>
           </div>
-        </div>
 
-        <div class="card" style="grid-column: 1/-1">
-          <h2>Statistik Peminjaman</h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px">
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Total Peminjaman</div>
-              <div style="font-size: 24px; font-weight: 600"><?= count($borrows) ?></div>
+          <div class="card">
+            <h2>Pertanyaan Umum</h2>
+            <div class="faq-item">
+              <div class="faq-question">Bagaimana cara menambah peminjaman baru? <span>+</span></div>
+              <div class="faq-answer">Pilih buku dan anggota dari dropdown di form atas, atur tanggal jatuh tempo
+                (opsional), lalu klik "Pinjamkan Buku".</div>
             </div>
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Sedang Dipinjam</div>
-              <div style="font-size: 24px; font-weight: 600">
-                <?= count(array_filter($borrows, fn($b) => $b['status'] !== 'returned')) ?>
-              </div>
+            <div class="faq-item">
+              <div class="faq-question">Bagaimana cara mengembalikan buku? <span>+</span></div>
+              <div class="faq-answer">Cari peminjaman di daftar, jika status masih "Dipinjam" atau "Terlambat", klik
+                tombol "Kembalikan" untuk menyelesaikan peminjaman.</div>
             </div>
-            <div style="padding: 16px; background: rgba(37, 99, 235, .05); border-radius: 8px">
-              <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px">Terlambat</div>
-              <div style="font-size: 24px; font-weight: 600">
-                <?= count(array_filter($borrows, fn($b) => $b['status'] === 'overdue')) ?>
-              </div>
+            <div class="faq-item">
+              <div class="faq-question">Apa itu status "Terlambat"? <span>+</span></div>
+              <div class="faq-answer">Status terlambat muncul ketika tanggal jatuh tempo sudah berlalu tetapi buku belum
+                dikembalikan. Segera kembalikan buku untuk menghindari denda.</div>
             </div>
-          </div>
-        </div>
-
-        <div class="card" style="grid-column: 1/-1">
-          <h2>Pertanyaan Umum</h2>
-          <div class="faq-item">
-            <div class="faq-question">Bagaimana cara menambah peminjaman baru? <span>+</span></div>
-            <div class="faq-answer">Pilih buku dan anggota dari dropdown di form kiri, atur tanggal jatuh tempo
-              (opsional), lalu klik "Pinjamkan Buku".</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Bagaimana cara mengembalikan buku? <span>+</span></div>
-            <div class="faq-answer">Cari peminjaman di daftar, jika status masih "Dipinjam" atau "Terlambat", klik
-              tombol "Kembalikan" untuk menyelesaikan peminjaman.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Apa itu status "Terlambat"? <span>+</span></div>
-            <div class="faq-answer">Status terlambat muncul ketika tanggal jatuh tempo sudah berlalu tetapi buku belum
-              dikembalikan. Segera kembalikan buku untuk menghindari denda.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question">Bisakah saya mengubah tanggal jatuh tempo? <span>+</span></div>
-            <div class="faq-answer">Saat ini, Anda perlu mengembalikan buku lalu meminjam ulang dengan tanggal baru.
-              Atau hubungi admin untuk bantuan lebih lanjut.</div>
+            <div class="faq-item">
+              <div class="faq-question">Bisakah saya mengubah tanggal jatuh tempo? <span>+</span></div>
+              <div class="faq-answer">Saat ini, Anda perlu mengembalikan buku lalu meminjam ulang dengan tanggal baru.
+                Atau hubungi admin untuk bantuan lebih lanjut.</div>
+            </div>
           </div>
         </div>
 
@@ -473,15 +210,50 @@ $members = $members->fetchAll();
     </div>
   </div>
 
-  <script>
-    document.querySelectorAll('.faq-question').forEach(q => {
-      q.onclick = () => {
-        const p = q.parentElement;
-        p.classList.toggle('active');
-        q.querySelector('span').textContent = p.classList.contains('active') ? '−' : '+';
-      }
-    });
-  </script>
+  <!-- Detail Modal -->
+  <div id="borrowDetailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Detail Peminjaman</h2>
+        <button class="modal-close" onclick="closeBorrowDetail()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-layout">
+          <div class="detail-image">
+            <img id="borrowDetailCover" src="" alt="Book Cover">
+          </div>
+          <div class="detail-info">
+            <div class="detail-field">
+              <label>Judul Buku</label>
+              <div id="borrowDetailTitle"></div>
+            </div>
+            <div class="detail-field">
+              <label>Anggota</label>
+              <div id="borrowDetailMember"></div>
+            </div>
+            <div class="detail-field">
+              <label>Tanggal Pinjam</label>
+              <div id="borrowDetailBorrowDate"></div>
+            </div>
+            <div class="detail-field">
+              <label>Jatuh Tempo</label>
+              <div id="borrowDetailDueDate"></div>
+            </div>
+            <div class="detail-field">
+              <label>Tanggal Kembali</label>
+              <div id="borrowDetailReturnDate"></div>
+            </div>
+            <div class="detail-field">
+              <label>Status</label>
+              <div id="borrowDetailStatus"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/borrows.js"></script>
 
 </body>
 

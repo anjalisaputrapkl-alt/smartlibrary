@@ -1,0 +1,330 @@
+/* ===== GLOBAL ANIMATIONS ===== */
+
+/* Page Fade In + Slide Up */
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card Staggered Fade In + Slide Up */
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Image Soft Scale In */
+@keyframes imageScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Modal Fade In + Scale */
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Button Hover Scale */
+@keyframes buttonHover {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* ===== APPLY ANIMATIONS ===== */
+
+/* Page Content Animation */
+.content {
+  animation: fadeInSlideUp 0.4s ease-out;
+}
+
+/* Topbar Animation */
+.topbar {
+  animation: fadeInSlideUp 0.3s ease-out;
+}
+
+/* Card Animation */
+.card {
+  animation: cardSlideIn 0.35s ease-out;
+}
+
+/* Staggered Cards for Book/Borrow Grid */
+.book-card,
+.borrow-card {
+  animation: cardSlideIn 0.4s ease-out backwards;
+}
+
+.book-card:nth-child(1) { animation-delay: 0.05s; }
+.book-card:nth-child(2) { animation-delay: 0.1s; }
+.book-card:nth-child(3) { animation-delay: 0.15s; }
+.book-card:nth-child(4) { animation-delay: 0.2s; }
+.book-card:nth-child(5) { animation-delay: 0.25s; }
+.book-card:nth-child(6) { animation-delay: 0.3s; }
+.book-card:nth-child(n+7) { animation-delay: 0.35s; }
+
+.borrow-card:nth-child(1) { animation-delay: 0.05s; }
+.borrow-card:nth-child(2) { animation-delay: 0.1s; }
+.borrow-card:nth-child(3) { animation-delay: 0.15s; }
+.borrow-card:nth-child(4) { animation-delay: 0.2s; }
+.borrow-card:nth-child(5) { animation-delay: 0.25s; }
+.borrow-card:nth-child(6) { animation-delay: 0.3s; }
+.borrow-card:nth-child(n+7) { animation-delay: 0.35s; }
+
+/* Book Cover Image Animation */
+.book-cover img {
+  animation: imageScaleIn 0.3s ease-out;
+}
+
+/* Modal Animation */
+.modal.active .modal-content {
+  animation: modalScaleIn 0.3s ease-out;
+}
+
+.modal.active {
+  animation: fadeInSlideUp 0.2s ease-out;
+}
+
+/* Button Hover Effects */
+.btn {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn.primary:hover {
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn.danger:hover {
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn.success:hover {
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+/* Card Hover Effect */
+.book-card:hover,
+.borrow-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease;
+}
+
+/* Table Row Animation */
+table tbody tr {
+  transition: all 0.15s ease;
+}
+
+table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.03);
+}
+
+/* Badge Animation */
+.badge,
+.status-badge,
+.copies-badge {
+  animation: cardSlideIn 0.3s ease-out;
+}
+
+/* Stat Card Animation */
+.stat-card {
+  animation: cardSlideIn 0.35s ease-out backwards;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.15s; }
+.stat-card:nth-child(3) { animation-delay: 0.2s; }
+
+/* FAQ Item Animation */
+.faq-item {
+  animation: cardSlideIn 0.3s ease-out backwards;
+}
+
+.faq-item:nth-child(1) { animation-delay: 0.05s; }
+.faq-item:nth-child(2) { animation-delay: 0.1s; }
+.faq-item:nth-child(3) { animation-delay: 0.15s; }
+.faq-item:nth-child(4) { animation-delay: 0.2s; }
+.faq-item:nth-child(5) { animation-delay: 0.25s; }
+.faq-item:nth-child(6) { animation-delay: 0.3s; }
+
+/* Form Input Animation */
+.form-group {
+  animation: fadeInSlideUp 0.3s ease-out backwards;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.05s; }
+.form-group:nth-child(2) { animation-delay: 0.1s; }
+.form-group:nth-child(3) { animation-delay: 0.15s; }
+.form-group:nth-child(4) { animation-delay: 0.2s; }
+.form-group:nth-child(5) { animation-delay: 0.25s; }
+
+/* Smooth transitions */
+input,
+select,
+textarea {
+  transition: all 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  transform: scale(1.01);
+}
+
+/* Menu Item Animation */
+.menu a {
+  transition: all 0.15s ease;
+}
+
+.menu a:hover {
+  transform: translateX(4px);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+/* Toast Animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Filter Bar Animation */
+.filter-bar {
+  animation: fadeInSlideUp 0.3s ease-out;
+}
+
+/* Stats Container Animation */
+.stats-container {
+  animation: fadeInSlideUp 0.35s ease-out;
+}
+
+/* Modal Header Animation */
+.modal-header {
+  animation: fadeInSlideUp 0.2s ease-out;
+}
+
+.modal-body {
+  animation: fadeInSlideUp 0.25s ease-out 0.05s backwards;
+}
+
+.modal-footer {
+  animation: fadeInSlideUp 0.25s ease-out 0.1s backwards;
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Focus Visible for Accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Disabled Button */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Text Selection */
+::selection {
+  background: rgba(37, 99, 235, 0.2);
+  color: var(--text);
+}
+
+/* Loading State Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Responsive Animation Adjustments */
+@media (max-width: 768px) {
+  .book-card,
+  .borrow-card {
+    animation-delay: 0s !important;
+  }
+
+  .btn:hover:not(:disabled) {
+    transform: scale(1.02);
+  }
+
+  .content {
+    animation-duration: 0.3s;
+  }
+}
+
+/* Disable animations for reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

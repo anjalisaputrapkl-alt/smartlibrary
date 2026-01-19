@@ -1,5 +1,6 @@
-// Global Theme System
-// Automatically loads the saved theme on all pages from per-school database storage
+// Inline Theme Loader - Prevent Flash on Page Refresh
+// This script runs BEFORE CSS loads to apply theme immediately
+// Prevents white flash or default color flicker
 
 (function() {
     const themes = {
@@ -49,24 +50,14 @@
             '--text': '#6b21a8',
             '--muted': '#6b7280',
             '--border': '#e9d5ff',
-            '--accent': '#d946ef',
+            '--accent': '#9333ea',
             '--danger': '#dc2626',
-            '--success': '#a855f7'
-        },
-        orange: {
-            '--bg': '#fffbeb',
-            '--surface': '#ffffff',
-            '--text': '#92400e',
-            '--muted': '#6b7280',
-            '--border': '#fed7aa',
-            '--accent': '#f97316',
-            '--danger': '#dc2626',
-            '--success': '#ea580c'
+            '--success': '#7e22ce'
         },
         rose: {
             '--bg': '#fff7ed',
             '--surface': '#ffffff',
-            '--text': '#831843',
+            '--text': '#881391',
             '--muted': '#6b7280',
             '--border': '#ffe4e6',
             '--accent': '#f43f5e',
@@ -155,68 +146,40 @@
         }
     };
 
-    // Load theme from API (per-school from database)
-    async function loadThemeFromAPI() {
-        try {
-            const response = await fetch('/perpustakaan-online/public/api/theme.php');
-            if (!response.ok) throw new Error('Failed to load theme');
-            const data = await response.json();
+    // Apply theme directly from API with localStorage fallback
+    function applyThemeImmediately() {
+        // Try to get theme from sessionStorage first (faster)
+        const cachedTheme = sessionStorage.getItem('theme_cache');
+        const cachedCustom = sessionStorage.getItem('custom_colors_cache');
+        
+        if (cachedTheme) {
+            const theme = themes[cachedTheme] || themes.light;
+            applyThemeColors(theme);
             
-            if (data.success) {
-                const theme = themes[data.theme_name] || themes.light;
-                
-                // Cache theme name in sessionStorage for instant loading on next page
-                sessionStorage.setItem('theme_cache', data.theme_name);
-                
-                // Apply base theme colors
-                Object.entries(theme).forEach(([key, value]) => {
-                    document.documentElement.style.setProperty(key, value);
-                });
-                
-                // Apply custom colors if any (override theme)
-                if (data.custom_colors && Object.keys(data.custom_colors).length > 0) {
-                    sessionStorage.setItem('custom_colors_cache', JSON.stringify(data.custom_colors));
-                    Object.entries(data.custom_colors).forEach(([colorId, value]) => {
+            if (cachedCustom) {
+                try {
+                    const customColors = JSON.parse(cachedCustom);
+                    Object.entries(customColors).forEach(([colorId, value]) => {
                         const cssVar = colorId.replace('color-', '--');
                         document.documentElement.style.setProperty(cssVar, value);
                     });
+                } catch (e) {
+                    console.warn('Could not parse custom colors');
                 }
-                
-                // Apply typography if any
-                if (data.typography && Object.keys(data.typography).length > 0) {
-                    if (data.typography['font-family']) {
-                        document.documentElement.style.fontFamily = data.typography['font-family'];
-                        document.body.style.fontFamily = data.typography['font-family'];
-                    }
-                    if (data.typography['font-weight']) {
-                        document.documentElement.style.fontWeight = data.typography['font-weight'];
-                        document.body.style.fontWeight = data.typography['font-weight'];
-                    }
-                }
-                
-                return;
             }
-        } catch (error) {
-            console.warn('Could not load theme from API:', error);
+            return;
         }
-        
-        // Fallback: use default light theme
-        applyDefaultTheme();
+
+        // Fallback to default light theme
+        applyThemeColors(themes.light);
     }
 
-    // Apply default light theme as fallback
-    function applyDefaultTheme() {
-        const defaultTheme = themes.light;
-        Object.entries(defaultTheme).forEach(([key, value]) => {
+    function applyThemeColors(theme) {
+        Object.entries(theme).forEach(([key, value]) => {
             document.documentElement.style.setProperty(key, value);
         });
     }
 
-    // Load and apply theme when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadThemeFromAPI);
-    } else {
-        loadThemeFromAPI();
-    }
+    // Run immediately, no waiting for DOM
+    applyThemeImmediately();
 })();
-

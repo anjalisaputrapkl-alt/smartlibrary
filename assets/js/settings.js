@@ -1,9 +1,8 @@
-// Global Theme System
-// Automatically loads the saved theme on all pages from per-school database storage
-
-(function() {
-    const themes = {
-        light: {
+// Theme definitions
+const themes = {
+    light: {
+        name: 'Light',
+        colors: {
             '--bg': '#f1f4f8',
             '--surface': '#ffffff',
             '--text': '#1f2937',
@@ -12,8 +11,11 @@
             '--accent': '#2563eb',
             '--danger': '#dc2626',
             '--success': '#16a34a'
-        },
-        dark: {
+        }
+    },
+    dark: {
+        name: 'Dark',
+        colors: {
             '--bg': '#1f2937',
             '--surface': '#111827',
             '--text': '#f3f4f6',
@@ -22,8 +24,11 @@
             '--accent': '#3b82f6',
             '--danger': '#ef4444',
             '--success': '#22c55e'
-        },
-        blue: {
+        }
+    },
+    blue: {
+        name: 'Blue',
+        colors: {
             '--bg': '#0f172a',
             '--surface': '#1e293b',
             '--text': '#e2e8f0',
@@ -32,8 +37,11 @@
             '--accent': '#3b82f6',
             '--danger': '#f87171',
             '--success': '#4ade80'
-        },
-        green: {
+        }
+    },
+    green: {
+        name: 'Green',
+        colors: {
             '--bg': '#f0fdf4',
             '--surface': '#ffffff',
             '--text': '#166534',
@@ -42,8 +50,11 @@
             '--accent': '#10b981',
             '--danger': '#dc2626',
             '--success': '#059669'
-        },
-        purple: {
+        }
+    },
+    purple: {
+        name: 'Purple',
+        colors: {
             '--bg': '#faf5ff',
             '--surface': '#ffffff',
             '--text': '#6b21a8',
@@ -52,8 +63,11 @@
             '--accent': '#d946ef',
             '--danger': '#dc2626',
             '--success': '#a855f7'
-        },
-        orange: {
+        }
+    },
+    orange: {
+        name: 'Orange',
+        colors: {
             '--bg': '#fffbeb',
             '--surface': '#ffffff',
             '--text': '#92400e',
@@ -62,8 +76,11 @@
             '--accent': '#f97316',
             '--danger': '#dc2626',
             '--success': '#ea580c'
-        },
-        rose: {
+        }
+    },
+    rose: {
+        name: 'Rose',
+        colors: {
             '--bg': '#fff7ed',
             '--surface': '#ffffff',
             '--text': '#831843',
@@ -72,8 +89,11 @@
             '--accent': '#f43f5e',
             '--danger': '#dc2626',
             '--success': '#be185d'
-        },
-        indigo: {
+        }
+    },
+    indigo: {
+        name: 'Indigo',
+        colors: {
             '--bg': '#f0f4ff',
             '--surface': '#ffffff',
             '--text': '#312e81',
@@ -82,8 +102,11 @@
             '--accent': '#6366f1',
             '--danger': '#dc2626',
             '--success': '#4f46e5'
-        },
-        cyan: {
+        }
+    },
+    cyan: {
+        name: 'Cyan',
+        colors: {
             '--bg': '#ecf9ff',
             '--surface': '#ffffff',
             '--text': '#164e63',
@@ -92,8 +115,11 @@
             '--accent': '#06b6d4',
             '--danger': '#dc2626',
             '--success': '#0891b2'
-        },
-        pink: {
+        }
+    },
+    pink: {
+        name: 'Pink',
+        colors: {
             '--bg': '#fdf2f8',
             '--surface': '#ffffff',
             '--text': '#831854',
@@ -102,8 +128,11 @@
             '--accent': '#ec4899',
             '--danger': '#dc2626',
             '--success': '#db2777'
-        },
-        amber: {
+        }
+    },
+    amber: {
+        name: 'Amber',
+        colors: {
             '--bg': '#fffbeb',
             '--surface': '#ffffff',
             '--text': '#78350f',
@@ -112,8 +141,11 @@
             '--accent': '#f59e0b',
             '--danger': '#dc2626',
             '--success': '#d97706'
-        },
-        red: {
+        }
+    },
+    red: {
+        name: 'Red',
+        colors: {
             '--bg': '#fef2f2',
             '--surface': '#ffffff',
             '--text': '#7f1d1d',
@@ -122,8 +154,11 @@
             '--accent': '#ef4444',
             '--danger': '#dc2626',
             '--success': '#dc2626'
-        },
-        slate: {
+        }
+    },
+    slate: {
+        name: 'Slate',
+        colors: {
             '--bg': '#f8fafc',
             '--surface': '#ffffff',
             '--text': '#1e293b',
@@ -132,8 +167,11 @@
             '--accent': '#64748b',
             '--danger': '#dc2626',
             '--success': '#475569'
-        },
-        teal: {
+        }
+    },
+    teal: {
+        name: 'Teal',
+        colors: {
             '--bg': '#f0fdfa',
             '--surface': '#ffffff',
             '--text': '#134e4a',
@@ -142,8 +180,11 @@
             '--accent': '#14b8a6',
             '--danger': '#dc2626',
             '--success': '#0d9488'
-        },
-        lime: {
+        }
+    },
+    lime: {
+        name: 'Lime',
+        colors: {
             '--bg': '#f7fee7',
             '--surface': '#ffffff',
             '--text': '#365314',
@@ -153,70 +194,87 @@
             '--danger': '#dc2626',
             '--success': '#65a30d'
         }
-    };
+    }
+};
 
-    // Load theme from API (per-school from database)
-    async function loadThemeFromAPI() {
-        try {
-            const response = await fetch('/perpustakaan-online/public/api/theme.php');
-            if (!response.ok) throw new Error('Failed to load theme');
-            const data = await response.json();
-            
-            if (data.success) {
-                const theme = themes[data.theme_name] || themes.light;
-                
-                // Cache theme name in sessionStorage for instant loading on next page
-                sessionStorage.setItem('theme_cache', data.theme_name);
-                
-                // Apply base theme colors
-                Object.entries(theme).forEach(([key, value]) => {
-                    document.documentElement.style.setProperty(key, value);
-                });
-                
-                // Apply custom colors if any (override theme)
-                if (data.custom_colors && Object.keys(data.custom_colors).length > 0) {
-                    sessionStorage.setItem('custom_colors_cache', JSON.stringify(data.custom_colors));
-                    Object.entries(data.custom_colors).forEach(([colorId, value]) => {
-                        const cssVar = colorId.replace('color-', '--');
-                        document.documentElement.style.setProperty(cssVar, value);
-                    });
-                }
-                
-                // Apply typography if any
-                if (data.typography && Object.keys(data.typography).length > 0) {
-                    if (data.typography['font-family']) {
-                        document.documentElement.style.fontFamily = data.typography['font-family'];
-                        document.body.style.fontFamily = data.typography['font-family'];
-                    }
-                    if (data.typography['font-weight']) {
-                        document.documentElement.style.fontWeight = data.typography['font-weight'];
-                        document.body.style.fontWeight = data.typography['font-weight'];
-                    }
-                }
-                
-                return;
-            }
-        } catch (error) {
-            console.warn('Could not load theme from API:', error);
+// Global state to track current theme
+let currentTheme = 'light';
+
+// Update button states
+function updateThemeButtons(active) {
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        if (btn.getAttribute('data-theme') === active) {
+            btn.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.2)';
+            btn.style.fontWeight = '600';
+        } else {
+            btn.style.boxShadow = 'none';
+            btn.style.fontWeight = '400';
         }
-        
-        // Fallback: use default light theme
-        applyDefaultTheme();
-    }
+    });
+}
 
-    // Apply default light theme as fallback
-    function applyDefaultTheme() {
-        const defaultTheme = themes.light;
-        Object.entries(defaultTheme).forEach(([key, value]) => {
-            document.documentElement.style.setProperty(key, value);
+// Apply theme and save to API
+async function applyTheme(themeName) {
+    const theme = themes[themeName];
+    if (!theme) return;
+
+    // Apply colors to DOM
+    Object.entries(theme.colors).forEach(([key, value]) => {
+        document.documentElement.style.setProperty(key, value);
+    });
+
+    currentTheme = themeName;
+    updateThemeButtons(themeName);
+
+    // Save to database via API
+    try {
+        const response = await fetch('/perpustakaan-online/public/api/theme.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                theme_name: themeName
+            })
         });
+        if (!response.ok) console.error('Failed to save theme');
+    } catch (error) {
+        console.error('Error saving theme:', error);
     }
+}
 
-    // Load and apply theme when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadThemeFromAPI);
-    } else {
-        loadThemeFromAPI();
+// Load settings from API on page load
+async function loadSettingsFromAPI() {
+    try {
+        const response = await fetch('/perpustakaan-online/public/api/theme.php');
+        if (!response.ok) throw new Error('Failed to load settings');
+        const data = await response.json();
+        if (data.success) {
+            currentTheme = data.theme_name;
+            applyTheme(data.theme_name);
+        }
+    } catch (error) {
+        console.warn('Could not load settings from API, using defaults:', error);
     }
-})();
+}
 
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    // Theme button listeners
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const themeName = btn.getAttribute('data-theme');
+            applyTheme(themeName);
+        });
+    });
+
+    // Load and apply saved theme
+    await loadSettingsFromAPI();
+
+    // FAQ toggle
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.onclick = () => {
+            const i = q.parentElement;
+            i.classList.toggle('active');
+            q.querySelector('span').textContent = i.classList.contains('active') ? '−' : '+';
+        }
+    });
+});
