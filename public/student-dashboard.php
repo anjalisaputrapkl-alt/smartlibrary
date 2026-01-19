@@ -60,23 +60,6 @@ try {
 } catch (Exception $e) {
     $categories = [];
 }
-
-// Get books by specific categories for featured sections
-$featured_categories = ['Fiksi', 'Nonfiksi', 'Referensi', 'Komik'];
-$featured_books = [];
-
-foreach ($featured_categories as $cat) {
-    try {
-        $stmt = $pdo->prepare('SELECT * FROM books WHERE school_id = :school_id AND category = :category ORDER BY created_at DESC LIMIT 6');
-        $stmt->execute(['school_id' => $school_id, 'category' => $cat]);
-        $books_cat = $stmt->fetchAll();
-        if (!empty($books_cat)) {
-            $featured_books[$cat] = $books_cat;
-        }
-    } catch (Exception $e) {
-        $featured_books[$cat] = [];
-    }
-}
 ?>
 <!doctype html>
 <html lang="id">
@@ -477,31 +460,6 @@ foreach ($featured_categories as $cat) {
             overflow: hidden;
         }
 
-        /* Different gradient colors for visual variety */
-        .book-card:nth-child(3n+1) .book-cover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .book-card:nth-child(3n+2) .book-cover {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .book-card:nth-child(3n) .book-cover {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .featured-section .book-card:nth-child(3n+1) .book-cover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .featured-section .book-card:nth-child(3n+2) .book-cover {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .featured-section .book-card:nth-child(3n) .book-cover {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
         .book-cover img {
             width: 100%;
             height: 100%;
@@ -510,48 +468,44 @@ foreach ($featured_categories as $cat) {
 
         .book-status {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 6px 14px;
+            top: 8px;
+            right: 8px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
         }
 
         .book-status.available {
-            background: rgba(16, 185, 129, 0.95);
+            background: var(--success);
             color: white;
         }
 
         .book-status.unavailable {
-            background: rgba(239, 68, 68, 0.95);
+            background: var(--danger);
             color: white;
         }
 
         .book-status.limited {
-            background: rgba(245, 158, 11, 0.95);
+            background: var(--warning);
             color: white;
         }
 
         .book-info {
-            padding: 18px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             flex: 1;
-            background: var(--card);
         }
 
         .book-title {
             font-size: 14px;
-            font-weight: 800;
+            font-weight: 600;
             color: var(--text);
-            line-height: 1.5;
-            letter-spacing: -0.3px;
+            line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -561,10 +515,6 @@ foreach ($featured_categories as $cat) {
         .book-author {
             font-size: 12px;
             color: var(--muted);
-            font-weight: 500;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
         }
 
         .book-category {
@@ -578,14 +528,9 @@ foreach ($featured_categories as $cat) {
         .book-rating {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
-            padding: 6px 10px;
-            border-radius: 6px;
-            width: fit-content;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--muted);
         }
 
         .book-actions {
@@ -596,88 +541,38 @@ foreach ($featured_categories as $cat) {
 
         .btn-borrow {
             flex: 1;
-            padding: 11px 12px;
-            background: linear-gradient(135deg, var(--accent) 0%, #062d4a 100%);
+            padding: 10px;
+            background: var(--accent);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(11, 61, 97, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-borrow::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
+            transition: 0.2s ease;
         }
 
         .btn-borrow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(11, 61, 97, 0.4);
-            background: linear-gradient(135deg, #062d4a 0%, var(--accent) 100%);
-        }
-
-        .btn-borrow:hover::before {
-            left: 100%;
-        }
-
-        .btn-borrow:active {
-            transform: translateY(0);
+            background: #062d4a;
         }
 
         .btn-borrow:disabled {
             background: var(--border);
             color: var(--muted);
             cursor: not-allowed;
-            box-shadow: none;
         }
 
         .btn-detail {
             flex: 1;
-            padding: 11px 12px;
+            padding: 10px;
             background: var(--bg);
             color: var(--accent);
-            border: 2px solid var(--accent);
-            border-radius: 8px;
+            border: 1px solid var(--accent);
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-detail::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--accent-light);
-            z-index: -1;
-            transition: left 0.3s ease;
-        }
-
-        .btn-detail:hover {
-            transform: translateY(-2px);
-            background: var(--accent-light);
-            box-shadow: 0 6px 16px rgba(11, 61, 97, 0.2);
-        }
-
-        .btn-detail:active {
-            transform: translateY(0);
-        }
+            transition: 0.2s ease;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -714,124 +609,6 @@ foreach ($featured_categories as $cat) {
         .empty-state p {
             color: var(--muted);
             font-size: 14px;
-        }
-
-        /* Featured Sections */
-        .featured-section {
-            margin-bottom: 56px;
-            animation: fadeInUp 0.6s ease-out 0.3s both;
-        }
-
-        .featured-section-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 28px;
-            padding: 24px 28px;
-            border-bottom: none;
-            background: linear-gradient(135deg, var(--accent-light) 0%, rgba(224, 242, 254, 0.5) 100%);
-            border-radius: 16px;
-            border-left: 6px solid var(--accent);
-            box-shadow: 0 4px 12px rgba(11, 61, 97, 0.08);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .featured-section-header::before {
-            content: '';
-            position: absolute;
-            right: -40px;
-            top: -40px;
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, rgba(11, 61, 97, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .featured-section-icon {
-            font-size: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            height: 56px;
-            background: var(--card);
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(11, 61, 97, 0.15);
-            position: relative;
-            z-index: 1;
-        }
-
-        .featured-section-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text);
-            position: relative;
-            z-index: 1;
-        }
-
-        .featured-section-subtitle {
-            font-size: 13px;
-            color: var(--muted);
-            margin-left: auto;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-            background: var(--card);
-            padding: 6px 14px;
-            border-radius: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .featured-books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-            gap: 24px;
-            animation: fadeInUp 0.6s ease-out 0.4s both;
-        }
-
-        .featured-books-grid .book-card {
-            animation: scaleIn 0.5s ease-out backwards;
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(11, 61, 97, 0.06);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .featured-books-grid .book-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
-            border-color: var(--accent);
-        }
-
-        .featured-books-grid .book-card:nth-child(1) { animation-delay: 0.35s; }
-        .featured-books-grid .book-card:nth-child(2) { animation-delay: 0.40s; }
-        .featured-books-grid .book-card:nth-child(3) { animation-delay: 0.45s; }
-        .featured-books-grid .book-card:nth-child(4) { animation-delay: 0.50s; }
-        .featured-books-grid .book-card:nth-child(5) { animation-delay: 0.55s; }
-        .featured-books-grid .book-card:nth-child(6) { animation-delay: 0.60s; }
-
-        .featured-books-grid .book-card .book-cover {
-            position: relative;
-            transition: transform 0.3s ease-out;
-        }
-
-        .featured-books-grid .book-card:hover .book-cover {
-            transform: scale(1.08);
-        }
-
-        .featured-section-empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 48px 32px;
-            background: linear-gradient(135deg, var(--accent-light) 0%, rgba(224, 242, 254, 0.5) 100%);
-            border-radius: 12px;
-            border: 2px dashed var(--accent);
-            color: var(--accent);
-            font-size: 16px;
-            font-weight: 500;
         }
 
         /* Responsive */
@@ -1172,148 +949,6 @@ foreach ($featured_categories as $cat) {
             .empty-state p {
                 font-size: 12px;
             }
-
-            .featured-section-header {
-                margin-bottom: 20px;
-                padding: 20px 20px;
-                border-left: 5px solid var(--accent);
-                border-radius: 12px;
-                gap: 12px;
-            }
-
-            .featured-section-icon {
-                width: 48px;
-                height: 48px;
-                font-size: 28px;
-            }
-
-            .featured-section-title {
-                font-size: 18px;
-            }
-
-            .featured-section-subtitle {
-                font-size: 11px;
-                padding: 5px 11px;
-            }
-
-            .featured-books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 18px;
-            }
-
-            .featured-section {
-                margin-bottom: 40px;
-            }
-
-            .featured-section .book-card {
-                border-radius: 10px;
-            }
-
-            .featured-section .book-card:hover {
-                transform: translateY(-5px) scale(1.01);
-                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-            }
-
-            .featured-section .book-cover {
-                height: 160px;
-                font-size: 36px;
-            }
-
-            .featured-section .book-info {
-                padding: 14px;
-            }
-
-            .featured-section .book-title {
-                font-size: 12px;
-                font-weight: 700;
-            }
-
-            .featured-section .book-author {
-                font-size: 10px;
-            }
-
-            .featured-section .book-rating {
-                font-size: 10px;
-            }
-
-            .featured-section .btn-borrow,
-            .featured-section .btn-detail {
-                padding: 8px 6px;
-                font-size: 10px;
-            }
-
-            .featured-section-header {
-                padding: 18px;
-                margin-bottom: 18px;
-                gap: 12px;
-            }
-
-            .featured-section-icon {
-                width: 44px;
-                height: 44px;
-                font-size: 24px;
-            }
-
-            .featured-section-title {
-                font-size: 16px;
-            }
-
-            .featured-section-subtitle {
-                font-size: 10px;
-                padding: 4px 10px;
-            }
-
-            .featured-books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 14px;
-            }
-        }
-
-        /* Extra small devices (< 480px) - Additional featured section styles */
-        @media (max-width: 480px) {
-            .featured-section {
-                margin-bottom: 32px;
-            }
-
-            .featured-section .book-card:hover {
-                transform: translateY(-4px) scale(1.01);
-            }
-
-            .featured-section .book-cover {
-                height: 140px;
-                font-size: 32px;
-            }
-
-            .featured-section-header {
-                padding: 16px;
-                margin-bottom: 16px;
-            }
-
-            .featured-section-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
-            }
-
-            .featured-section-title {
-                font-size: 15px;
-            }
-
-            .featured-books-grid {
-                gap: 12px;
-            }
-        }
-
-        /* Extra small devices (< 480px) */
-        @media (max-width: 1024px) and (min-width: 768px) {
-            .featured-books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 16px;
-            }
-
-            .featured-section-title {
-                font-size: 18px;
-            }
         }
     </style>
 </head>
@@ -1401,63 +1036,6 @@ foreach ($featured_categories as $cat) {
 
             <!-- Main Content -->
             <div class="main-content">
-                <!-- Featured Sections -->
-                <?php 
-                $section_icons = [
-                    'Fiksi' => '📚',
-                    'Nonfiksi' => '📖',
-                    'Referensi' => '🔍',
-                    'Komik' => '💭'
-                ];
-                ?>
-                
-                <?php foreach ($featured_categories as $category): ?>
-                    <?php if (!empty($featured_books[$category])): ?>
-                        <div class="featured-section">
-                            <div class="featured-section-header">
-                                <span class="featured-section-icon"><?php echo $section_icons[$category] ?? '📕'; ?></span>
-                                <h2 class="featured-section-title"><?php echo htmlspecialchars($category); ?></h2>
-                                <span class="featured-section-subtitle"><?php echo count($featured_books[$category]); ?> buku</span>
-                            </div>
-                            <div class="featured-books-grid">
-                                <?php foreach ($featured_books[$category] as $book): ?>
-                                    <div class="book-card">
-                                        <div class="book-cover">
-                                            📖
-                                            <span class="book-status available">Tersedia</span>
-                                        </div>
-                                        <div class="book-info">
-                                            <h3 class="book-title"><?php echo htmlspecialchars($book['title']); ?></h3>
-                                            <p class="book-author"><?php echo htmlspecialchars($book['author']); ?></p>
-                                            <p class="book-category"><?php echo htmlspecialchars($book['category'] ?? 'Umum'); ?></p>
-                                            <div class="book-rating">
-                                                ⭐ 4.5 (12)
-                                            </div>
-                                            <div class="book-actions">
-                                                <button class="btn-borrow" onclick="borrowBook(<?php echo $book['id']; ?>)">Pinjam</button>
-                                                <a href="book-detail.php?id=<?php echo $book['id']; ?>" class="btn-detail">Detail</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-
-                <!-- Divider Section -->
-                <div style="margin: 64px 0 48px 0; position: relative;">
-                    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 28px;">
-                        <div style="flex: 1; height: 3px; background: linear-gradient(to right, transparent, var(--accent), transparent); border-radius: 2px;"></div>
-                        <h2 style="font-size: 24px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 14px; white-space: nowrap;">
-                            <span style="font-size: 32px; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: var(--accent-light); border-radius: 12px;">📚</span>
-                            <span>Jelajahi Semua Buku</span>
-                        </h2>
-                        <div style="flex: 1; height: 3px; background: linear-gradient(to right, var(--accent), transparent); border-radius: 2px;"></div>
-                    </div>
-                    <p style="text-align: center; color: var(--muted); font-size: 14px; margin: 0;">Temukan ribuan koleksi buku pilihan dari berbagai kategori</p>
-                </div>
-
                 <!-- Search & Sort Bar -->
                 <div class="search-sort-bar">
                     <form method="get" style="display: flex; gap: 16px; flex: 1; align-items: center;">
