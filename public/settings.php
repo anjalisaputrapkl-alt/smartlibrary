@@ -82,61 +82,35 @@ $school = $stmt->fetch();
                                     style="padding: 12px; background: #0f172a; color: #60a5fa; border: 2px solid #60a5fa; font-weight: 600;"><iconify-icon
                                         icon="mdi:circle-multiple"
                                         style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Blue</button>
+                                <button class="btn btn-secondary theme-btn" data-theme="monochrome"
+                                    style="padding: 12px; background: #262626; color: #f5f5f5; border: 2px solid #808080; font-weight: 600;"><iconify-icon
+                                        icon="mdi:checkbox-multiple-blank-circle-outline"
+                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Monochrome</button>
+                                <button class="btn btn-secondary theme-btn" data-theme="sepia"
+                                    style="padding: 12px; background: #5d4e37; color: #e8d7c3; border: 2px solid #8b7355; font-weight: 600;"><iconify-icon
+                                        icon="mdi:image-filter-vintage"
+                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Sepia</button>
+                                <button class="btn btn-secondary theme-btn" data-theme="slate"
+                                    style="padding: 12px; background: #1c1f26; color: #7c88a3; border: 2px solid #3a4251; font-weight: 600;"><iconify-icon
+                                        icon="mdi:palette-gray"
+                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Slate</button>
+                                <button class="btn btn-secondary theme-btn" data-theme="ocean"
+                                    style="padding: 12px; background: #0a1628; color: #1fa3f4; border: 2px solid #2d4a6f; font-weight: 600;"><iconify-icon
+                                        icon="mdi:water"
+                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Ocean</button>
+                                <button class="btn btn-secondary theme-btn" data-theme="sunset"
+                                    style="padding: 12px; background: #2d1810; color: #ff9f4a; border: 2px solid #5c4033; font-weight: 600;"><iconify-icon
+                                        icon="mdi:weather-sunset"
+                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Sunset</button>
+                                <button class="btn btn-secondary theme-btn" data-theme="teal"
+                                    style="padding: 12px; background: #0d4f4f; color: #26a69a; border: 2px solid #2d7a7a; font-weight: 600;"><iconify-icon
+                                        icon="mdi:water-opacity"
+                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Teal</button>
                             </div>
                             <small style="display: block; margin-top: 12px; color: var(--muted);">Tema yang dipilih akan
                                 disimpan secara otomatis</small>
 
-                            <h3>Tema Tambahan</h3>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                                <button class="btn btn-secondary theme-btn" data-theme="green"
-                                    style="padding: 12px; background: #065f46; color: #d1fae5; border: 2px solid #10b981; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Green</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="purple"
-                                    style="padding: 12px; background: #581c87; color: #e9d5ff; border: 2px solid #d946ef; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Purple</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="orange"
-                                    style="padding: 12px; background: #7c2d12; color: #fed7aa; border: 2px solid #f97316; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Orange</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="rose"
-                                    style="padding: 12px; background: #831843; color: #ffe4e6; border: 2px solid #f43f5e; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Rose</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="indigo"
-                                    style="padding: 12px; background: #312e81; color: #e0e7ff; border: 2px solid #6366f1; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Indigo</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="cyan"
-                                    style="padding: 12px; background: #164e63; color: #cffafe; border: 2px solid #06b6d4; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Cyan</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="pink"
-                                    style="padding: 12px; background: #831854; color: #fbcfe8; border: 2px solid #ec4899; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Pink</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="amber"
-                                    style="padding: 12px; background: #78350f; color: #fef3c7; border: 2px solid #f59e0b; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Amber</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="red"
-                                    style="padding: 12px; background: #7f1d1d; color: #fee2e2; border: 2px solid #ef4444; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Red</button>
-                                Red</button>
-                                <button class="btn theme-btn" data-theme="slate"
-                                    style="padding: 12px; background: #1e293b; color: #e2e8f0; border: 2px solid #64748b; font-weight: 600;">⚫
-                                    Slate</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="teal"
-                                    style="padding: 12px; background: #134e4a; color: #ccfbf1; border: 2px solid #14b8a6; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Teal</button>
-                                <button class="btn btn-secondary theme-btn" data-theme="lime"
-                                    style="padding: 12px; background: #365314; color: #cdfe56; border: 2px solid #84cc16; font-weight: 600;"><iconify-icon
-                                        icon="mdi:circle-multiple"
-                                        style="margin-right: 6px; vertical-align: middle;"></iconify-icon>Lime</button>
-                            </div>
+
                         </div>
 
                         <!-- Color Customization -->
@@ -201,8 +175,9 @@ $school = $stmt->fetch();
                     </div>
                     <div class="faq-item">
                         <div class="faq-question">Berapa banyak tema yang tersedia? <span>+</span></div>
-                        <div class="faq-answer">Ada 15 tema yang dapat dipilih: Light, Dark, Blue, Green, Purple,
-                            Orange, Rose, Indigo, Cyan, Pink, Amber, Red, Slate, Teal, dan Lime.</div>
+                        <div class="faq-answer">Ada 9 tema yang dapat dipilih: Light, Dark, Blue, Monochrome, Sepia,
+                            Slate, Ocean, Sunset, dan Teal. Setiap tema dirancang untuk kenyamanan visual pengguna.
+                        </div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question">Apakah tema yang saya pilih disimpan? <span>+</span></div>

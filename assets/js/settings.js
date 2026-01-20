@@ -194,6 +194,149 @@ const themes = {
             '--danger': '#dc2626',
             '--success': '#65a30d'
         }
+    },
+    monochrome: {
+        name: 'Monochrome',
+        colors: {
+            '--bg': '#262626',
+            '--surface': '#1f1f1f',
+            '--text': '#f5f5f5',
+            '--muted': '#a0a0a0',
+            '--border': '#404040',
+            '--accent': '#808080',
+            '--danger': '#e5e5e5',
+            '--success': '#b0b0b0'
+        }
+    },
+    sepia: {
+        name: 'Sepia',
+        colors: {
+            '--bg': '#f5ede0',
+            '--surface': '#faf4ed',
+            '--text': '#5d4e37',
+            '--muted': '#8b7355',
+            '--border': '#e8d7c3',
+            '--accent': '#a0826d',
+            '--danger': '#c85a54',
+            '--success': '#9a7c6a'
+        }
+    },
+    slate: {
+        name: 'Slate',
+        colors: {
+            '--bg': '#1c1f26',
+            '--surface': '#262d3a',
+            '--text': '#e8ebf0',
+            '--muted': '#8b92a9',
+            '--border': '#3a4251',
+            '--accent': '#7c88a3',
+            '--danger': '#ef5350',
+            '--success': '#66bb6a'
+        }
+    },
+    vintage: {
+        name: 'Vintage',
+        colors: {
+            '--bg': '#f5e6d3',
+            '--surface': '#faf4ed',
+            '--text': '#4a3728',
+            '--muted': '#8b7355',
+            '--border': '#e8d4b8',
+            '--accent': '#c9a961',
+            '--danger': '#b85450',
+            '--success': '#9a7c4a'
+        }
+    },
+    academia: {
+        name: 'Academia',
+        colors: {
+            '--bg': '#f8fafb',
+            '--surface': '#ffffff',
+            '--text': '#1a3a52',
+            '--muted': '#5a6b7f',
+            '--border': '#dce3eb',
+            '--accent': '#2d5a8c',
+            '--danger': '#c73e3e',
+            '--success': '#2d7a3d'
+        }
+    },
+    bookish: {
+        name: 'Bookish',
+        colors: {
+            '--bg': '#2b2520',
+            '--surface': '#3d3a34',
+            '--text': '#f4f1e8',
+            '--muted': '#a39f97',
+            '--border': '#504b43',
+            '--accent': '#d4a574',
+            '--danger': '#d4545f',
+            '--success': '#8b9d6e'
+        }
+    },
+    ocean: {
+        name: 'Ocean',
+        colors: {
+            '--bg': '#0a1628',
+            '--surface': '#1a2a42',
+            '--text': '#c7e5f5',
+            '--muted': '#7a9ac9',
+            '--border': '#2d4a6f',
+            '--accent': '#1fa3f4',
+            '--danger': '#ff6b6b',
+            '--success': '#51cf66'
+        }
+    },
+    coral: {
+        name: 'Coral',
+        colors: {
+            '--bg': '#ffe8e4',
+            '--surface': '#fff5f3',
+            '--text': '#a53860',
+            '--muted': '#d97373',
+            '--border': '#f5c5b8',
+            '--accent': '#ff6b7a',
+            '--danger': '#e63946',
+            '--success': '#f77f88'
+        }
+    },
+    minimal: {
+        name: 'Minimal',
+        colors: {
+            '--bg': '#fafafa',
+            '--surface': '#ffffff',
+            '--text': '#333333',
+            '--muted': '#999999',
+            '--border': '#eeeeee',
+            '--accent': '#444444',
+            '--danger': '#d32f2f',
+            '--success': '#388e3c'
+        }
+    },
+    sunset: {
+        name: 'Sunset',
+        colors: {
+            '--bg': '#2d1810',
+            '--surface': '#3d2416',
+            '--text': '#ffd4a3',
+            '--muted': '#b8906f',
+            '--border': '#5c4033',
+            '--accent': '#ff9f4a',
+            '--danger': '#ff6b5b',
+            '--success': '#ffc044'
+        }
+    },
+    teal: {
+        name: 'Teal',
+        colors: {
+            '--bg': '#0d4f4f',
+            '--surface': '#1a6b6b',
+            '--text': '#e0f2f1',
+            '--muted': '#4a9b9b',
+            '--border': '#2d7a7a',
+            '--accent': '#26a69a',
+            '--danger': '#ef5350',
+            '--success': '#4db6ac'
+        }
     }
 };
 
