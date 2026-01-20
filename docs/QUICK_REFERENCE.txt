@@ -1,0 +1,411 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║         MODUL RIWAYAT PEMINJAMAN BUKU - QUICK REFERENCE GUIDE            ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+🎯 WHAT IS THIS MODULE?
+═══════════════════════════════════════════════════════════════════════════
+
+A complete borrowing history system for students in a digital library.
+
+Students can:
+  ✓ View all books they've borrowed
+  ✓ See borrowing dates & deadlines
+  ✓ Check return status (Borrowed/Returned/Overdue)
+  ✓ View cover images
+  ✓ See statistics
+  ✓ Export history to CSV
+
+
+🚀 QUICK START (5 MINUTES)
+═══════════════════════════════════════════════════════════════════════════
+
+1. INSERT SAMPLE DATA
+   │
+   ├─ phpMyAdmin Method:
+   │  • Open http://localhost/phpmyadmin
+   │  • Select perpustakaan_online
+   │  • Go to SQL tab
+   │  • Copy from: sql/migrations/sample-borrowing-history.sql
+   │  • Click Execute
+   │
+   └─ Command Line Method:
+      mysql -u root perpustakaan_online < sql/migrations/sample-borrowing-history.sql
+
+2. TEST THE MODULE
+   │
+   ├─ Browser Method:
+   │  • Login: http://localhost/perpustakaan-online/public/login.php
+   │  • Visit: http://localhost/perpustakaan-online/public/student-borrowing-history.php
+   │  • See your borrowing history!
+   │
+   └─ Test Script Method:
+      php test-borrowing-history.php
+
+3. VERIFY IT WORKS
+   │
+   ├─ You should see:
+   │  ✓ Navbar with menu
+   │  ✓ 4 stat cards
+   │  ✓ Table with book data
+   │  ✓ No errors
+   │
+   └─ Run security check:
+      php security-audit.php
+
+
+📂 FILES CREATED (QUICK REFERENCE)
+═══════════════════════════════════════════════════════════════════════════
+
+MAIN FILES (Must Have):
+  📄 public/student-borrowing-history.php
+  📄 public/api/borrowing-history.php
+  📄 src/BorrowingHistoryModel.php
+  📄 public/partials/borrowing-widget.php
+
+SUPPORTING FILES:
+  📄 sql/migrations/sample-borrowing-history.sql
+  📄 test-borrowing-history.php
+  📄 security-audit.php
+
+DOCUMENTATION (Read These):
+  📄 BORROWING_HISTORY_README.md          ← START HERE (5 min)
+  📄 BORROWING_HISTORY_GUIDE.md           ← Complete reference
+  📄 BORROWING_HISTORY_INTEGRATION.php    ← Integration examples
+  📄 BORROWING_HISTORY_ARCHITECTURE.txt   ← System design
+
+
+🔗 QUICK LINKS
+═══════════════════════════════════════════════════════════════════════════
+
+ACCESS POINTS:
+
+From Student Dashboard:
+  • Menu → Riwayat Peminjaman
+  • Or direct: /public/student-borrowing-history.php
+
+API Endpoint:
+  • /public/api/borrowing-history.php
+  • /public/api/borrowing-history.php?status=borrowed
+  • /public/api/borrowing-history.php?format=csv
+
+Widget:
+  • Include in dashboard: /public/partials/borrowing-widget.php
+
+
+💾 DATABASE QUICK REFERENCE
+═══════════════════════════════════════════════════════════════════════════
+
+TABLE: BORROWS (Data Peminjaman)
+┌─────────────────────────────────────────────────────┐
+│ id          │ member_id │ book_id │ borrowed_at    │
+│ due_at      │ returned_at│ status  │                │
+└─────────────────────────────────────────────────────┘
+
+Status Values: 'borrowed', 'returned', 'overdue'
+
+Sample Query:
+  SELECT * FROM borrows WHERE member_id = 3;
+
+
+TABLE: BOOKS (Data Buku)
+┌─────────────────────────────────────────────────────┐
+│ id  │ title      │ author    │ cover_image        │
+│ isbn│ category   │ copies    │ created_at         │
+└─────────────────────────────────────────────────────┘
+
+Sample Query:
+  SELECT * FROM books WHERE id IN (10, 18, 19);
+
+
+TABLE: MEMBERS (Data Siswa)
+┌─────────────────────────────────────────────────────┐
+│ id  │ name       │ email     │ member_no          │
+│ nisn│ status     │ created_at│                    │
+└─────────────────────────────────────────────────────┘
+
+
+🎨 UI COMPONENTS
+═══════════════════════════════════════════════════════════════════════════
+
+HEADER/NAVBAR:
+  ┌──────────────────────────────────────────────────┐
+  │ 📚 Perpustakaan Digital  │ Dashboard │ Katalog   │
+  │                          │ Riwayat   │ Logout    │
+  └──────────────────────────────────────────────────┘
+
+STATISTICS CARDS (4 Cards):
+  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐
+  │   Total    │  │  Dipinjam  │  │ Dikembalikan│ │   Telat    │
+  │     5      │  │     2      │  │      2     │  │     1      │
+  └────────────┘  └────────────┘  └────────────┘  └────────────┘
+
+TABLE:
+  ┌──────────┬──────────────┬─────────────┬────────────┬────────────┐
+  │ Cover    │ Judul        │ Tanggal Pj  │ Tenggat    │ Status     │
+  ├──────────┼──────────────┼─────────────┼────────────┼────────────┤
+  │ [IMG]    │ Stoicism     │ 19 Jan 2026 │ 20 Jan 26  │ Dipinjam   │
+  │ [IMG]    │ Psychology   │ 15 Jan 2026 │ 25 Jan 26  │ Dikembalikan
+  └──────────┴──────────────┴─────────────┴────────────┴────────────┘
+
+
+🔑 KEY FEATURES & METHODS
+═══════════════════════════════════════════════════════════════════════════
+
+BorrowingHistoryModel Class:
+
+METHOD: getBorrowingHistory($memberId, $filters = [])
+  Returns: Array of borrowing records with book details
+  Usage:   $history = $model->getBorrowingHistory(3);
+
+METHOD: getBorrowingStats($memberId)
+  Returns: Array with total, borrowed, returned, overdue counts
+  Usage:   $stats = $model->getBorrowingStats(3);
+
+METHOD: getCurrentBorrows($memberId)
+  Returns: Array of currently borrowed books with urgency
+  Usage:   $current = $model->getCurrentBorrows(3);
+
+METHOD: calculateTotalFine($memberId, $finePerDay = 5000)
+  Returns: Float total fine amount
+  Usage:   $fine = $model->calculateTotalFine(3, 5000);
+
+STATIC: formatDate($date, $format = 'd M Y H:i')
+  Returns: Formatted date string
+  Usage:   echo BorrowingHistoryModel::formatDate($date);
+
+STATIC: getStatusText($status)
+  Returns: Status in Indonesian
+  Usage:   echo BorrowingHistoryModel::getStatusText('borrowed');
+
+
+🧑‍💻 CODE SNIPPETS
+═══════════════════════════════════════════════════════════════════════════
+
+GET RIWAYAT:
+  require_once 'src/db.php';
+  require_once 'src/BorrowingHistoryModel.php';
+  
+  $model = new BorrowingHistoryModel($pdo);
+  $history = $model->getBorrowingHistory($_SESSION['user']['id']);
+  
+  foreach ($history as $borrow) {
+      echo $borrow['book_title'];
+  }
+
+GET STATISTIK:
+  $stats = $model->getBorrowingStats($_SESSION['user']['id']);
+  echo "Total: " . $stats['total'];
+  echo "Dipinjam: " . $stats['borrowed'];
+
+USE API (JavaScript):
+  fetch('/api/borrowing-history.php')
+      .then(r => r.json())
+      .then(data => {
+          console.log(data.total);
+          console.log(data.data);
+      });
+
+FILTER API:
+  fetch('/api/borrowing-history.php?status=borrowed')
+      .then(r => r.json())
+      .then(data => console.log(data));
+
+EXPORT CSV:
+  window.location.href = '/api/borrowing-history.php?format=csv';
+
+
+🔐 SECURITY QUICK CHECKS
+═══════════════════════════════════════════════════════════════════════════
+
+✓ Authentication
+  • requireAuth() check present
+  • Session validation required
+  • Non-logged users redirected
+
+✓ SQL Security
+  • Prepared statements used
+  • Parameter binding on all queries
+  • No string concatenation with SQL
+
+✓ XSS Prevention
+  • htmlspecialchars() on output
+  • No raw HTML from variables
+
+✓ Data Isolation
+  • WHERE member_id = $_SESSION['user']['id']
+  • Users can't see others' data
+
+✓ Error Handling
+  • Try-catch blocks
+  • Safe error messages
+  • No debug info exposed
+
+
+🧪 TESTING QUICK COMMANDS
+═══════════════════════════════════════════════════════════════════════════
+
+PHP TEST:
+  cd /path/to/perpustakaan-online
+  php test-borrowing-history.php
+
+SECURITY AUDIT:
+  php security-audit.php
+
+MANUAL TEST:
+  1. Open browser
+  2. Go to: http://localhost/perpustakaan-online/public/login.php
+  3. Login as student
+  4. Visit: http://localhost/perpustakaan-online/public/student-borrowing-history.php
+  5. Check data displays
+
+
+📊 COMMON SQL QUERIES
+═══════════════════════════════════════════════════════════════════════════
+
+GET ALL BORROWS FOR MEMBER:
+  SELECT b.*, bk.title, bk.author, bk.cover_image
+  FROM borrows b
+  LEFT JOIN books bk ON b.book_id = bk.id
+  WHERE b.member_id = 3
+  ORDER BY b.borrowed_at DESC;
+
+GET CURRENTLY BORROWED:
+  SELECT * FROM borrows
+  WHERE member_id = 3 AND status = 'borrowed';
+
+COUNT BY STATUS:
+  SELECT status, COUNT(*) as count
+  FROM borrows
+  WHERE member_id = 3
+  GROUP BY status;
+
+GET OVERDUE BOOKS:
+  SELECT * FROM borrows
+  WHERE member_id = 3 AND due_at < NOW() AND returned_at IS NULL;
+
+CALCULATE FINE:
+  SELECT SUM(DATEDIFF(NOW(), due_at) * 5000) as total_fine
+  FROM borrows
+  WHERE member_id = 3 AND returned_at IS NULL AND due_at < NOW();
+
+UPDATE STATUS TO OVERDUE:
+  UPDATE borrows
+  SET status = 'overdue'
+  WHERE status = 'borrowed' AND due_at < NOW() AND returned_at IS NULL;
+
+RETURN A BOOK:
+  UPDATE borrows
+  SET returned_at = NOW(), status = 'returned'
+  WHERE id = 11;
+
+
+⚠️ COMMON ISSUES & SOLUTIONS
+═══════════════════════════════════════════════════════════════════════════
+
+ISSUE: Page shows "Akses Ditolak"
+SOLUTION:
+  1. Logout
+  2. Clear browser cookies
+  3. Login again
+  4. Visit page again
+
+ISSUE: "DB Connection failed"
+SOLUTION:
+  1. Check MySQL running (XAMPP Control Panel)
+  2. Verify src/config.php credentials
+  3. Restart Apache & MySQL
+  4. Test connection in phpMyAdmin
+
+ISSUE: "Belum Ada Riwayat Peminjaman"
+SOLUTION:
+  1. Insert sample data (see QUICK START)
+  2. Or manually insert in phpMyAdmin
+  3. Refresh page
+
+ISSUE: Cover image not showing
+SOLUTION:
+  1. Create img/covers/ folder if missing
+  2. Upload image file to folder
+  3. Check filename matches in database
+  4. Verify file permissions
+
+ISSUE: API returns 401
+SOLUTION:
+  1. Must login first
+  2. Must use same browser
+  3. Cannot use Postman (session issue)
+  4. Check session cookie in browser
+
+
+📞 HELP & SUPPORT
+═══════════════════════════════════════════════════════════════════════════
+
+Documentation:
+  • BORROWING_HISTORY_README.md (quick start)
+  • BORROWING_HISTORY_GUIDE.md (full guide)
+  • Code comments (inline documentation)
+
+Test Scripts:
+  • test-borrowing-history.php
+  • security-audit.php
+
+Debugging:
+  1. Check browser console (F12)
+  2. Check PHP error log
+  3. Check MySQL error log
+  4. Run security audit
+
+Getting Help:
+  1. Read documentation
+  2. Run test scripts
+  3. Check error logs
+  4. Review code comments
+
+
+📈 NEXT STEPS
+═══════════════════════════════════════════════════════════════════════════
+
+IMMEDIATE (Day 1):
+  ✓ Insert sample data
+  ✓ Test module works
+  ✓ Run security check
+
+SHORT TERM (Week 1):
+  ✓ Integrate with dashboard
+  ✓ Train team
+  ✓ Deploy to production
+  ✓ Monitor logs
+
+MEDIUM TERM (Month 1):
+  ✓ Monitor usage
+  ✓ Collect feedback
+  ✓ Optimize if needed
+  ✓ Plan improvements
+
+LONG TERM (Quarter):
+  ✓ Add PDF export
+  ✓ Add email reminders
+  ✓ Fine payment system
+  ✓ Mobile app integration
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+SUMMARY:
+  ✓ Complete system ready to use
+  ✓ Well documented
+  ✓ Thoroughly tested
+  ✓ Production ready
+  ✓ Easy to customize
+
+GET STARTED:
+  1. Follow "QUICK START" above
+  2. Read BORROWING_HISTORY_README.md
+  3. Deploy to production
+
+═══════════════════════════════════════════════════════════════════════════
+
+Version 1.0.0 | January 20, 2026 | Status: ✅ PRODUCTION READY
