@@ -136,11 +136,10 @@ $categories = [
   <title>Kelola Buku</title>
   <script src="../assets/js/theme-loader.js"></script>
   <script src="../assets/js/theme.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
-  <link rel="stylesheet" href="../assets/css/global.css">
-  <link rel="stylesheet" href="../assets/css/header-sidebar.css">
-  <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/books.css">
 </head>
@@ -199,7 +198,7 @@ $categories = [
                   <?php endif; ?>
                 </div>
               </div>
-              <button class="btn primary"><?= $action === 'edit' ? 'Simpan' : 'Tambah Buku' ?></button>
+              <button class="btn" type="submit"><?= $action === 'edit' ? 'Simpan' : 'Tambah Buku' ?></button>
             </form>
           </div>
 
@@ -240,7 +239,7 @@ $categories = [
                       <img src="../img/covers/<?= htmlspecialchars($b['cover_image']) ?>"
                         alt="<?= htmlspecialchars($b['title']) ?>">
                     <?php else: ?>
-                      <div class="no-image">📚</div>
+                      <div class="no-image"><iconify-icon icon="mdi:book-multiple" style="font-size: 48px;"></iconify-icon></div>
                     <?php endif; ?>
                   </div>
                   <div class="book-info">
@@ -252,11 +251,11 @@ $categories = [
                     </div>
                   </div>
                   <div class="book-actions">
-                    <button class="btn small"
-                      onclick="showDetail(<?= htmlspecialchars(json_encode($b)) ?>)">Detail</button>
-                    <a href="books.php?action=edit&id=<?= $b['id'] ?>" class="btn small">Edit</a>
-                    <a href="books.php?action=delete&id=<?= $b['id'] ?>" class="btn small danger"
-                      onclick="return confirm('Hapus buku ini?')">Hapus</a>
+                    <button class="btn btn-sm btn-secondary"
+                      onclick="showDetail(<?= htmlspecialchars(json_encode($b)) ?>)"><iconify-icon icon="mdi:information" style="vertical-align: middle;"></iconify-icon> Detail</button>
+                    <a href="books.php?action=edit&id=<?= $b['id'] ?>" class="btn btn-sm"><iconify-icon icon="mdi:pencil" style="vertical-align: middle;"></iconify-icon> Edit</a>
+                    <a href="books.php?action=delete&id=<?= $b['id'] ?>" class="btn btn-sm btn-danger"
+                      onclick="return confirm('Hapus buku ini?')"><iconify-icon icon="mdi:trash-can" style="vertical-align: middle;"></iconify-icon> Hapus</a>
                   </div>
                 </div>
               <?php endforeach ?>

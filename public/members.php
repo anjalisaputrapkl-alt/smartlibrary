@@ -116,11 +116,10 @@ $members = $stmt->fetchAll();
   <title>Kelola Murid</title>
   <script src="../assets/js/theme-loader.js"></script>
   <script src="../assets/js/theme.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
-  <link rel="stylesheet" href="../assets/css/global.css">
-  <link rel="stylesheet" href="../assets/css/header-sidebar.css">
-  <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/members.css">
 </head>
@@ -177,7 +176,7 @@ $members = $stmt->fetchAll();
               <label>NISN Siswa</label>
               <input name="nisn" required placeholder="Nomor Induk Siswa Nasional" value="<?= $member['nisn'] ?? '' ?>">
             </div>
-            <button class="btn primary">
+            <button class="btn" type="submit">
               <?= $action === 'edit' ? 'Simpan Perubahan' : 'Tambah Murid' ?>
             </button>
           </form>
@@ -214,19 +213,17 @@ $members = $stmt->fetchAll();
                     <td>
                       <?php if ($userExists): ?>
                         <span
-                          style="display: inline-block; background: rgba(16, 185, 129, 0.1); color: #065f46; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">✓
-                          Akun Terbuat</span>
+                          style="display: inline-block; background: rgba(16, 185, 129, 0.1); color: #065f46; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;"><iconify-icon icon="mdi:check-circle" style="vertical-align: middle; margin-right: 4px;"></iconify-icon> Akun Terbuat</span>
                       <?php else: ?>
                         <span
-                          style="display: inline-block; background: rgba(107, 114, 128, 0.1); color: #374151; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">-
-                          Belum</span>
+                          style="display: inline-block; background: rgba(107, 114, 128, 0.1); color: #374151; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;"><iconify-icon icon="mdi:minus-circle" style="vertical-align: middle; margin-right: 4px;"></iconify-icon> Belum</span>
                       <?php endif; ?>
                     </td>
                     <td>
                       <div class="actions">
-                        <a class="btn" href="members.php?action=edit&id=<?= $m['id'] ?>">Edit</a>
-                        <a class="btn danger" onclick="return confirm('Hapus murid ini? Akun siswa juga akan dihapus.')"
-                          href="members.php?action=delete&id=<?= $m['id'] ?>">Hapus</a>
+                        <a class="btn btn-sm btn-secondary" href="members.php?action=edit&id=<?= $m['id'] ?>"><iconify-icon icon="mdi:pencil" style="vertical-align: middle;"></iconify-icon> Edit</a>
+                        <a class="btn btn-sm btn-danger" onclick="return confirm('Hapus murid ini? Akun siswa juga akan dihapus.')"
+                          href="members.php?action=delete&id=<?= $m['id'] ?>"><iconify-icon icon="mdi:trash-can" style="vertical-align: middle;"></iconify-icon> Hapus</a>
                       </div>
                     </td>
                   </tr>

@@ -95,11 +95,10 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE created_at >
   <title>Laporan - Perpustakaan Online</title>
   <script src="../assets/js/theme-loader.js"></script>
   <script src="../assets/js/theme.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
-  <link rel="stylesheet" href="../assets/css/global.css">
-  <link rel="stylesheet" href="../assets/css/header-sidebar.css">
-  <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/reports.css">
 </head>
@@ -139,8 +138,8 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE created_at >
             </select>
           </div>
           <div>
-            <button id="btn-apply" class="btn primary">Filter</button>
-            <button id="btn-export-excel" class="btn" style="margin-left: 8px;">Export Excel</button>
+            <button id="btn-apply" class="btn"><iconify-icon icon="mdi:filter" style="vertical-align: middle;"></iconify-icon> Filter</button>
+            <button id="btn-export-excel" class="btn btn-secondary" style="margin-left: 8px;"><iconify-icon icon="mdi:file-excel" style="vertical-align: middle;"></iconify-icon> Export Excel</button>
           </div>
         </div>
       </div>
@@ -148,7 +147,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE created_at >
       <!-- KPI Cards -->
       <div class="kpi-grid">
         <div class="kpi-card">
-          <div class="kpi-icon">📚</div>
+          <div class="kpi-icon"><iconify-icon icon="mdi:library"></iconify-icon></div>
           <div>
             <div class="kpi-title">Total Buku</div>
             <div class="kpi-value"><?php echo number_format($tot_books); ?></div>
@@ -156,7 +155,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE created_at >
         </div>
 
         <div class="kpi-card">
-          <div class="kpi-icon">🔄</div>
+          <div class="kpi-icon"><iconify-icon icon="mdi:sync"></iconify-icon></div>
           <div>
             <div class="kpi-title">Peminjaman Bulan Ini</div>
             <div class="kpi-value"><?php echo number_format($tot_borrows_month); ?></div>
@@ -164,7 +163,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE created_at >
         </div>
 
         <div class="kpi-card">
-          <div class="kpi-icon">📥</div>
+          <div class="kpi-icon"><iconify-icon icon="mdi:inbox"></iconify-icon></div>
           <div>
             <div class="kpi-title">Pengembalian Bulan Ini</div>
             <div class="kpi-value"><?php echo number_format($tot_returns_month); ?></div>
@@ -172,7 +171,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE created_at >
         </div>
 
         <div class="kpi-card">
-          <div class="kpi-icon">👥</div>
+          <div class="kpi-icon"><iconify-icon icon="mdi:account-multiple"></iconify-icon></div>
           <div>
             <div class="kpi-title">Anggota Aktif (90 hari)</div>
             <div class="kpi-value"><?php echo number_format($active_members); ?></div>
@@ -180,7 +179,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE created_at >
         </div>
 
         <div class="kpi-card">
-          <div class="kpi-icon">💰</div>
+          <div class="kpi-icon"><iconify-icon icon="mdi:cash-multiple"></iconify-icon></div>
           <div>
             <div class="kpi-title">Total Denda</div>
             <div class="kpi-value">Rp <?php echo number_format($fines); ?></div>

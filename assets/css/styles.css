@@ -1,4 +1,6 @@
-/* Modern Design System */
+/* Modern Design System with Inter Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root{
   --primary:#3b82f6;
   --primary-light:#dbeafe;
@@ -23,6 +25,9 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
+  --accent: #0b3d61;
+  --accent-light: #e0f2fe;
+  --muted: #6b7280;
 }
 
 * { box-sizing: border-box; }
@@ -33,7 +38,7 @@ html, body {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -434,6 +439,7 @@ label {
   text-transform: uppercase;
   letter-spacing: 0.3px;
   color: var(--text-muted);
+  font-family: 'Inter', inherit;
 }
 
 input, select, textarea {
@@ -441,7 +447,7 @@ input, select, textarea {
   padding: 11px 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  font-family: inherit;
+  font-family: 'Inter', inherit;
   font-size: 14px;
   transition: all 0.3s ease;
   background: white;
@@ -475,80 +481,234 @@ small {
   margin-top: 4px;
 }
 
-/* Buttons */
-.btn, button {
+/* ===== BUTTONS - GLOBAL STANDARDIZATION ===== */
+.btn, button, .button, [type="submit"] {
   padding: 10px 18px;
   border: none;
   border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 600;
+  font-family: 'Inter', inherit;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   text-decoration: none;
   letter-spacing: 0.3px;
 }
 
-.btn {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+/* Primary Button - Default Blue */
+.btn, button[type="submit"], .btn-primary {
+  background: var(--primary);
   color: white;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-.btn:hover {
+.btn:hover, button[type="submit"]:hover, .btn-primary:hover {
+  background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59,130,246,0.4);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
 }
 
-.btn:active {
-  transform: translateY(0);
+.btn:active, button[type="submit"]:active, .btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-.btn.secondary {
+/* Button Sizes */
+.btn.btn-sm, button.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn.btn-lg, button.btn-lg {
+  padding: 12px 24px;
+  font-size: 14px;
+}
+
+/* Secondary Button */
+.btn.btn-secondary, button.btn-secondary {
   background: var(--bg);
   color: var(--text);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
 }
 
-.btn.secondary:hover {
+.btn.btn-secondary:hover, button.btn-secondary:hover {
   background: var(--bg-secondary);
   border-color: #cbd5e1;
-}
-
-.btn.success {
-  background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-}
-
-.btn.success:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(16,185,129,0.4);
 }
 
-.btn.danger {
-  background: linear-gradient(135deg, var(--danger) 0%, #991b1b 100%);
+.btn.btn-secondary:active, button.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Success Button */
+.btn.btn-success, button.btn-success {
+  background: var(--success);
   color: white;
-  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-.btn.danger:hover {
+.btn.btn-success:hover, button.btn-success:hover {
+  background: #059669;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(239,68,68,0.4);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }
 
-button[type="submit"] {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+.btn.btn-success:active, button.btn-success:active {
+  transform: scale(0.98);
+}
+
+/* Danger Button - For Delete Actions */
+.btn.btn-danger, button.btn-danger {
+  background: var(--danger);
   color: white;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-button[type="submit"]:hover {
+.btn.btn-danger:hover, button.btn-danger:hover {
+  background: #991b1b;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59,130,246,0.4);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.btn.btn-danger:active, button.btn-danger:active {
+  transform: scale(0.98);
+}
+
+/* Warning Button */
+.btn.btn-warning, button.btn-warning {
+  background: var(--warning);
+  color: white;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn.btn-warning:hover, button.btn-warning:hover {
+  background: #d97706;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+}
+
+.btn.btn-warning:active, button.btn-warning:active {
+  transform: scale(0.98);
+}
+
+/* Search Button - Accent Color (Student Dashboard Style) */
+.btn-search, button.btn-search {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', inherit;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-search:hover, button.btn-search:hover {
+  background: #062d4a;
+}
+
+.btn-search:active, button.btn-search:active {
+  transform: scale(0.98);
+}
+
+/* Borrow Button - Accent Color */
+.btn-borrow, button.btn-borrow {
+  flex: 1;
+  padding: 10px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', inherit;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-borrow:hover, button.btn-borrow:hover {
+  background: #062d4a;
+}
+
+.btn-borrow:disabled, button.btn-borrow:disabled {
+  background: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* Detail Button - Light Style */
+.btn-detail, button.btn-detail {
+  flex: 1;
+  padding: 10px;
+  background: var(--bg);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', inherit;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-detail:hover, button.btn-detail:hover {
+  background: var(--accent-light);
+}
+
+/* Disabled State */
+button:disabled, .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Button Groups */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+.action-buttons a, .action-buttons button {
+  padding: 6px 12px;
+  font-size: 11px;
+  border-radius: 5px;
+}
+
+/* Link Button */
+button.btn-link, .btn-link {
+  background: none;
+  color: var(--primary);
+  box-shadow: none;
+  text-decoration: underline;
+}
+
+button.btn-link:hover, .btn-link:hover {
+  color: var(--primary-dark);
 }
 
 /* Tables */

@@ -85,12 +85,11 @@ if ($is_authenticated) {
     <title>Dashboard Perpustakaan</title>
     <script src="../assets/js/theme-loader.js"></script>
     <script src="../assets/js/theme.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
-    <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/header-sidebar.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="../assets/css/animations.css">
     <link rel="stylesheet" href="../assets/css/index.css">
 </head>
@@ -132,11 +131,11 @@ if ($is_authenticated) {
                         <h2><iconify-icon icon="mdi:clipboard-list" style="vertical-align: middle; margin-right: 8px;"></iconify-icon>Aktivitas Terbaru</h2>
 
                         <div class="activity-tabs">
-                            <button class="activity-tab active" data-tab="all">🔀 Semua</button>
-                            <button class="activity-tab" data-tab="borrows">📖 Peminjaman</button>
-                            <button class="activity-tab" data-tab="returns">📥 Pengembalian</button>
-                            <button class="activity-tab" data-tab="members">👥 Anggota Baru</button>
-                            <button class="activity-tab" data-tab="books">📚 Buku Baru</button>
+                            <button class="activity-tab active btn-sm" data-tab="all"><iconify-icon icon="mdi:shuffle-variant" style="vertical-align: middle;"></iconify-icon> Semua</button>
+                            <button class="activity-tab btn-sm" data-tab="borrows"><iconify-icon icon="mdi:book-open" style="vertical-align: middle;"></iconify-icon> Peminjaman</button>
+                            <button class="activity-tab btn-sm" data-tab="returns"><iconify-icon icon="mdi:inbox" style="vertical-align: middle;"></iconify-icon> Pengembalian</button>
+                            <button class="activity-tab btn-sm" data-tab="members"><iconify-icon icon="mdi:account-multiple" style="vertical-align: middle;"></iconify-icon> Anggota Baru</button>
+                            <button class="activity-tab btn-sm" data-tab="books"><iconify-icon icon="mdi:library" style="vertical-align: middle;"></iconify-icon> Buku Baru</button>
                         </div>
 
                         <!-- All Activities Tab -->
