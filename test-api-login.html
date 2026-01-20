@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Login NISN</title>
+    <style>
+        * { font-family: Arial, sans-serif; }
+        body { max-width: 900px; margin: 30px auto; padding: 20px; }
+        .container { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+        h2 { color: #0b3d61; border-bottom: 2px solid #0b3d61; padding-bottom: 10px; }
+        .section { background: white; padding: 15px; margin: 15px 0; border-radius: 6px; border-left: 4px solid #0b3d61; }
+        input, select { 
+            padding: 8px; 
+            margin: 5px 0; 
+            width: 100%; 
+            box-sizing: border-box; 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button { 
+            padding: 10px 20px; 
+            background: #0b3d61; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover { background: #062d4a; }
+        .output { 
+            background: #f5f5f5; 
+            padding: 15px; 
+            border-radius: 4px; 
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .info { background: #cce5ff; color: #004085; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Test API Login NISN - Debugging Tool</h1>
+        
+        <div class="section">
+            <h2>1️⃣ Load Data Siswa dari Database</h2>
+            <p><strong>📋 Daftar siswa yang terdaftar:</strong></p>
+            <button onclick="loadStudentsData()">📊 Load Data Siswa</button>
+            <div id="studentOutput" class="output"></div>
+            <p style="margin-top: 15px; padding: 10px; background: #fffbea; border-radius: 4px; border-left: 4px solid #ffc107;">
+                <strong>💡 Tips:</strong> Salin NISN dari daftar di atas dan gunakan untuk test login. Password harus SAMA dengan NISN.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>2️⃣ Manual Test API Login</h2>
+            <label><strong>NISN Siswa:</strong></label>
+            <input type="text" id="testNisn" placeholder="Contoh: 1234567890">
+            
+            <label><strong>Password:</strong></label>
+            <input type="password" id="testPassword" placeholder="Harus sama dengan NISN">
+            
+            <button onclick="testAPILogin()">🔓 Test Login API</button>
+            <button onclick="testLoginWithDebug()">🐛 Test + Debug Detail</button>
+            
+            <div id="loginOutput" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>3️⃣ Test Verifikasi Password</h2>
+            <label><strong>NISN untuk test hash:</strong></label>
+            <input type="text" id="testHashNisn" placeholder="Contoh: 1234567890">
+            
+            <button onclick="testPasswordHash()">🔐 Test Password Hash</button>
+            
+            <div id="hashOutput" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>4️⃣ Test Login Form Siswa</h2>
+            <p><strong>Atau test via form modal di halaman utama:</strong></p>
+            <form id="modalForm" onsubmit="testModalForm(event)">
+                <label><strong>User Type:</strong></label>
+                <select id="userType">
+                    <option value="student">Student (NISN)</option>
+                    <option value="school">Admin School (Email)</option>
+                </select>
+
+                <div id="studentFields">
+                    <label><strong>NISN:</strong></label>
+                    <input type="text" id="formNisn" placeholder="1234567890">
+                    
+                    <label><strong>Password:</strong></label>
+                    <input type="password" id="formPassword" placeholder="Password">
+                </div>
+
+                <div id="adminFields" style="display:none;">
+                    <label><strong>Email:</strong></label>
+                    <input type="email" id="formEmail" placeholder="admin@sekolah.com">
+                    
+                    <label><strong>Password:</strong></label>
+                    <input type="password" id="formAdminPassword" placeholder="Password">
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+            <div id="formOutput" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Update form fields based on user type
+        document.getElementById('userType').addEventListener('change', function(e) {
+            const studentFields = document.getElementById('studentFields');
+            const adminFields = document.getElementById('adminFields');
+            if (e.target.value === 'student') {
+                studentFields.style.display = 'block';
+                adminFields.style.display = 'none';
+            } else {
+                studentFields.style.display = 'none';
+                adminFields.style.display = 'block';
+            }
+        });
+
+        // 1. Load students
+        function loadStudentsData() {
+            const output = document.getElementById('studentOutput');
+            output.innerHTML = '<div class="info">⏳ Loading...</div>';
+
+            fetch('debug-nisn.php')
+                .then(r => r.text())
+                .then(html => {
+                    output.innerHTML = '<pre>' + html.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
+                })
+                .catch(e => {
+                    output.innerHTML = '<div class="error">❌ Error: ' + e.message + '</div>';
+                });
+        }
+
+        // 2. Test API Login
+        function testAPILogin() {
+            const nisn = document.getElementById('testNisn').value;
+            const password = document.getElementById('testPassword').value;
+            const output = document.getElementById('loginOutput');
+
+            if (!nisn || !password) {
+                output.innerHTML = '<div class="error">❌ Masukkan NISN dan password!</div>';
+                return;
+            }
+
+            output.innerHTML = '<div class="info">⏳ Testing login...</div>';
+
+            const formData = new FormData();
+            formData.append('user_type', 'student');
+            formData.append('nisn', nisn);
+            formData.append('password', password);
+
+            fetch('public/api/login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => {
+                console.log('Response status:', r.status);
+                return r.json().then(json => ({ status: r.status, data: json }));
+            })
+            .then(result => {
+                let html = '<strong>Status Code:</strong> ' + result.status + '<br>';
+                html += '<strong>Response:</strong> <pre>' + JSON.stringify(result.data, null, 2) + '</pre>';
+                
+                if (result.data.success) {
+                    output.innerHTML = '<div class="success">' + html + '</div>';
+                } else {
+                    output.innerHTML = '<div class="error">' + html + '</div>';
+                }
+            })
+            .catch(e => {
+                output.innerHTML = '<div class="error">❌ Network Error: ' + e.message + '</div>';
+            });
+        }
+
+        // 3. Test Login dengan Debug Detail
+        function testLoginWithDebug() {
+            const nisn = document.getElementById('testNisn').value;
+            const password = document.getElementById('testPassword').value;
+            const output = document.getElementById('loginOutput');
+
+            if (!nisn || !password) {
+                output.innerHTML = '<div class="error">❌ Masukkan NISN dan password!</div>';
+                return;
+            }
+
+            output.innerHTML = `
+                <div class="info">
+                    <strong>🔍 Debug Info:</strong><br>
+                    NISN Input: <code>${nisn}</code><br>
+                    Password Input: <code>${password}</code><br>
+                    Sending to: <code>public/api/login.php</code><br>
+                    <br>⏳ Testing...
+                </div>
+            `;
+
+            const formData = new FormData();
+            formData.append('user_type', 'student');
+            formData.append('nisn', nisn);
+            formData.append('password', password);
+
+            // Log what we're sending
+            console.log('=== LOGIN REQUEST ===');
+            console.log('NISN:', nisn);
+            console.log('Password:', password);
+            console.log('User Type: student');
+
+            fetch('public/api/login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => {
+                console.log('=== LOGIN RESPONSE ===');
+                console.log('Status:', r.status);
+                return r.json().then(json => ({ status: r.status, data: json }));
+            })
+            .then(result => {
+                console.log('Response:', result.data);
+
+                let html = `
+                    <strong>📊 Response Details:</strong><br>
+                    Status Code: <code>${result.status}</code><br>
+                    Success: <code>${result.data.success ? 'true ✅' : 'false ❌'}</code><br>
+                    Message: <code>${result.data.message}</code><br>
+                    <br>
+                `;
+
+                if (result.status === 401) {
+                    html += `
+                        <div class="error">
+                            <strong>❌ 401 Unauthorized - Penyebab Kemungkinan:</strong><br>
+                            1. NISN <code>${nisn}</code> tidak ada di database<br>
+                            2. Password <code>${password}</code> tidak cocok<br>
+                            3. Role siswa bukan 'student'<br>
+                            <br>
+                            <strong>Solusi:</strong><br>
+                            - Cek di "Load Data Siswa" apakah NISN ada<br>
+                            - Password harus SAMA dengan NISN<br>
+                            - Jalankan: C:\\xampp\\php\\php.exe fix-nisn-sync.php
+                        </div>
+                    `;
+                } else if (result.data.success) {
+                    html += '<div class="success">✅ Login berhasil!</div>';
+                }
+
+                output.innerHTML = '<pre>' + html + '</pre>';
+            })
+            .catch(e => {
+                console.error('Error:', e);
+                output.innerHTML = `
+                    <div class="error">
+                        ❌ Network Error: ${e.message}<br>
+                        <br>
+                        <strong>Kemungkinan Penyebab:</strong><br>
+                        - API endpoint tidak accessible<br>
+                        - PHP error di server<br>
+                        - Check browser console (F12) untuk detail<br>
+                    </div>
+                `;
+            });
+        }
+
+        // 4. Test Password Hash
+        function testPasswordHash() {
+            const nisn = document.getElementById('testHashNisn').value;
+            const output = document.getElementById('hashOutput');
+
+            if (!nisn) {
+                output.innerHTML = '<div class="error">❌ Masukkan NISN!</div>';
+                return;
+            }
+
+            // Fetch PHP untuk hash password
+            fetch('test-password-hash.php?nisn=' + encodeURIComponent(nisn))
+                .then(r => r.json())
+                .then(data => {
+                    let html = `
+                        <strong>🔐 Password Hash Test:</strong><br>
+                        NISN: <code>${nisn}</code><br>
+                        Hash: <code>${data.hash}</code><br>
+                        Algorithm: <code>${data.algorithm}</code><br>
+                        <br>
+                        <strong>Database Check:</strong><br>
+                    `;
+
+                    if (data.found_in_db) {
+                        html += `
+                            ✅ NISN ditemukan di database!<br>
+                            Nama: <code>${data.name}</code><br>
+                            Role: <code>${data.role}</code><br>
+                            DB Hash: <code>${data.db_hash}</code><br>
+                            <br>
+                            <strong>Verifikasi:</strong><br>
+                            Password ${nisn} vs Hash: <code>${data.verify_result ? '✅ MATCH' : '❌ NO MATCH'}</code>
+                        `;
+                    } else {
+                        html += '❌ NISN tidak ada di database!';
+                    }
+
+                    output.innerHTML = '<div class="info">' + html + '</div>';
+                })
+                .catch(e => {
+                    output.innerHTML = '<div class="error">❌ Error: ' + e.message + '</div>';
+                });
+        }
+
+        // 5. Test Modal Form
+        function testModalForm(e) {
+            e.preventDefault();
+            const userType = document.getElementById('userType').value;
+            const output = document.getElementById('formOutput');
+
+            output.innerHTML = '<div class="info">⏳ Submitting form...</div>';
+
+            const formData = new FormData();
+            formData.append('user_type', userType);
+
+            if (userType === 'student') {
+                formData.append('nisn', document.getElementById('formNisn').value);
+                formData.append('password', document.getElementById('formPassword').value);
+            } else {
+                formData.append('email', document.getElementById('formEmail').value);
+                formData.append('password', document.getElementById('formAdminPassword').value);
+            }
+
+            fetch('public/api/login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    output.innerHTML = '<div class="success">✅ Login Berhasil!<br>' + JSON.stringify(data, null, 2) + '</div>';
+                } else {
+                    output.innerHTML = '<div class="error">❌ Login Gagal!<br>' + JSON.stringify(data, null, 2) + '</div>';
+                }
+            })
+            .catch(e => {
+                output.innerHTML = '<div class="error">❌ Error: ' + e.message + '</div>';
+            });
+        }
+
+        // Auto load students on page load
+        window.addEventListener('DOMContentLoaded', loadStudentsData);
+    </script>
+</body>
+</html>
