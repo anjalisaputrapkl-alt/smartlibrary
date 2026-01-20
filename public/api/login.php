@@ -25,7 +25,7 @@ $user_type = $_POST['user_type'] ?? '';
 // Determine if login is for student or school admin
 if ($user_type === 'student') {
     error_log("Student login attempt");
-    
+
     // Student login with NISN + Password
     if (empty($nisn) || empty($password)) {
         error_log("Student login failed: NISN atau password kosong");
@@ -89,7 +89,7 @@ if ($user_type === 'student') {
 } else {
     // School admin login with email + password
     error_log("Admin login attempt");
-    
+
     $email = $_POST['email'] ?? '';
 
     if (empty($email) || empty($password)) {

@@ -3,6 +3,7 @@
 Error 401 = Credentials tidak valid. Ikuti panduan cepat ini:
 
 ## 1️⃣ Cek Siswa di Database (1 menit)
+
 ```bash
 C:\xampp\php\php.exe check-students.php
 ```
@@ -10,6 +11,7 @@ C:\xampp\php\php.exe check-students.php
 Catat NISN siswa yang muncul. Contoh: `111111`
 
 ## 2️⃣ Test Login dengan NISN Tersebut (1 menit)
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ```
@@ -17,6 +19,7 @@ C:\xampp\php\php.exe test-login-cli.php 111111 111111
 Jika output menunjukkan `✅ Login would SUCCEED` → sistem login OK
 
 ## 3️⃣ Test di Browser (2 menit)
+
 Buka: http://localhost/perpustakaan-online
 
 - Pilih tab "Siswa"
@@ -27,6 +30,7 @@ Buka: http://localhost/perpustakaan-online
 ## 4️⃣ Jika Masih Error 401
 
 Buka di browser:
+
 ```
 http://sekolah.localhost/test-api-login.html
 ```

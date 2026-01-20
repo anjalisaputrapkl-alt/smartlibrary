@@ -5,6 +5,7 @@
 **Error 401 Unauthorized** muncul ketika login siswa dengan NISN gagal.
 
 **Solusi cepat:**
+
 1. Pastikan NISN siswa sudah terdaftar (Kelola Murid)
 2. Password HARUS sama dengan NISN
 3. Jalankan `check-students.php` untuk verifikasi
@@ -15,6 +16,7 @@
 ## ⚡ Quick Start (5 menit)
 
 ### Step 1: Cek Siswa
+
 ```bash
 C:\xampp\php\php.exe check-students.php
 ```
@@ -22,6 +24,7 @@ C:\xampp\php\php.exe check-students.php
 Catat NISN siswa. Contoh: `111111`
 
 ### Step 2: Test Login
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ```
@@ -29,6 +32,7 @@ C:\xampp\php\php.exe test-login-cli.php 111111 111111
 Jika output: `✅ Login would SUCCEED` → OK!
 
 ### Step 3: Test di Browser
+
 - Buka: http://localhost/perpustakaan-online
 - Tab "Siswa"
 - NISN: `111111`
@@ -39,13 +43,13 @@ Jika output: `✅ Login would SUCCEED` → OK!
 
 ## 📚 Dokumentasi
 
-| File | Tujuan | Waktu |
-|------|--------|-------|
-| [LOGIN_401_QUICKFIX.md](LOGIN_401_QUICKFIX.md) | Solusi cepat | 5 min |
-| [LOGIN_ERROR_401_GUIDE.md](LOGIN_ERROR_401_GUIDE.md) | Troubleshooting detail | 15 min |
-| [ERROR_401_EXPLANATION.md](ERROR_401_EXPLANATION.md) | Penjelasan sistem | 20 min |
-| [NISN_LOGIN_TROUBLESHOOTING.md](NISN_LOGIN_TROUBLESHOOTING.md) | Debugging tools | 10 min |
-| [TOOLS_REFERENCE.md](TOOLS_REFERENCE.md) | Referensi semua tools | 10 min |
+| File                                                           | Tujuan                 | Waktu  |
+| -------------------------------------------------------------- | ---------------------- | ------ |
+| [LOGIN_401_QUICKFIX.md](LOGIN_401_QUICKFIX.md)                 | Solusi cepat           | 5 min  |
+| [LOGIN_ERROR_401_GUIDE.md](LOGIN_ERROR_401_GUIDE.md)           | Troubleshooting detail | 15 min |
+| [ERROR_401_EXPLANATION.md](ERROR_401_EXPLANATION.md)           | Penjelasan sistem      | 20 min |
+| [NISN_LOGIN_TROUBLESHOOTING.md](NISN_LOGIN_TROUBLESHOOTING.md) | Debugging tools        | 10 min |
+| [TOOLS_REFERENCE.md](TOOLS_REFERENCE.md)                       | Referensi semua tools  | 10 min |
 
 👉 **Mulai dari:** LOGIN_401_QUICKFIX.md
 
@@ -54,6 +58,7 @@ Jika output: `✅ Login would SUCCEED` → OK!
 ## 🛠️ Tools Debugging
 
 ### CLI Tools
+
 ```bash
 # Lihat siswa di database
 php check-students.php
@@ -69,6 +74,7 @@ php fix-nisn-sync.php
 ```
 
 ### Browser Tools
+
 ```
 http://sekolah.localhost/test-api-login.html
 ```
@@ -80,19 +86,23 @@ http://sekolah.localhost/test-api-login.html
 ## 🎯 Common Issues
 
 ### ❌ Password Salah
+
 ```
 ❌ NISN: 111111, Password: anjali
 ✅ NISN: 111111, Password: 111111 ← Harus sama!
 ```
 
 ### ❌ NISN Tidak Ada
+
 - Siswa belum ditambahkan di Kelola Murid
 - Jalankan: `check-students.php`
 
 ### ❌ Role Bukan 'student'
+
 - Jalankan: `fix-nisn-sync.php`
 
 ### ❌ Credential Benar Tapi Tetap Gagal
+
 - Cek browser DevTools (F12)
 - Tab Network → lihat request ke `/public/api/login.php`
 

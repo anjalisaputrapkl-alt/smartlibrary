@@ -64,14 +64,14 @@ if (!$user) {
     echo "   ✅ NISN ditemukan!\n";
     echo "   Nama Siswa: {$user['name']}\n";
     echo "   Password Hash: {$user['password']}\n\n";
-    
+
     // Cek password
     if (password_verify($test_password, $user['password'])) {
         echo "   ✅ PASSWORD BENAR! Login harus berhasil.\n";
     } else {
         echo "   ❌ PASSWORD SALAH!\n";
         echo "   Password yang diinput tidak cocok dengan hash.\n";
-        
+
         // Debug: coba hash password yang diinput
         $new_hash = password_hash($test_password, PASSWORD_BCRYPT);
         echo "\n   DEBUG - Hash password '$test_password': $new_hash\n";

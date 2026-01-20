@@ -7,8 +7,10 @@ Panduan lengkap semua tools untuk debug login error 401.
 ## 📚 Dokumentasi Files
 
 ### 1. LOGIN_401_QUICKFIX.md ⚡
+
 **Kapan baca:** Butuh fix cepat (5 menit)
-**Isi:** 
+**Isi:**
+
 - Langkah-langkah quick start
 - 4 langkah utama
 - Checklist singkat
@@ -18,8 +20,10 @@ Panduan lengkap semua tools untuk debug login error 401.
 ---
 
 ### 2. LOGIN_ERROR_401_GUIDE.md 📖
+
 **Kapan baca:** Butuh penjelasan detail & troubleshooting comprehensive
 **Isi:**
+
 - 4 langkah debugging detail
 - 4 problem umum + solusi
 - Workflow lengkap
@@ -31,8 +35,10 @@ Panduan lengkap semua tools untuk debug login error 401.
 ---
 
 ### 3. ERROR_401_EXPLANATION.md 🔍
+
 **Kapan baca:** Ingin memahami sistem login secara mendalam
 **Isi:**
+
 - Penjelasan error 401
 - Database structure
 - Alur membuat akun siswa
@@ -48,6 +54,7 @@ Panduan lengkap semua tools untuk debug login error 401.
 ## 🖥️ Command Line Tools
 
 ### Tool 1: check-students.php
+
 **Tujuan:** Lihat semua siswa di database
 
 ```bash
@@ -55,15 +62,17 @@ C:\xampp\php\php.exe check-students.php
 ```
 
 **Kapan gunakan:**
+
 - Cek apakah siswa sudah terdaftar
 - Lihat NISN yang benar
 - Cek role siswa
 
 **Output example:**
+
 ```
 1️⃣  USERS table (role = 'student'):
    Total: 1 students
-   
+
    1. ID: 6
       NISN: 111111
       Name: Anjali Saputra
@@ -73,6 +82,7 @@ C:\xampp\php\php.exe check-students.php
 ---
 
 ### Tool 2: test-login-cli.php
+
 **Tujuan:** Test login dari command line dengan detail output
 
 ```bash
@@ -80,16 +90,19 @@ C:\xampp\php\php.exe test-login-cli.php NISN PASSWORD
 ```
 
 **Contoh:**
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ```
 
 **Kapan gunakan:**
+
 - Verify apakah NISN dan password cocok
 - Debug password verification
 - Lihat detail error
 
 **Output example (Success):**
+
 ```
 ✅ NISN found!
    ID: 6
@@ -104,6 +117,7 @@ C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ```
 
 **Output example (Failed):**
+
 ```
 ❌ NISN '9999999999' NOT FOUND in database!
 
@@ -115,41 +129,47 @@ C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ---
 
 ### Tool 3: test-api-direct.php
+
 **Tujuan:** Simulasi API login request langsung (bukan via browser)
 
 **CLI Mode:**
+
 ```bash
 C:\xampp\php\php.exe test-api-direct.php NISN PASSWORD
 ```
 
 **Web Mode:**
+
 ```
 http://sekolah.localhost/test-api-direct.php?nisn=111111&password=111111
 ```
 
 **Kapan gunakan:**
+
 - Test API secara isolated dari browser
 - Debug request/response JSON
 - Verify API logic
 
 **Output example:**
+
 ```json
 {
-    "success": true,
-    "message": "Login berhasil",
-    "redirect_url": "student-dashboard.php",
-    "user": {
-        "id": 6,
-        "name": "Anjali Saputra",
-        "nisn": "111111",
-        "school_id": 2
-    }
+  "success": true,
+  "message": "Login berhasil",
+  "redirect_url": "student-dashboard.php",
+  "user": {
+    "id": 6,
+    "name": "Anjali Saputra",
+    "nisn": "111111",
+    "school_id": 2
+  }
 }
 ```
 
 ---
 
 ### Tool 4: fix-nisn-sync.php
+
 **Tujuan:** Sinkronisasi dan repair NISN data dari members ke users table
 
 ```bash
@@ -157,18 +177,21 @@ C:\xampp\php\php.exe fix-nisn-sync.php
 ```
 
 **Kapan gunakan:**
+
 - Members punya NISN tapi users tidak
 - Perlu membuat akun untuk members yang ada
 - Role tidak 'student' dan perlu diperbaiki
 - Data sync error setelah bulk operations
 
 **Yang dilakukan:**
+
 1. Cek members tanpa user → CREATE user
 2. Cek users tanpa NISN → UPDATE NISN dari members
 3. Verify role = 'student'
 4. Display laporan hasil
 
 **Output example:**
+
 ```
 📊 Sinkronisasi NISN Complete!
 
@@ -186,7 +209,9 @@ Verification:
 ## 🌐 Browser Tools
 
 ### test-api-login.html
+
 **URL:**
+
 ```
 http://sekolah.localhost/test-api-login.html
 ```
@@ -194,28 +219,33 @@ http://sekolah.localhost/test-api-login.html
 **Fitur:**
 
 #### 1. Load Data Siswa
+
 - Klik "📊 Load Data Siswa"
 - Lihat tabel semua siswa dengan NISN mereka
 - Copy NISN untuk test selanjutnya
 
 #### 2. Manual Test API Login
+
 - Input NISN (dari load data)
 - Input Password = NISN
 - Klik "🔓 Test Login API"
 - Lihat response JSON
 
 #### 3. Test Verifikasi Password
+
 - Input NISN
 - Klik "🔐 Test Password Hash"
 - Lihat apakah password match dengan hash database
 
 #### 4. Test Login Form
+
 - Pilih "Student (NISN)" atau "Admin (Email)"
 - Input credentials
 - Klik Login
 - Lihat success/error
 
 **Kapan gunakan:**
+
 - Lebih suka GUI daripada command line
 - Ingin test interaktif
 - Browser sudah buka, terminal belum
@@ -226,6 +256,7 @@ http://sekolah.localhost/test-api-login.html
 ## 📱 Testing Workflow
 
 ### Workflow 1: Cepat Check Data (2 menit)
+
 ```bash
 # Lihat semua siswa
 C:\xampp\php\php.exe check-students.php
@@ -316,14 +347,14 @@ Error 401?
 
 ## 🎯 Quick Decision: Mana Tools Harus Dijalankan?
 
-| Skenario | Tools | Urutan |
-|----------|-------|--------|
-| Pertama kali check data | check-students.php | Langsung |
-| Test login siswa | test-login-cli.php | Setelah check-students |
-| Test API langsung | test-api-direct.php | Jika perlu isolasi |
-| Sinkronisasi NISN | fix-nisn-sync.php | Jika ada masalah sync |
-| Prefer GUI | test-api-login.html | Setiap saat |
-| Butuh reference | Documentation files | Setiap waktu |
+| Skenario                | Tools               | Urutan                 |
+| ----------------------- | ------------------- | ---------------------- |
+| Pertama kali check data | check-students.php  | Langsung               |
+| Test login siswa        | test-login-cli.php  | Setelah check-students |
+| Test API langsung       | test-api-direct.php | Jika perlu isolasi     |
+| Sinkronisasi NISN       | fix-nisn-sync.php   | Jika ada masalah sync  |
+| Prefer GUI              | test-api-login.html | Setiap saat            |
+| Butuh reference         | Documentation files | Setiap waktu           |
 
 ---
 
@@ -352,27 +383,32 @@ C:\xampp\htdocs\perpustakaan-online\
 **Lakukan ini secara berurutan:**
 
 1. **Baca dokumentasi singkat**
+
    ```
    LOGIN_401_QUICKFIX.md (5 menit)
    ```
 
 2. **Jalankan tools basic**
+
    ```bash
    check-students.php
    test-login-cli.php [NISN] [NISN]
    ```
 
 3. **Baca dokumentasi detail**
+
    ```
    LOGIN_ERROR_401_GUIDE.md (10 menit)
    ```
 
 4. **Jalankan fix jika perlu**
+
    ```bash
    fix-nisn-sync.php
    ```
 
 5. **Ulangi testing**
+
    ```bash
    test-login-cli.php [NISN] [NISN]
    ```

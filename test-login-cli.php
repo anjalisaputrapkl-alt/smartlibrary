@@ -35,16 +35,17 @@ if (!$user) {
     echo "\n📊 All students in database:\n";
     $stmt = $pdo->query('SELECT id, nisn, name, email, role FROM users WHERE role = "student" ORDER BY id');
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     if (empty($students)) {
         echo "   (No students found)\n";
     } else {
         printf("   %-5s %-15s %-30s %-25s %-10s\n", "ID", "NISN", "Name", "Email", "Role");
         printf("   %s\n", str_repeat("-", 85));
         foreach ($students as $s) {
-            printf("   %-5s %-15s %-30s %-25s %-10s\n", 
-                $s['id'], 
-                $s['nisn'] ?? '(NULL)', 
+            printf(
+                "   %-5s %-15s %-30s %-25s %-10s\n",
+                $s['id'],
+                $s['nisn'] ?? '(NULL)',
                 substr($s['name'], 0, 28),
                 substr($s['email'], 0, 23),
                 $s['role']
@@ -81,7 +82,7 @@ if (!$verify) {
     echo "❌ Password does NOT match!\n";
     echo "\n💡 Hint: Password should match NISN ($nisn)\n";
     echo "   Try with password: $nisn\n";
-    
+
     // Test with NISN as password
     $verify_nisn = password_verify($nisn, $user['password']);
     if ($verify_nisn) {

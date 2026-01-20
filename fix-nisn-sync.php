@@ -23,19 +23,19 @@ try {
         echo "   ℹ Tidak ada data members dengan NISN.\n\n";
     } else {
         echo "   Ditemukan " . count($members) . " member(s):\n\n";
-        
+
         foreach ($members as $member) {
             echo "   Nama: {$member['name']}\n";
             echo "   Email: {$member['email']}\n";
             echo "   NISN: {$member['nisn']}\n";
-            
+
             if (empty($member['user_id'])) {
                 echo "   Status: ⚠️ BELUM ADA AKUN - akan dibuat sekarang\n\n";
-                
+
                 // Buat akun baru jika belum ada
                 $nisn = $member['nisn'];
                 $default_password = password_hash($nisn, PASSWORD_BCRYPT);
-                
+
                 $insertStmt = $pdo->prepare("
                     INSERT INTO users (school_id, name, email, password, role, nisn)
                     SELECT school_id, name, email, :password, 'student', nisn
@@ -47,11 +47,11 @@ try {
                         role = 'student'
                 ");
                 $insertStmt->execute(['mid' => $member['id'], 'password' => $default_password]);
-                
+
                 echo "   ✅ Akun dibuat dengan NISN: $nisn, Password: $nisn\n\n";
             } else {
                 echo "   Status: ✅ Akun sudah ada (ID: {$member['user_id']})\n\n";
-                
+
                 // Update NISN di users jika belum ada
                 $updateStmt = $pdo->prepare("
                     UPDATE users 
@@ -59,20 +59,20 @@ try {
                     WHERE id = :uid AND nisn IS NULL
                 ");
                 $updateStmt->execute(['nisn' => $member['nisn'], 'uid' => $member['user_id']]);
-                
+
                 if ($updateStmt->rowCount() > 0) {
                     echo "   ✅ NISN berhasil di-update\n\n";
                 }
             }
         }
     }
-    
+
     // 2. Cek data siswa yang sudah ada
     echo "\n2️⃣ VERIFIKASI DATA SISWA DI TABEL USERS:\n";
     $stmt = $pdo->prepare("SELECT id, name, email, nisn, role FROM users WHERE role = 'student' ORDER BY id");
     $stmt->execute();
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     if (count($students) === 0) {
         echo "   ⚠️ TIDAK ADA SISWA! Silakan tambahkan siswa di admin panel.\n";
     } else {
@@ -82,11 +82,11 @@ try {
             echo "   [{$student['id']}] {$student['name']} | Email: {$student['email']} | NISN: $nisn_status\n";
         }
     }
-    
+
     echo "\n═══════════════════════════════════════════════════════════\n";
     echo "✅ MIGRATION SELESAI!\n";
     echo "═══════════════════════════════════════════════════════════\n";
-    
+
 } catch (Exception $e) {
     echo "❌ ERROR: " . $e->getMessage() . "\n";
 }

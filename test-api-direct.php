@@ -15,7 +15,7 @@ if (php_sapi_name() === 'cli') {
     $nisn = $_GET['nisn'] ?? '';
     $password = $_GET['password'] ?? '';
     $user_type = $_GET['user_type'] ?? 'student';
-    
+
     header('Content-Type: application/json');
 }
 
@@ -37,7 +37,7 @@ if ($user_type === 'student') {
 
     try {
         error_log("TEST: Checking NISN: $nisn");
-        
+
         $stmt = $pdo->prepare('SELECT * FROM users WHERE nisn = :nisn AND role = :role LIMIT 1');
         $stmt->execute(['nisn' => $nisn, 'role' => 'student']);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);

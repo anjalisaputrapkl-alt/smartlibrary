@@ -3,9 +3,11 @@
 ## ❌ Error 401 Apa?
 
 HTTP Status Code **401 Unauthorized** berarti:
+
 > Server menolak request karena authentication gagal
 
 Dalam konteks login siswa:
+
 - ❌ NISN tidak ditemukan di database
 - ❌ Password tidak sesuai dengan hash di database
 - ❌ User tidak memiliki role 'student'
@@ -15,6 +17,7 @@ Dalam konteks login siswa:
 ## 🏗️ Bagaimana Sistem Login NISN Bekerja?
 
 ### 1. Database Structure
+
 ```
 Tabel: users
 ├── id (INT)
@@ -87,8 +90,8 @@ Klik: Login
    └── password: '111111'
 
 2. Query database
-   └── SELECT * FROM users 
-       WHERE nisn = '111111' 
+   └── SELECT * FROM users
+       WHERE nisn = '111111'
        AND role = 'student'
 
 3. Validasi password
@@ -110,6 +113,7 @@ Klik: Login
 ### Kemungkinan Penyebab (Urutan Likelihood)
 
 #### 1️⃣ **Password Salah** (PALING SERING)
+
 ```
 Siswa input: Password = nama siswa / sembarang
 Seharusnya:  Password = NISN siswa
@@ -120,12 +124,14 @@ Contoh:
 ```
 
 **Fix:**
+
 ```bash
 # Test dengan password = NISN
 C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ```
 
 #### 2️⃣ **NISN Tidak Ada di Database**
+
 ```
 Penyebab:
 - Siswa belum ditambahkan di Kelola Murid
@@ -137,6 +143,7 @@ C:\xampp\php\php.exe check-students.php
 ```
 
 **Fix:**
+
 ```
 1. Tambah siswa lagi di Kelola Murid
 2. Pastikan NISN diisi
@@ -144,6 +151,7 @@ C:\xampp\php\php.exe check-students.php
 ```
 
 #### 3️⃣ **NISN Format Salah**
+
 ```
 Masalah: NISN punya spasi, zero leading, atau format berbeda
 
@@ -153,6 +161,7 @@ Input: '0111111' (11 karakter) ← TIDAK MATCH!
 ```
 
 **Fix:**
+
 ```bash
 # Lihat format NISN yang tepat
 C:\xampp\php\php.exe check-students.php
@@ -162,6 +171,7 @@ C:\xampp\php\php.exe test-login-cli.php [NISN DARI OUTPUT] [NISN DARI OUTPUT]
 ```
 
 #### 4️⃣ **Role Bukan 'student'**
+
 ```
 Masalah: User terdaftar sebagai 'admin' bukan 'student'
 
@@ -170,12 +180,14 @@ C:\xampp\php\php.exe check-students.php
 ```
 
 **Fix:**
+
 ```bash
 # Jalankan sync script
 C:\xampp\php\php.exe fix-nisn-sync.php
 ```
 
 #### 5️⃣ **NISN Tidak Tersinkronisasi**
+
 ```
 Masalah: Member punya NISN tapi user account tidak punya NISN
 
@@ -186,6 +198,7 @@ C:\xampp\php\php.exe check-students.php
 ```
 
 **Fix:**
+
 ```bash
 C:\xampp\php\php.exe fix-nisn-sync.php
 ```
@@ -195,7 +208,9 @@ C:\xampp\php\php.exe fix-nisn-sync.php
 ## 📊 Testing Tools
 
 ### Tool 1: check-students.php
+
 **Gunakan untuk:** Lihat semua siswa di database
+
 ```bash
 C:\xampp\php\php.exe check-students.php
 ```
@@ -205,12 +220,15 @@ C:\xampp\php\php.exe check-students.php
 ---
 
 ### Tool 2: test-login-cli.php
+
 **Gunakan untuk:** Test login dari command line
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ```
 
 **Output:**
+
 ```
 ✅ Login would SUCCEED
    NISN: 111111
@@ -222,7 +240,9 @@ C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ---
 
 ### Tool 3: test-api-direct.php
+
 **Gunakan untuk:** Simulasi API request langsung
+
 ```bash
 # CLI Mode
 C:\xampp\php\php.exe test-api-direct.php 111111 111111
@@ -236,12 +256,15 @@ http://sekolah.localhost/test-api-direct.php?nisn=111111&password=111111&user_ty
 ---
 
 ### Tool 4: test-api-login.html
+
 **Gunakan untuk:** Browser-based testing interface
+
 ```
 http://sekolah.localhost/test-api-login.html
 ```
 
 **Fitur:**
+
 - Load daftar siswa dari database
 - Test login dengan form
 - Verifikasi password hash
@@ -250,12 +273,15 @@ http://sekolah.localhost/test-api-login.html
 ---
 
 ### Tool 5: fix-nisn-sync.php
+
 **Gunakan untuk:** Sinkronisasi dan repair NISN data
+
 ```bash
 C:\xampp\php\php.exe fix-nisn-sync.php
 ```
 
 **Apa yang dilakukan:**
+
 1. Cek members tanpa NISN → create users
 2. Cek users tanpa NISN → update dari members
 3. Verify semua student punya role 'student'
@@ -268,6 +294,7 @@ C:\xampp\php\php.exe fix-nisn-sync.php
 ### Skenario: Tambah Siswa Baru & Test Login
 
 #### Step 1: Admin Tambah Siswa
+
 1. Login di admin panel
 2. Buka "Kelola Murid"
 3. Klik "Tambah Murid"
@@ -282,11 +309,13 @@ C:\xampp\php\php.exe fix-nisn-sync.php
 6. Lihat pesan: "✓ Murid berhasil ditambahkan..."
 
 #### Step 2: Verify Data Tersimpan
+
 ```bash
 C:\xampp\php\php.exe check-students.php
 ```
 
 **Expected Output:**
+
 ```
 NISN: 9876543210
 Name: Budi Santoso
@@ -294,16 +323,19 @@ Role: student
 ```
 
 #### Step 3: Test Login CLI
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 9876543210 9876543210
 ```
 
 **Expected Output:**
+
 ```
 ✅ Login would SUCCEED
 ```
 
 #### Step 4: Test Login di Browser
+
 1. Buka: http://localhost/perpustakaan-online
 2. Pilih tab "Siswa"
 3. Input:
@@ -319,11 +351,13 @@ C:\xampp\php\php.exe test-login-cli.php 9876543210 9876543210
 ## 🧪 Contoh Error vs Success
 
 ### ❌ ERROR 401 - NISN Tidak Ditemukan
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 9999999999 9999999999
 ```
 
 **Output:**
+
 ```
 ❌ NISN '9999999999' NOT FOUND in database!
 
@@ -336,11 +370,13 @@ C:\xampp\php\php.exe test-login-cli.php 9999999999 9999999999
 ---
 
 ### ❌ ERROR 401 - Password Salah
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 111111 salah
 ```
 
 **Output:**
+
 ```
 1️⃣  Checking NISN in database...
 ✅ NISN found!
@@ -358,11 +394,13 @@ C:\xampp\php\php.exe test-login-cli.php 111111 salah
 ---
 
 ### ✅ SUCCESS - Login OK
+
 ```bash
 C:\xampp\php\php.exe test-login-cli.php 111111 111111
 ```
 
 **Output:**
+
 ```
 === RESULT ===
 ✅ Login would SUCCEED
