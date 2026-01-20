@@ -29,29 +29,40 @@ if ($user_type === 'student') {
         $stmt->execute(['nisn' => $nisn, 'role' => 'student']);
         $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user'] = [
-                'id' => $user['id'],
-                'school_id' => $user['school_id'],
-                'name' => $user['name'],
-                'role' => $user['role'],
-                'nisn' => $user['nisn']
-            ];
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Login berhasil',
-                'redirect_url' => 'student-dashboard.php'
-            ]);
-            exit;
-        } else {
+        if (!$user) {
+            // Log untuk debugging
+            error_log("LOGIN FAILED: NISN '$nisn' tidak ditemukan atau role bukan student");
             http_response_code(401);
             echo json_encode(['success' => false, 'message' => 'NISN atau password salah']);
             exit;
         }
+
+        if (!password_verify($password, $user['password'])) {
+            // Log untuk debugging
+            error_log("LOGIN FAILED: Password tidak match untuk NISN '$nisn'");
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'NISN atau password salah']);
+            exit;
+        }
+
+        $_SESSION['user'] = [
+            'id' => $user['id'],
+            'school_id' => $user['school_id'],
+            'name' => $user['name'],
+            'role' => $user['role'],
+            'nisn' => $user['nisn']
+        ];
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Login berhasil',
+            'redirect_url' => 'student-dashboard.php'
+        ]);
+        exit;
     } catch (Exception $e) {
+        error_log("LOGIN ERROR: " . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Terjadi kesalahan server']);
+        echo json_encode(['success' => false, 'message' => 'Terjadi kesalahan server: ' . $e->getMessage()]);
         exit;
     }
 } else {
