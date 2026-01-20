@@ -117,11 +117,22 @@ label {
   color: var(--muted);
 }
 
-input {
+input,
+select,
+textarea {
   padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 13px;
+  width: 100%;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--surface);
+  color: var(--text);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
 }
 
 /* ========= FIX TABEL (INI YANG PENTING) ========= */
