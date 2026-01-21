@@ -44,7 +44,7 @@ if (isset($_SESSION['user'])) {
         <!-- School Photo -->
         <div class="school-photo-wrapper">
             <?php if ($school_photo && file_exists(__DIR__ . '/../../' . $school_photo)): ?>
-                <img src="<?php echo htmlspecialchars($school_photo); ?>"
+                <img src="/perpustakaan-online/<?php echo htmlspecialchars($school_photo); ?>"
                     alt="<?php echo htmlspecialchars($school['name'] ?? 'School Logo'); ?>" class="school-photo"
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="school-photo-placeholder" style="display: none;">

@@ -1099,12 +1099,12 @@ $pageTitle = 'Profil Saya';
         const navSidebar = document.querySelector('.nav-sidebar');
 
         if (navToggle && navSidebar) {
-            navToggle.addEventListener('click', function() {
+            navToggle.addEventListener('click', function () {
                 navSidebar.classList.toggle('active');
             });
 
             // Close sidebar when clicking outside of it
-            document.addEventListener('click', function(event) {
+            document.addEventListener('click', function (event) {
                 if (!navSidebar.contains(event.target) && event.target !== navToggle && !navToggle.contains(event.target)) {
                     navSidebar.classList.remove('active');
                 }
