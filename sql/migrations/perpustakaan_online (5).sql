@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 21, 2026 at 03:45 AM
+-- Generation Time: Jan 21, 2026 at 05:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -95,13 +95,6 @@ CREATE TABLE `borrows` (
   `status` enum('borrowed','returned','overdue') DEFAULT 'borrowed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `borrows`
---
-
-INSERT INTO `borrows` (`id`, `school_id`, `book_id`, `member_id`, `borrowed_at`, `due_at`, `returned_at`, `status`) VALUES
-(11, 7, 18, 3, '2026-01-19 10:51:43', '2026-01-20 00:00:00', NULL, 'overdue');
-
 -- --------------------------------------------------------
 
 --
@@ -125,11 +118,7 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `school_id`, `name`, `email`, `member_no`, `nisn`, `password`, `status`, `created_at`) VALUES
-(3, 7, 'Uya', 'uya4767@gmail.com', '0853748529', NULL, NULL, 'active', '2026-01-19 01:35:51'),
-(4, 7, 'anjali', 'ada@gmail.com', '4675965903', NULL, NULL, 'active', '2026-01-19 01:36:00'),
-(5, 2, 'Anjali Saputra', 'anjalisaputra@gmail.com', '081292593620', '111111', NULL, 'active', '2026-01-19 07:37:05'),
-(6, 2, 'Surya', 'saya@gmail.com', '085891129163', '222222', NULL, 'active', '2026-01-20 01:31:31'),
-(8, 5, 'surya ali rafsanjani pkl', 'sta@gmail.com', '085891129163', '121212', NULL, 'active', '2026-01-20 07:20:17');
+(10, 2, 'Adi Triyanto', 'adi@gmail.com', '089129993223', '333333', NULL, 'active', '2026-01-21 03:52:39');
 
 -- --------------------------------------------------------
 
@@ -235,7 +224,6 @@ INSERT INTO `school_themes` (`id`, `school_id`, `theme_name`, `custom_colors`, `
 CREATE TABLE `siswa` (
   `id_siswa` int(11) NOT NULL,
   `nama_lengkap` varchar(100) NOT NULL,
-  `nis` varchar(20) DEFAULT NULL,
   `nisn` varchar(20) DEFAULT NULL,
   `kelas` varchar(20) DEFAULT NULL,
   `jurusan` varchar(50) DEFAULT NULL,
@@ -253,11 +241,8 @@ CREATE TABLE `siswa` (
 -- Dumping data for table `siswa`
 --
 
-INSERT INTO `siswa` (`id_siswa`, `nama_lengkap`, `nis`, `nisn`, `kelas`, `jurusan`, `tanggal_lahir`, `jenis_kelamin`, `alamat`, `email`, `no_hp`, `foto`, `created_at`, `updated_at`) VALUES
-(2, 'Anjali Saputra', '0001', '1234567890001', 'XII RPL', 'Rekayasa Perangkat Lunak', '2007-03-15', 'L', 'Jl. Merdeka No. 10, Jakarta', 'anjalisaputra@gmail.com', '081234567890', NULL, '2026-01-20 06:18:30', '2026-01-20 07:00:49'),
-(4, 'Budi Santoso', '0004', '1234567890004', 'XI TKJ', 'Teknik Komputer Jaringan', '2008-05-20', 'L', 'Jl. Sudirman No. 25, Bandung', 'budisantoso@gmail.com', '082345678901', NULL, '2026-01-20 06:18:30', '2026-01-20 06:18:30'),
-(5, 'Citra Dewi', '0005', '1234567890005', 'X TKR', 'Teknik Kendaraan Ringan', '2009-07-10', 'P', 'Jl. Ahmad Yani No. 50, Surabaya', 'citradewi@gmail.com', '083456789012', NULL, '2026-01-20 06:18:30', '2026-01-20 06:18:30'),
-(7, 'Doni Hermanto', '0007', '1234567890007', 'XI RPL', 'Rekayasa Perangkat Lunak', '2007-11-25', 'L', 'Jl. Gatot Subroto No. 15, Medan', 'saya@gmail.com', '084567890123', NULL, '2026-01-20 06:18:30', '2026-01-20 06:18:30');
+INSERT INTO `siswa` (`id_siswa`, `nama_lengkap`, `nisn`, `kelas`, `jurusan`, `tanggal_lahir`, `jenis_kelamin`, `alamat`, `email`, `no_hp`, `foto`, `created_at`, `updated_at`) VALUES
+(10, 'Adi Triyanto', '333333', 'XII', 'Rekayasa Perangkat Lunak', '2009-02-17', 'L', 'Metland', 'adi@gmail.com', '081234567890', 'uploads/siswa/siswa_10_1768967952_69704f10a01a7.jpeg', '2026-01-21 03:53:09', '2026-01-21 04:02:31');
 
 -- --------------------------------------------------------
 
@@ -286,9 +271,9 @@ INSERT INTO `users` (`id`, `school_id`, `name`, `email`, `nisn`, `password`, `ro
 (3, 4, 'surya', 'uya47467@gmail.com', NULL, '$2y$10$Fw9bDgKPX7Vp.F6xXBbCQuqRKkEc5zuJ4zGPHCuJjKZfGlz8ziTuu', 'admin', '2026-01-13 01:53:13'),
 (4, 5, 'saya', 'saya@gmail.com', NULL, '$2y$10$doKWQAmV8KM5GLIUC5lHB.nk6MbiubNWq32EWDZohp8BR1mroFblm', 'admin', '2026-01-13 06:47:10'),
 (5, 7, 'someone', 'uya4767@gmail.com', NULL, '$2y$10$K7P1nbWS6EqrF69R39PZ5udKqxckTUMDnUDftvP2UmJI.Cvbhfs7y', 'admin', '2026-01-19 01:33:26'),
-(6, 2, 'Anjali Saputra', 'anjalisaputra@gmail.com', '111111', '$2y$10$qAC3LyD.kq/jFmdqOVvOTu8OzkX6e8xLxfnBisb.hWoXYj0qOebKy', 'student', '2026-01-19 07:37:05'),
 (7, 2, 'Surya', 'saya@gmail.com', '222222', '$2y$10$cN.EPRDjv3Us66bGdnZ5e.RDqFc7CnYAoh7Srfa1cm06Ey9546302', 'student', '2026-01-20 01:31:31'),
-(8, 5, 'surya ali rafsanjani pkl', 'sta@gmail.com', '121212', '$2y$10$SfhCn0ZCGKg8rq26FiguFexzRw85SrU18jfYxgROFfkKfamD0hCaa', 'student', '2026-01-20 07:20:17');
+(8, 5, 'surya ali rafsanjani pkl', 'sta@gmail.com', '121212', '$2y$10$SfhCn0ZCGKg8rq26FiguFexzRw85SrU18jfYxgROFfkKfamD0hCaa', 'student', '2026-01-20 07:20:17'),
+(10, 2, 'Adi Triyanto', 'adi@gmail.com', '333333', '$2y$10$l942/cijYd9PrkhRZhepWOf.kaeRJsFDy7q0mi6gsb8cCVIJ76wTi', 'student', '2026-01-21 03:52:39');
 
 --
 -- Indexes for dumped tables
@@ -362,7 +347,6 @@ ALTER TABLE `school_themes`
 --
 ALTER TABLE `siswa`
   ADD PRIMARY KEY (`id_siswa`),
-  ADD KEY `idx_nis` (`nis`),
   ADD KEY `idx_nisn` (`nisn`),
   ADD KEY `idx_email` (`email`);
 
@@ -400,7 +384,7 @@ ALTER TABLE `borrows`
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `notifikasi`
@@ -424,13 +408,13 @@ ALTER TABLE `school_themes`
 -- AUTO_INCREMENT for table `siswa`
 --
 ALTER TABLE `siswa`
-  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
