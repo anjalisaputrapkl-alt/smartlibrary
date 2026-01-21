@@ -54,7 +54,7 @@ try {
                 <p class="role">Siswa</p>
             </div>
             <div class="header-user-avatar">
-                <?php if ($studentPhoto && file_exists(__DIR__ . '/' . $studentPhoto)): ?>
+                <?php if ($studentPhoto && file_exists(__DIR__ . '/../' . $studentPhoto)): ?>
                     <img src="/perpustakaan-online/public/<?php echo htmlspecialchars($studentPhoto); ?>" alt="Foto Profil"
                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
                 <?php else: ?>

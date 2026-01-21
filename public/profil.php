@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
 
 // First, sync data from members to siswa
 try {
-    // Get data from members
+    // Get data from members using ID (from session)
     $stmt = $pdo->prepare("
         SELECT id, name, nisn, member_no, email, status, created_at
         FROM members 
@@ -126,44 +126,53 @@ try {
     $member = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($member) {
-        // Check if siswa record exists
-        $check = $pdo->prepare("SELECT id_siswa FROM siswa WHERE id_siswa = ?");
-        $check->execute([$userId]);
+        // IMPORTANT: Use id_siswa = id AND nisn = nisn to prevent mismatch
+        $check = $pdo->prepare("SELECT id_siswa FROM siswa WHERE id_siswa = ? AND nisn = ?");
+        $check->execute([$userId, $member['nisn']]);
         $exists = $check->fetch();
 
         if ($exists) {
-            // Update existing siswa record - only synced fields
+            // Record exists and NISN matches - safe to update
             $update = $pdo->prepare("
                 UPDATE siswa 
                 SET 
                     nama_lengkap = ?,
-                    nisn = ?,
-                    nis = ?,
                     email = ?,
                     updated_at = NOW()
-                WHERE id_siswa = ?
+                WHERE id_siswa = ? AND nisn = ?
             ");
             $update->execute([
                 $member['name'],
-                $member['nisn'],
-                $member['member_no'],
                 $member['email'],
-                $userId
+                $userId,
+                $member['nisn']
             ]);
         } else {
-            // Insert new siswa record from members
-            $insert = $pdo->prepare("
-                INSERT INTO siswa 
-                (id_siswa, nama_lengkap, nisn, nis, email, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, NOW(), NOW())
-            ");
-            $insert->execute([
-                $userId,
-                $member['name'],
-                $member['nisn'],
-                $member['member_no'],
-                $member['email']
-            ]);
+            // Check if any siswa record exists for this ID
+            $checkAny = $pdo->prepare("SELECT id_siswa, nisn FROM siswa WHERE id_siswa = ?");
+            $checkAny->execute([$userId]);
+            $existingSiswa = $checkAny->fetch();
+
+            if ($existingSiswa) {
+                // Siswa exists but NISN doesn't match - THIS IS A PROBLEM
+                error_log("DATA INTEGRITY ERROR: Siswa ID=$userId has NISN=" . $existingSiswa['nisn'] . " but member has NISN=" . $member['nisn']);
+                // Don't update - this needs manual intervention
+                $error_message = "⚠️ Terjadi kesalahan data integritas. Hubungi administrator (Error: NISN mismatch for ID " . $userId . ")";
+            } else {
+                // No siswa record exists - create new with matching id and nisn
+                $insert = $pdo->prepare("
+                    INSERT INTO siswa 
+                    (id_siswa, nama_lengkap, nisn, nis, email, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+                ");
+                $insert->execute([
+                    $userId,
+                    $member['name'],
+                    $member['nisn'],
+                    $member['member_no'],
+                    $member['email']
+                ]);
+            }
         }
     }
 } catch (Exception $e) {
@@ -172,9 +181,10 @@ try {
 }
 
 // Now get data from siswa table for display
+// CRITICAL: Must verify this is the correct student by checking NISN
 $stmt = $pdo->prepare("
     SELECT 
-        id_siswa, nama_lengkap, nis, nisn, kelas, jurusan,
+        id_siswa, nama_lengkap, nisn, kelas, jurusan,
         tanggal_lahir, jenis_kelamin, alamat, email, no_hp, foto,
         created_at, updated_at
     FROM siswa
@@ -184,7 +194,26 @@ $stmt->execute([$userId]);
 $siswa = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$siswa) {
-    die("Profil siswa tidak ditemukan.");
+    die("Profil siswa tidak ditemukan. Hubungi administrator.");
+}
+
+// SECURITY CHECK: Verify this siswa actually belongs to this user's school
+// by checking against member data
+try {
+    $memberVerify = $pdo->prepare("
+        SELECT nisn FROM members WHERE id = ? AND school_id = ?
+    ");
+    $memberVerify->execute([$userId, $schoolId]);
+    $memberData = $memberVerify->fetch(PDO::FETCH_ASSOC);
+
+    if ($memberData && $memberData['nisn'] !== $siswa['nisn']) {
+        // NISN mismatch - user is trying to access wrong profile!
+        error_log("SECURITY: User ID=$userId school_id=$schoolId has NISN mismatch. Member NISN=" . $memberData['nisn'] . " but siswa NISN=" . $siswa['nisn']);
+        die("⚠️ Terjadi kesalahan data. Silakan logout dan login kembali.");
+    }
+} catch (Exception $e) {
+    error_log('Verification error: ' . $e->getMessage());
+    // Continue anyway - might be member hasn't synced yet
 }
 
 // Format dates
@@ -974,11 +1003,6 @@ $pageTitle = 'Profil Saya';
                         </div>
 
                         <div class="info-item">
-                            <span class="info-label">NIS</span>
-                            <div class="info-value"><?php echo htmlspecialchars($siswa['nis'] ?? '-'); ?></div>
-                        </div>
-
-                        <div class="info-item">
                             <span class="info-label">NISN</span>
                             <div class="info-value"><?php echo htmlspecialchars($siswa['nisn'] ?? '-'); ?></div>
                         </div>
@@ -986,6 +1010,11 @@ $pageTitle = 'Profil Saya';
                         <div class="info-item">
                             <span class="info-label">Email</span>
                             <div class="info-value"><?php echo htmlspecialchars($siswa['email'] ?? '-'); ?></div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Nomor Telepon</span>
+                            <div class="info-value"><?php echo htmlspecialchars($siswa['no_hp'] ?? '-'); ?></div>
                         </div>
                     </div>
                 </div>
@@ -1063,6 +1092,25 @@ $pageTitle = 'Profil Saya';
             </div>
         </div>
     </div>
+
+    <script>
+        // Toggle sidebar on hamburger menu click
+        const navToggle = document.getElementById('navToggle');
+        const navSidebar = document.querySelector('.nav-sidebar');
+
+        if (navToggle && navSidebar) {
+            navToggle.addEventListener('click', function() {
+                navSidebar.classList.toggle('active');
+            });
+
+            // Close sidebar when clicking outside of it
+            document.addEventListener('click', function(event) {
+                if (!navSidebar.contains(event.target) && event.target !== navToggle && !navToggle.contains(event.target)) {
+                    navSidebar.classList.remove('active');
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
