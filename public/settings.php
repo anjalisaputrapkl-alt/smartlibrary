@@ -186,6 +186,49 @@ if (!$school) {
                             <small class="theme-hint">Tema yang dipilih akan disimpan secara otomatis</small>
                         </div>
 
+                        <!-- Basic School Info Panel -->
+                        <div class="card preview-card">
+                            <h2 class="school-header"><iconify-icon icon="mdi:information"
+                                    class="school-header-icon"></iconify-icon>Informasi Dasar</h2>
+
+                            <?php if (!empty($error)): ?>
+                                <div class="alert alert-danger">
+                                    <span>⚠️</span>
+                                    <div><?php echo htmlspecialchars($error); ?></div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if (!empty($success)): ?>
+                                <div class="alert alert-success">
+                                    <span>✓</span>
+                                    <div><?php echo htmlspecialchars($success); ?></div>
+                                </div>
+                            <?php endif; ?>
+
+                            <form method="post" class="school-form">
+                                <input type="hidden" name="action" value="update_basic">
+
+                                <div class="form-group">
+                                    <label for="name">Nama Sekolah</label>
+                                    <input id="name" name="name" required
+                                        value="<?php echo htmlspecialchars($school['name'] ?? ''); ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="slug">Slug (untuk URL)</label>
+                                    <input id="slug" name="slug" required
+                                        value="<?php echo htmlspecialchars($school['slug'] ?? ''); ?>">
+                                    <small>Gunakan huruf kecil, angka, dan tanda hubung (-)</small>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">
+                                    <iconify-icon icon="mdi:content-save"
+                                        style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Simpan
+                                    Dasar
+                                </button>
+                            </form>
+                        </div>
+
                         <!-- Color Customization -->
                         <!-- REMOVED -->
 
@@ -218,50 +261,45 @@ if (!$school) {
 
                         <!-- Photo Upload Section -->
                         <div class="school-photo-section"
-                            style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0;">
-                            <h3
-                                style="font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                                <iconify-icon icon="mdi:image" style="font-size: 18px;"></iconify-icon>
-                                Foto Profil Sekolah
+                            style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                            <h3 style="font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                                <iconify-icon icon="mdi:image" style="font-size: 16px;"></iconify-icon>
+                                Foto Profil
                             </h3>
 
-                            <!-- Current Photo Preview -->
-                            <div style="margin-bottom: 16px;">
+                            <div style="margin-bottom: 10px;">
                                 <div
-                                    style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 2px solid #e2e8f0;">
+                                    style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 2px solid #e2e8f0;">
                                     <?php if ($school['photo_path'] && file_exists(__DIR__ . '/../' . $school['photo_path'])): ?>
                                         <img src="../<?php echo htmlspecialchars($school['photo_path']); ?>"
-                                            alt="Foto Profil Sekolah" style="width: 100%; height: 100%; object-fit: cover;"
-                                            onerror="this.parentElement.innerHTML='<iconify-icon icon=\" mdi:school\"
-                                            style=\"font-size: 48px; color: #999;\"></iconify-icon>'">
+                                            alt="Foto Profil Sekolah" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                                            onerror="this.src='../assets/img/default-school.png';">
                                     <?php else: ?>
-                                        <iconify-icon icon="mdi:school"
-                                            style="font-size: 48px; color: #ccc;"></iconify-icon>
+                                        <img src="../assets/img/default-school.png" alt="Foto Profil Default" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                                     <?php endif; ?>
                                 </div>
-                                <small style="color: #6b7280; display: block;">Ukuran rekomendasi: 500x500px, Maksimal
-                                    5MB</small>
+                                <small style="color: #6b7280; display: block; font-size: 11px;">500x500px max 5MB</small>
                             </div>
 
                             <!-- Photo Upload Form -->
-                            <form method="post" enctype="multipart/form-data" style="margin-bottom: 12px;">
+                            <form method="post" enctype="multipart/form-data" style="margin-bottom: 8px;">
                                 <input type="hidden" name="action" value="upload_photo">
                                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                     <input type="file" name="school_photo" id="school_photo"
                                         accept="image/jpeg,image/png,image/webp" style="display: none;">
                                     <label for="school_photo"
-                                        style="display: inline-block; padding: 10px 16px; background: #0b3d61; color: white; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
+                                        style="display: inline-block; padding: 8px 12px; background: #0b3d61; color: white; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s ease;">
                                         <iconify-icon icon="mdi:upload"
-                                            style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>
-                                        Pilih Foto
+                                            style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></iconify-icon>
+                                        Pilih
                                     </label>
                                     <button type="submit" class="btn btn-submit"
-                                        style="padding: 10px 16px; font-size: 14px;">
+                                        style="padding: 8px 12px; font-size: 13px;">
                                         <iconify-icon icon="mdi:check"
-                                            style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Unggah
+                                            style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></iconify-icon>Unggah
                                     </button>
                                 </div>
-                                <small id="file-name" style="color: #6b7280; display: block; margin-top: 8px;"></small>
+                                <small id="file-name" style="color: #6b7280; display: block; margin-top: 6px; font-size: 11px;"></small>
                             </form>
 
                             <!-- Delete Photo Button -->
@@ -269,10 +307,9 @@ if (!$school) {
                                 <form method="post" style="display: inline;">
                                     <input type="hidden" name="action" value="delete_photo">
                                     <button type="submit" class="btn btn-danger"
-                                        style="padding: 8px 12px; font-size: 13px;">
+                                        style="padding: 6px 10px; font-size: 12px;">
                                         <iconify-icon icon="mdi:trash-can-outline"
-                                            style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Hapus
-                                        Foto
+                                            style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></iconify-icon>Hapus
                                     </button>
                                 </form>
                             <?php endif; ?>
@@ -282,7 +319,7 @@ if (!$school) {
                         <form method="post" class="school-form">
                             <input type="hidden" name="action" value="update_profile">
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                                 <div class="form-group">
                                     <label for="school_npsn">NPSN</label>
                                     <input id="school_npsn" name="school_npsn" type="text" placeholder="20102012"
@@ -297,20 +334,20 @@ if (!$school) {
                                 </div>
                             </div>
 
-                            <div class="form-group" style="margin-bottom: 16px;">
+                            <div class="form-group" style="margin-bottom: 12px;">
                                 <label for="school_phone">Nomor Telepon</label>
                                 <input id="school_phone" name="school_phone" type="tel" placeholder="021-1234567"
                                     value="<?php echo htmlspecialchars($school['phone'] ?? ''); ?>">
                             </div>
 
-                            <div class="form-group" style="margin-bottom: 16px;">
+                            <div class="form-group" style="margin-bottom: 12px;">
                                 <label for="school_address">Alamat Lengkap</label>
                                 <textarea id="school_address" name="school_address" placeholder="Jl. Pendidikan No. 123"
-                                    rows="3"
-                                    style="font-family: inherit; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;"><?php echo htmlspecialchars($school['address'] ?? ''); ?></textarea>
+                                    rows="2"
+                                    style="font-family: inherit; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px;"><?php echo htmlspecialchars($school['address'] ?? ''); ?></textarea>
                             </div>
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                                 <div class="form-group">
                                     <label for="school_website">Website (Opsional)</label>
                                     <input id="school_website" name="school_website" type="url"
@@ -330,49 +367,6 @@ if (!$school) {
                                 <iconify-icon icon="mdi:content-save"
                                     style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Simpan
                                 Profil
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Basic School Info Panel -->
-                    <div class="card preview-card">
-                        <h2 class="school-header"><iconify-icon icon="mdi:information"
-                                class="school-header-icon"></iconify-icon>Informasi Dasar</h2>
-
-                        <?php if (!empty($error)): ?>
-                            <div class="alert alert-danger">
-                                <span>⚠️</span>
-                                <div><?php echo htmlspecialchars($error); ?></div>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if (!empty($success)): ?>
-                            <div class="alert alert-success">
-                                <span>✓</span>
-                                <div><?php echo htmlspecialchars($success); ?></div>
-                            </div>
-                        <?php endif; ?>
-
-                        <form method="post" class="school-form">
-                            <input type="hidden" name="action" value="update_basic">
-
-                            <div class="form-group">
-                                <label for="name">Nama Sekolah</label>
-                                <input id="name" name="name" required
-                                    value="<?php echo htmlspecialchars($school['name'] ?? ''); ?>">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="slug">Slug (untuk URL)</label>
-                                <input id="slug" name="slug" required
-                                    value="<?php echo htmlspecialchars($school['slug'] ?? ''); ?>">
-                                <small>Gunakan huruf kecil, angka, dan tanda hubung (-)</small>
-                            </div>
-
-                            <button type="submit" class="btn btn-submit">
-                                <iconify-icon icon="mdi:content-save"
-                                    style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Simpan
-                                Dasar
                             </button>
                         </form>
                     </div>
