@@ -79,6 +79,7 @@ $pageTitle = 'Dashboard Siswa';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Perpustakaan Siswa - Dashboard</title>
+    <script src="../assets/js/db-theme-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -86,16 +87,22 @@ $pageTitle = 'Dashboard Siswa';
     <link rel="stylesheet" href="../assets/css/school-profile.css">
     <style>
         :root {
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f1724;
-            --muted: #6b7280;
-            --accent: #0b3d61;
+            --primary: #3A7FF2;
+            --primary-2: #7AB8F5;
+            --primary-dark: #0A1A4F;
+            --bg: #F6F9FF;
+            --muted: #F3F7FB;
+            --card: #FFFFFF;
+            --surface: #FFFFFF;
+            --muted-surface: #F7FAFF;
+            --border: #E6EEF8;
+            --text: #0F172A;
+            --text-muted: #50607A;
+            --accent: #3A7FF2;
             --accent-light: #e0f2fe;
-            --border: #e2e8f0;
-            --success: #10b981;
+            --success: #10B981;
             --warning: #f59e0b;
-            --danger: #ef4444;
+            --danger: #EF4444;
         }
 
         * {
@@ -179,7 +186,7 @@ $pageTitle = 'Dashboard Siswa';
             top: 0;
             height: 100vh;
             width: 240px;
-            background: linear-gradient(135deg, var(--accent) 0%, #062d4a 100%);
+            background: linear-gradient(135deg, #0b3d61 0%, #062d4a 100%);
             color: white;
             padding: 24px 0;
             z-index: 1002;
@@ -375,7 +382,7 @@ $pageTitle = 'Dashboard Siswa';
 
         .header-brand-text p {
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
             margin: 2px 0 0 0;
         }
 
@@ -400,7 +407,7 @@ $pageTitle = 'Dashboard Siswa';
         }
 
         .header-user-info .role {
-            color: var(--muted);
+            color: var(--text-muted);
             font-size: 12px;
         }
 
@@ -483,12 +490,16 @@ $pageTitle = 'Dashboard Siswa';
             font-size: 14px;
             font-weight: 700;
             margin-bottom: 16px;
-            color: var(--text);
+            color: var(--section-header-text, var(--text));
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
             gap: 8px;
+            background: var(--section-header, transparent);
+            padding: 12px 16px;
+            margin: -20px -20px 16px -20px;
+            border-radius: 12px 12px 0 0;
         }
 
         .sidebar-section h3 iconify-icon {
@@ -549,13 +560,15 @@ $pageTitle = 'Dashboard Siswa';
             border-radius: 8px;
             font-size: 13px;
             font-family: inherit;
+            background: var(--surface);
+            color: var(--text);
             transition: 0.2s ease;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(11, 61, 97, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(58, 127, 242, 0.1);
         }
 
         .sort-select {
@@ -565,19 +578,19 @@ $pageTitle = 'Dashboard Siswa';
             font-size: 13px;
             font-family: inherit;
             cursor: pointer;
-            background: var(--bg);
+            background: var(--surface);
             color: var(--text);
             transition: 0.2s ease;
         }
 
         .sort-select:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: var(--primary);
         }
 
         .btn-search {
             padding: 10px 20px;
-            background: var(--accent);
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
@@ -588,7 +601,8 @@ $pageTitle = 'Dashboard Siswa';
         }
 
         .btn-search:hover {
-            background: #062d4a;
+            background: var(--primary-dark);
+            opacity: 0.9;
         }
 
         /* Books Grid */
@@ -650,8 +664,8 @@ $pageTitle = 'Dashboard Siswa';
 
         .book-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-            border-color: var(--accent);
+            box-shadow: 0 12px 24px rgba(58, 127, 242, 0.15);
+            border-color: var(--primary);
         }
 
         .book-cover {
@@ -728,7 +742,7 @@ $pageTitle = 'Dashboard Siswa';
 
         .book-author {
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .book-category {
@@ -744,7 +758,7 @@ $pageTitle = 'Dashboard Siswa';
             align-items: center;
             gap: 4px;
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .book-actions {
@@ -772,7 +786,7 @@ $pageTitle = 'Dashboard Siswa';
 
         .btn-borrow:disabled {
             background: var(--border);
-            color: var(--muted);
+            color: var(--text-muted);
             cursor: not-allowed;
         }
 
@@ -821,7 +835,7 @@ $pageTitle = 'Dashboard Siswa';
         }
 
         .empty-state p {
-            color: var(--muted);
+            color: var(--text-muted);
             font-size: 14px;
         }
 
@@ -900,7 +914,7 @@ $pageTitle = 'Dashboard Siswa';
             border: none;
             font-size: 28px;
             cursor: pointer;
-            color: var(--muted);
+            color: var(--text-muted);
             transition: color 0.2s;
             padding: 0;
             width: 32px;
@@ -985,7 +999,7 @@ $pageTitle = 'Dashboard Siswa';
         .modal-book-item-label {
             font-size: 12px;
             font-weight: 600;
-            color: var(--muted);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -1043,7 +1057,7 @@ $pageTitle = 'Dashboard Siswa';
 
         .modal-btn-borrow:disabled {
             background: var(--border);
-            color: var(--muted);
+            color: var(--text-muted);
             cursor: not-allowed;
         }
 
@@ -1491,7 +1505,7 @@ $pageTitle = 'Dashboard Siswa';
                 <!-- Search Tips -->
                 <div class="sidebar-section">
                     <h3><iconify-icon icon="mdi:lightbulb-on" width="16" height="16"></iconify-icon> Tips</h3>
-                    <p style="font-size: 12px; color: var(--muted); line-height: 1.6;">
+                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
                         Gunakan search untuk mencari buku berdasarkan judul atau pengarang. Filter kategori membantu
                         Anda menemukan buku yang Anda inginkan.
                     </p>
@@ -1527,14 +1541,15 @@ $pageTitle = 'Dashboard Siswa';
                     <h3><iconify-icon icon="mdi:chart-box" width="16" height="16"></iconify-icon> Statistik</h3>
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
-                            <p style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">Total Buku</p>
-                            <p style="font-size: 20px; font-weight: 700; color: var(--accent);">
+                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Total Buku</p>
+                            <p style="font-size: 20px; font-weight: 700; color: var(--primary);">
                                 <?php echo count($books); ?>
                             </p>
                         </div>
                         <div>
-                            <p style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">Sedang Dipinjam</p>
-                            <p style="font-size: 20px; font-weight: 700; color: var(--warning);">
+                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Sedang Dipinjam
+                            </p>
+                            <p style="font-size: 20px; font-weight: 700; color: var(--danger);">
                                 <?php echo $borrowStats['total_borrows']; ?>
                             </p>
                         </div>
@@ -1584,7 +1599,7 @@ $pageTitle = 'Dashboard Siswa';
                                     <p class="book-author"><?php echo htmlspecialchars($book['author'] ?? '-'); ?></p>
                                     <p class="book-category"><?php echo htmlspecialchars($book['category'] ?? 'Umum'); ?></p>
                                     <div class="book-rating">
-                                        <span style="font-size: 11px; color: var(--muted);">ISBN:
+                                        <span style="font-size: 11px; color: var(--text-muted);">ISBN:
                                             <?php echo htmlspecialchars($book['isbn'] ?? '-'); ?></span>
                                     </div>
                                     <div class="book-actions">

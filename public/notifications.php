@@ -75,7 +75,7 @@ function getLabel($type)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifikasi - Perpustakaan Digital</title>
-
+    <script src="../assets/js/db-theme-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -84,16 +84,22 @@ function getLabel($type)
 
     <style>
         :root {
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f1724;
-            --muted: #6b7280;
-            --accent: #0b3d61;
+            --primary: #3A7FF2;
+            --primary-2: #7AB8F5;
+            --primary-dark: #0A1A4F;
+            --bg: #F6F9FF;
+            --muted: #F3F7FB;
+            --card: #FFFFFF;
+            --surface: #FFFFFF;
+            --muted-surface: #F7FAFF;
+            --border: #E6EEF8;
+            --text: #0F172A;
+            --text-muted: #50607A;
+            --accent: #3A7FF2;
             --accent-light: #e0f2fe;
-            --border: #e2e8f0;
-            --success: #10b981;
+            --success: #10B981;
             --warning: #f59e0b;
-            --danger: #ef4444;
+            --danger: #EF4444;
         }
 
         * {
@@ -153,7 +159,7 @@ function getLabel($type)
             top: 0;
             height: 100vh;
             width: 240px;
-            background: linear-gradient(135deg, var(--accent) 0%, #062d4a 100%);
+            background: linear-gradient(135deg, #0b3d61 0%, #062d4a 100%);
             color: white;
             padding: 24px 0;
             z-index: 1002;
@@ -337,7 +343,7 @@ function getLabel($type)
 
         .header-brand-text p {
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
             margin: 2px 0 0 0;
         }
 
@@ -362,7 +368,7 @@ function getLabel($type)
         }
 
         .header-user-info .role {
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .header-user-avatar {
@@ -413,15 +419,18 @@ function getLabel($type)
         .page-header h1 {
             font-size: 28px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--section-header-text, var(--text));
             margin: 0 0 8px 0;
             display: flex;
             align-items: center;
             gap: 12px;
+            background: var(--section-header, transparent);
+            padding: 16px 20px;
+            border-radius: 12px;
         }
 
         .page-header p {
-            color: var(--muted);
+            color: var(--text-muted);
             font-size: 14px;
             margin: 0;
         }
@@ -471,7 +480,7 @@ function getLabel($type)
 
         .stat-card-label {
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
@@ -699,12 +708,12 @@ function getLabel($type)
 
         .notification-badge-default {
             background: var(--border);
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .notification-card-message {
             font-size: 14px;
-            color: var(--muted);
+            color: var(--text-muted);
             margin: 0 0 8px 0;
             line-height: 1.5;
         }
@@ -714,7 +723,7 @@ function getLabel($type)
             justify-content: space-between;
             align-items: center;
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .notification-card-date {
@@ -731,7 +740,7 @@ function getLabel($type)
         .notification-card-action {
             background: none;
             border: none;
-            color: var(--muted);
+            color: var(--text-muted);
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 4px;
@@ -755,7 +764,7 @@ function getLabel($type)
         .empty-state {
             text-align: center;
             padding: 80px 24px;
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .empty-state-icon {

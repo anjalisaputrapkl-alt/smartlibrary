@@ -3,6 +3,7 @@ require __DIR__ . '/../src/auth.php';
 requireAuth();
 $pdo = require __DIR__ . '/../src/db.php';
 require __DIR__ . '/../src/SchoolProfileModel.php';
+require __DIR__ . '/../src/ThemeModel.php';
 
 // Ensure user is admin
 if ($_SESSION['user']['role'] !== 'admin') {
@@ -13,10 +14,13 @@ if ($_SESSION['user']['role'] !== 'admin') {
 $user = $_SESSION['user'];
 $sid = $user['school_id'];
 $schoolProfileModel = new SchoolProfileModel($pdo);
+$themeModel = new ThemeModel($pdo);
 $error = null;
 $success = null;
 $profile_error = null;
 $profile_success = null;
+$theme_success = null;
+$theme_error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -39,6 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute(['name' => $name, 'slug' => $slug, 'id' => $sid]);
                 $success = 'Pengaturan dasar tersimpan.';
             }
+        }
+    } elseif ($action === 'update_theme') {
+        // Update school theme and save to database
+        try {
+            $theme_name = trim($_POST['theme_name'] ?? 'light');
+            if (!$theme_name) {
+                $theme_name = 'light';
+            }
+            $themeModel->saveSchoolTheme($sid, $theme_name);
+            $theme_success = 'Tema sekolah berhasil disimpan. Semua siswa akan menggunakan tema ini.';
+        } catch (Exception $e) {
+            $theme_error = 'Gagal menyimpan tema: ' . $e->getMessage();
         }
     } elseif ($action === 'update_profile') {
         // Update school profile data
@@ -104,6 +120,9 @@ $stmt = $pdo->prepare('SELECT * FROM schools WHERE id = :id');
 $stmt->execute(['id' => $sid]);
 $school = $stmt->fetch();
 
+// Get current theme
+$currentTheme = $themeModel->getSchoolTheme($sid);
+
 // Safety check
 if (!$school) {
     die('Error: School data not found');
@@ -148,42 +167,80 @@ if (!$school) {
                             <h2 class="theme-header"><iconify-icon icon="mdi:palette"
                                     class="theme-header-icon"></iconify-icon>Pengaturan Tema</h2>
 
-                            <h3>Pilih Tema</h3>
-                            <div class="theme-grid">
-                                <button class="btn btn-secondary theme-btn theme-btn-light" data-theme="light">
-                                    <iconify-icon icon="mdi:white-balance-sunny"
-                                        class="theme-btn-icon"></iconify-icon>Light
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-dark" data-theme="dark">
-                                    <iconify-icon icon="mdi:moon-waning-crescent"
-                                        class="theme-btn-icon"></iconify-icon>Dark
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-blue" data-theme="blue">
-                                    <iconify-icon icon="mdi:circle-multiple" class="theme-btn-icon"></iconify-icon>Blue
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-monochrome"
-                                    data-theme="monochrome">
-                                    <iconify-icon icon="mdi:checkbox-multiple-blank-circle-outline"
-                                        class="theme-btn-icon"></iconify-icon>Monochrome
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-sepia" data-theme="sepia">
-                                    <iconify-icon icon="mdi:image-filter-vintage"
-                                        class="theme-btn-icon"></iconify-icon>Sepia
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-slate" data-theme="slate">
-                                    <iconify-icon icon="mdi:palette-gray" class="theme-btn-icon"></iconify-icon>Slate
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-ocean" data-theme="ocean">
-                                    <iconify-icon icon="mdi:water" class="theme-btn-icon"></iconify-icon>Ocean
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-sunset" data-theme="sunset">
-                                    <iconify-icon icon="mdi:weather-sunset" class="theme-btn-icon"></iconify-icon>Sunset
-                                </button>
-                                <button class="btn btn-secondary theme-btn theme-btn-teal" data-theme="teal">
-                                    <iconify-icon icon="mdi:water-opacity" class="theme-btn-icon"></iconify-icon>Teal
-                                </button>
+                            <?php if (!empty($theme_error)): ?>
+                                <div class="alert alert-danger">
+                                    <span>⚠️</span>
+                                    <div><?php echo htmlspecialchars($theme_error); ?></div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if (!empty($theme_success)): ?>
+                                <div class="alert alert-success">
+                                    <span>✓</span>
+                                    <div><?php echo htmlspecialchars($theme_success); ?></div>
+                                </div>
+                            <?php endif; ?>
+
+                            <h3>Pilih Tema untuk Sekolah</h3>
+                            <div style="background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                                <small><strong>Tema Saat Ini:</strong> <span
+                                        style="color: #2563eb; font-weight: 600; text-transform: capitalize;"><?php echo htmlspecialchars($currentTheme['theme_name'] ?? 'light'); ?></span></small>
                             </div>
-                            <small class="theme-hint">Tema yang dipilih akan disimpan secara otomatis</small>
+
+                            <form method="post" style="margin-bottom: 16px;">
+                                <input type="hidden" name="action" value="update_theme">
+
+                                <div class="theme-grid">
+                                    <button type="submit" formaction="" name="theme_name" value="light"
+                                        class="btn btn-secondary theme-btn theme-btn-light" data-theme="light">
+                                        <iconify-icon icon="mdi:white-balance-sunny"
+                                            class="theme-btn-icon"></iconify-icon>Light
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="dark"
+                                        class="btn btn-secondary theme-btn theme-btn-dark" data-theme="dark">
+                                        <iconify-icon icon="mdi:moon-waning-crescent"
+                                            class="theme-btn-icon"></iconify-icon>Dark
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="blue"
+                                        class="btn btn-secondary theme-btn theme-btn-blue" data-theme="blue">
+                                        <iconify-icon icon="mdi:circle-multiple"
+                                            class="theme-btn-icon"></iconify-icon>Blue
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="monochrome"
+                                        class="btn btn-secondary theme-btn theme-btn-monochrome"
+                                        data-theme="monochrome">
+                                        <iconify-icon icon="mdi:checkbox-multiple-blank-circle-outline"
+                                            class="theme-btn-icon"></iconify-icon>Monochrome
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="sepia"
+                                        class="btn btn-secondary theme-btn theme-btn-sepia" data-theme="sepia">
+                                        <iconify-icon icon="mdi:image-filter-vintage"
+                                            class="theme-btn-icon"></iconify-icon>Sepia
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="slate"
+                                        class="btn btn-secondary theme-btn theme-btn-slate" data-theme="slate">
+                                        <iconify-icon icon="mdi:palette-gray"
+                                            class="theme-btn-icon"></iconify-icon>Slate
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="ocean"
+                                        class="btn btn-secondary theme-btn theme-btn-ocean" data-theme="ocean">
+                                        <iconify-icon icon="mdi:water" class="theme-btn-icon"></iconify-icon>Ocean
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="sunset"
+                                        class="btn btn-secondary theme-btn theme-btn-sunset" data-theme="sunset">
+                                        <iconify-icon icon="mdi:weather-sunset"
+                                            class="theme-btn-icon"></iconify-icon>Sunset
+                                    </button>
+                                    <button type="submit" formaction="" name="theme_name" value="teal"
+                                        class="btn btn-secondary theme-btn theme-btn-teal" data-theme="teal">
+                                        <iconify-icon icon="mdi:water-opacity"
+                                            class="theme-btn-icon"></iconify-icon>Teal
+                                    </button>
+                                </div>
+                            </form>
+                            <small class="theme-hint" style="display: block; margin-top: 12px;">💡 Pilih tema dengan
+                                mengklik salah satu tombol di atas. Tema akan langsung diterapkan ke semua siswa di
+                                sekolah ini.</small>
                         </div>
 
                         <!-- Basic School Info Panel -->
@@ -262,7 +319,8 @@ if (!$school) {
                         <!-- Photo Upload Section -->
                         <div class="school-photo-section"
                             style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
-                            <h3 style="font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <h3
+                                style="font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
                                 <iconify-icon icon="mdi:image" style="font-size: 16px;"></iconify-icon>
                                 Foto Profil
                             </h3>
@@ -272,13 +330,16 @@ if (!$school) {
                                     style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 2px solid #e2e8f0;">
                                     <?php if ($school['photo_path'] && file_exists(__DIR__ . '/../' . $school['photo_path'])): ?>
                                         <img src="../<?php echo htmlspecialchars($school['photo_path']); ?>"
-                                            alt="Foto Profil Sekolah" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                                            alt="Foto Profil Sekolah"
+                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
                                             onerror="this.src='../assets/img/default-school.png';">
                                     <?php else: ?>
-                                        <img src="../assets/img/default-school.png" alt="Foto Profil Default" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                        <img src="../assets/img/default-school.png" alt="Foto Profil Default"
+                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                                     <?php endif; ?>
                                 </div>
-                                <small style="color: #6b7280; display: block; font-size: 11px;">500x500px max 5MB</small>
+                                <small style="color: #6b7280; display: block; font-size: 11px;">500x500px max
+                                    5MB</small>
                             </div>
 
                             <!-- Photo Upload Form -->
@@ -299,7 +360,8 @@ if (!$school) {
                                             style="font-size: 14px; vertical-align: middle; margin-right: 4px;"></iconify-icon>Unggah
                                     </button>
                                 </div>
-                                <small id="file-name" style="color: #6b7280; display: block; margin-top: 6px; font-size: 11px;"></small>
+                                <small id="file-name"
+                                    style="color: #6b7280; display: block; margin-top: 6px; font-size: 11px;"></small>
                             </form>
 
                             <!-- Delete Photo Button -->

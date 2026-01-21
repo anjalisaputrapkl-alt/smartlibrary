@@ -239,6 +239,7 @@ $pageTitle = 'Profil Saya';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Profil Saya</title>
+    <script src="../assets/js/db-theme-loader.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -246,16 +247,22 @@ $pageTitle = 'Profil Saya';
     <link rel="stylesheet" href="../assets/css/school-profile.css">
     <style>
         :root {
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f1724;
-            --muted: #6b7280;
-            --accent: #0b3d61;
+            --primary: #3A7FF2;
+            --primary-2: #7AB8F5;
+            --primary-dark: #0A1A4F;
+            --bg: #F6F9FF;
+            --muted: #F3F7FB;
+            --card: #FFFFFF;
+            --surface: #FFFFFF;
+            --muted-surface: #F7FAFF;
+            --border: #E6EEF8;
+            --text: #0F172A;
+            --text-muted: #50607A;
+            --accent: #3A7FF2;
             --accent-light: #e0f2fe;
-            --border: #e2e8f0;
-            --success: #10b981;
+            --success: #10B981;
             --warning: #f59e0b;
-            --danger: #ef4444;
+            --danger: #EF4444;
         }
 
         * {
@@ -314,7 +321,7 @@ $pageTitle = 'Profil Saya';
             top: 0;
             height: 100vh;
             width: 240px;
-            background: linear-gradient(135deg, var(--accent) 0%, #062d4a 100%);
+            background: linear-gradient(135deg, #0b3d61 0%, #062d4a 100%);
             color: white;
             padding: 24px 0;
             z-index: 1002;
@@ -498,7 +505,7 @@ $pageTitle = 'Profil Saya';
 
         .header-brand-text p {
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
             margin: 2px 0 0 0;
         }
 
@@ -523,7 +530,7 @@ $pageTitle = 'Profil Saya';
         }
 
         .header-user-info .role {
-            color: var(--muted);
+            color: var(--text-muted);
             font-size: 12px;
         }
 
@@ -598,11 +605,16 @@ $pageTitle = 'Profil Saya';
             margin: 0 0 8px 0;
             font-size: 18px;
             font-weight: 600;
+            color: var(--section-header-text, var(--text));
+            background: transparent;
+            padding: 12px 16px;
+            margin: 8px 0 8px -24px;
+            padding-left: 24px;
         }
 
         .profile-info p {
             margin: 0;
-            color: var(--muted);
+            color: var(--text-muted);
             font-size: 13px;
         }
 
@@ -620,13 +632,13 @@ $pageTitle = 'Profil Saya';
 
         .info-item {
             padding: 12px;
-            background: #f9fafb;
+            background: var(--surface);
             border-radius: 8px;
         }
 
         .info-label {
             display: block;
-            color: var(--muted);
+            color: var(--text-muted);
             font-size: 12px;
             text-transform: uppercase;
             margin-bottom: 4px;
@@ -641,7 +653,7 @@ $pageTitle = 'Profil Saya';
         }
 
         .meta-section {
-            background: #f9fafb;
+            background: var(--surface);
             border-radius: 8px;
             padding: 12px;
             margin-top: 16px;
@@ -652,7 +664,7 @@ $pageTitle = 'Profil Saya';
             justify-content: space-between;
             padding: 6px 0;
             font-size: 12px;
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         .meta-item strong {
@@ -746,7 +758,7 @@ $pageTitle = 'Profil Saya';
             font-family: 'Inter', system-ui, sans-serif;
             font-size: 13px;
             color: var(--text);
-            background: white;
+            background: var(--surface);
             transition: all 0.2s ease;
         }
 
@@ -754,11 +766,11 @@ $pageTitle = 'Profil Saya';
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(11, 61, 97, 0.1);
-            background: white;
+            background: var(--surface);
         }
 
         .form-input::placeholder {
-            color: var(--muted);
+            color: var(--text-muted);
         }
 
         textarea.form-input {
@@ -962,7 +974,7 @@ $pageTitle = 'Profil Saya';
             </div>
 
             <!-- Photo Upload Section -->
-            <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+            <div style="background: var(--surface); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
                 <h4 style="color: var(--text); font-size: 14px; font-weight: 600; margin-bottom: 12px;">Ubah Foto Profil
                 </h4>
                 <form method="POST" enctype="multipart/form-data"
@@ -970,7 +982,8 @@ $pageTitle = 'Profil Saya';
                     <div style="flex: 1;">
                         <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" class="form-input"
                             style="width: 100%;" required>
-                        <small style="color: var(--muted); display: block; margin-top: 4px;">Format: JPG, PNG, WEBP (Max
+                        <small style="color: var(--text-muted); display: block; margin-top: 4px;">Format: JPG, PNG, WEBP
+                            (Max
                             5MB)</small>
                     </div>
                     <button type="submit" name="upload_photo" value="1" class="btn primary"
@@ -992,7 +1005,7 @@ $pageTitle = 'Profil Saya';
                 <!-- Read-only Fields (Auto-synced from members) -->
                 <div style="margin-bottom: 24px;">
                     <h3
-                        style="color: var(--muted); font-size: 12px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600;">
+                        style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600;">
                         Informasi dari Registrasi (Tidak dapat diubah)</h3>
 
                     <div class="info-grid">
@@ -1021,7 +1034,7 @@ $pageTitle = 'Profil Saya';
                 <!-- Editable Fields -->
                 <div style="margin-bottom: 24px;">
                     <h3
-                        style="color: var(--muted); font-size: 12px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600;">
+                        style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600;">
                         Data Pribadi (Dapat diubah)</h3>
 
                     <div class="info-grid">
@@ -1086,8 +1099,8 @@ $pageTitle = 'Profil Saya';
             </div>
 
             <div class="button-group">
-                <button type="submit" form="form-profile" class="btn primary">💾 Simpan Perubahan</button>
-                <a href="student-dashboard.php" class="btn secondary">← Kembali</a>
+                <button type="submit" form="form-profile" class="btn primary">Simpan Perubahan</button>
+                <a href="student-dashboard.php" class="btn secondary">Kembali</a>
             </div>
         </div>
     </div>
