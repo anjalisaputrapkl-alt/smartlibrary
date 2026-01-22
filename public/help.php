@@ -617,6 +617,7 @@ $pageTitle = 'Bantuan';
         .contact-btn iconify-icon {
             width: 18px;
             height: 18px;
+            margin-top: 3.7px;
         }
 
         /* ===== FEATURE CARDS ===== */
@@ -656,13 +657,11 @@ $pageTitle = 'Bantuan';
         .feature-card-icon {
             width: 52px;
             height: 52px;
-            background: var(--accent-light);
-            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
             flex-shrink: 0;
+            margin-bottom: -10px;
         }
 
         .feature-card-icon iconify-icon {
@@ -1219,7 +1218,6 @@ $pageTitle = 'Bantuan';
         <!-- Getting Started Section -->
         <div class="steps-section">
             <h2 style="margin: 0 0 24px 0;">
-                <iconify-icon icon="mdi:lightning-bolt"></iconify-icon>
                 Memulai
             </h2>
             <div class="steps-container">
@@ -1488,10 +1486,6 @@ $pageTitle = 'Bantuan';
                 <a href="mailto:library@school.id" class="contact-btn">
                     <iconify-icon icon="mdi:email"></iconify-icon>
                     Email Kami
-                </a>
-                <a href="#" class="contact-btn" onclick="window.print(); return false;">
-                    <iconify-icon icon="mdi:printer"></iconify-icon>
-                    Cetak Halaman
                 </a>
                 <a href="student-dashboard.php" class="contact-btn"
                     style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white;">
