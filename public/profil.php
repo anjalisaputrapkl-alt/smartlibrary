@@ -478,6 +478,7 @@ $pageTitle = 'Profil Saya';
             gap: 12px;
             text-decoration: none;
             color: var(--text);
+            margin-left: 7px;
         }
 
         .header-brand-icon {
