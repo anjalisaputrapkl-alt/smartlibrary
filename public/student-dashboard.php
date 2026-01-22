@@ -1613,7 +1613,7 @@ $pageTitle = 'Dashboard Siswa';
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="empty-state">
-                            <div class="empty-state-icon">📚</div>
+                            <div class="empty-state-icon"><iconify-icon icon="mdi:book-search-outline" width="64" height="64"></iconify-icon></div>
                             <h3>Buku Tidak Ditemukan</h3>
                             <p>Coba ubah filter atau cari dengan kata kunci yang berbeda.</p>
                         </div>
