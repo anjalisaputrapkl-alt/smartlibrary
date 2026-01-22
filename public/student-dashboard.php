@@ -10,6 +10,36 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $school_id = $user['school_id'];
+$student_id = $user['id'];
+
+// ===================== QUERY PEMINJAMAN SISWA =====================
+// Update overdue status
+$pdo->prepare(
+    'UPDATE borrows SET status = "overdue"
+     WHERE school_id = :school_id 
+     AND member_id = :member_id
+     AND returned_at IS NULL 
+     AND due_at < NOW()'
+)->execute(['school_id' => $school_id, 'member_id' => $student_id]);
+
+// Get all borrowing records untuk siswa ini
+$borrowStmt = $pdo->prepare(
+    'SELECT b.id, b.borrowed_at, b.due_at, b.returned_at, b.status, 
+            bk.id as book_id, bk.title, bk.author
+     FROM borrows b
+     JOIN books bk ON b.book_id = bk.id
+     WHERE b.school_id = :school_id 
+     AND b.member_id = :member_id
+     ORDER BY b.borrowed_at DESC'
+);
+$borrowStmt->execute(['school_id' => $school_id, 'member_id' => $student_id]);
+$my_borrows = $borrowStmt->fetchAll();
+
+// Calculate statistics
+$active_borrows = count(array_filter($my_borrows, fn($b) => $b['status'] !== 'returned'));
+$overdue_count = count(array_filter($my_borrows, fn($b) => $b['status'] === 'overdue'));
+$returned_count = count(array_filter($my_borrows, fn($b) => $b['status'] === 'returned'));
+// ===================== END QUERY PEMINJAMAN SISWA =====================
 
 // Get filter parameters
 $search = $_GET['search'] ?? '';
@@ -718,6 +748,32 @@ $pageTitle = 'Dashboard Siswa';
 
         .book-status.limited {
             background: var(--warning);
+            color: white;
+        }
+
+        .btn-return-request {
+            padding: 6px 12px;
+            background: var(--warning);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-return-request:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .btn-return-request:active {
+            transform: translateY(0);
+        }
+
+        .book-status.limited {
             color: white;
         }
 
@@ -1796,6 +1852,34 @@ $pageTitle = 'Dashboard Siswa';
                         location.reload();
                     } else {
                         alert(data.message || 'Gagal meminjam buku');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan');
+                });
+        }
+
+        // Request return function
+        function requestReturn(borrowId) {
+            if (!confirm('Apakah Anda ingin mengajukan pengembalian buku ini?')) {
+                return;
+            }
+
+            fetch('api/student-request-return.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'borrow_id=' + borrowId
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Permintaan pengembalian telah dikirim ke admin!');
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Gagal mengajukan pengembalian');
                     }
                 })
                 .catch(error => {
