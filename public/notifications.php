@@ -133,13 +133,6 @@ function getLabel($type)
                     </div>
                     <div class="stat-card-value"><?php echo (int) ($stats['total'] ?? 0); ?></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-card-label">
-                        <iconify-icon icon="mdi:email-multiple-outline" width="16" height="16"></iconify-icon>
-                        Belum Dibaca
-                    </div>
-                    <div class="stat-card-value"><?php echo (int) ($stats['unread'] ?? 0); ?></div>
-                </div>
                 <div class="stat-card overdue">
                     <div class="stat-card-label">
                         <iconify-icon icon="mdi:alert-circle" width="16" height="16"></iconify-icon>
@@ -149,7 +142,9 @@ function getLabel($type)
                 </div>
                 <div class="stat-card warning">
                     <div class="stat-card-label">
-                        <iconify-icon icon="mdi:alert-triangle" width="16" height="16"></iconify-icon>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0;">
+                            <path d="M13 14h-2V9h2m0 9h-2v-2h2M1 21h22L12 2z" />
+                        </svg>
                         Peringatan
                     </div>
                     <div class="stat-card-value"><?php echo (int) ($stats['warning'] ?? 0); ?></div>
