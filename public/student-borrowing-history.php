@@ -854,31 +854,128 @@ $pageTitle = 'Riwayat Peminjaman';
                 font-size: 24px;
             }
 
-            .table {
-                font-size: 12px;
-            }
-
-            .table th,
-            .table td {
-                padding: 12px;
-            }
-
-            .book-info {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .book-cover {
-                width: 40px;
-                height: 60px;
-            }
-
             .page-header h1 {
                 font-size: 20px;
             }
 
             .history-card-header h2 {
                 font-size: 16px;
+            }
+
+            /* Card Layout for Mobile */
+            .table-responsive {
+                max-height: 600px;
+                overflow-y: auto;
+                border-radius: 12px;
+                padding: 0 16px;
+            }
+
+            .table {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 16px;
+                border-collapse: initial;
+            }
+
+            .table thead {
+                display: none;
+            }
+
+            .table tbody {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .table tbody tr {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                padding: 16px;
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                margin-bottom: 0;
+            }
+
+            .table tbody tr:hover {
+                background: var(--card);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                transform: translateY(-2px);
+            }
+
+            .table td {
+                padding: 0;
+                border-bottom: none;
+                display: grid;
+                grid-template-columns: 120px 1fr;
+                gap: 12px;
+                align-items: start;
+            }
+
+            .table td:before {
+                content: attr(data-label);
+                font-weight: 600;
+                font-size: 12px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .table td:first-child {
+                grid-column: 1 / -1;
+                grid-template-columns: 1fr;
+                margin-bottom: 8px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .table td:first-child:before {
+                display: none;
+            }
+
+            .book-info {
+                flex-direction: row;
+            }
+
+            .book-details {
+                flex: 1;
+            }
+
+            .date-cell {
+                font-size: 12px;
+            }
+
+            .date-label {
+                display: none;
+            }
+
+            .date-value {
+                color: var(--text);
+                font-weight: 500;
+            }
+
+            .date-hint {
+                font-size: 11px;
+                margin-top: 4px;
+                font-weight: 500;
+            }
+
+            .badge {
+                display: inline-block;
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .table td:last-child {
+                grid-column: 1 / -1;
+                margin-top: 4px;
+                padding-top: 12px;
+                border-top: 1px solid var(--border);
+            }
+
+            .table td:last-child button {
+                width: 100%;
             }
         }
 
@@ -1063,7 +1160,7 @@ $pageTitle = 'Riwayat Peminjaman';
                             <?php foreach ($borrowingHistory as $item): ?>
                                 <tr>
                                     <!-- Cover -->
-                                    <td>
+                                    <td data-label="Cover">
                                         <?php if (!empty($item['cover_image'])): ?>
                                             <img 
                                                 src="<?php echo htmlspecialchars('../img/covers/' . $item['cover_image']); ?>" 
@@ -1078,7 +1175,7 @@ $pageTitle = 'Riwayat Peminjaman';
                                     </td>
 
                                     <!-- Info Buku -->
-                                    <td>
+                                    <td data-label="Judul & Penulis">
                                         <div class="book-details">
                                             <h6><?php echo htmlspecialchars($item['book_title'] ?? 'Buku Tidak Ditemukan'); ?></h6>
                                             <small>
@@ -1089,13 +1186,13 @@ $pageTitle = 'Riwayat Peminjaman';
                                     </td>
 
                                     <!-- Tanggal Pinjam -->
-                                    <td class="date-cell">
+                                    <td data-label="Tanggal Pinjam" class="date-cell">
                                         <div class="date-label">Pinjam</div>
                                         <div class="date-value"><?php echo formatDate($item['borrowed_at']); ?></div>
                                     </td>
 
                                     <!-- Tenggat Kembali -->
-                                    <td class="date-cell">
+                                    <td data-label="Tenggat Kembali" class="date-cell">
                                         <div class="date-label">Tenggat</div>
                                         <div class="date-value"><?php echo formatDate($item['due_at']); ?></div>
                                         <?php if ($item['status'] === 'borrowed' && $item['hari_sisa'] >= 0): ?>
@@ -1112,13 +1209,13 @@ $pageTitle = 'Riwayat Peminjaman';
                                     </td>
 
                                     <!-- Tanggal Kembali -->
-                                    <td class="date-cell">
+                                    <td data-label="Tanggal Kembali" class="date-cell">
                                         <div class="date-label">Dikembalikan</div>
                                         <div class="date-value"><?php echo formatDate($item['returned_at']); ?></div>
                                     </td>
 
                                     <!-- Status -->
-                                    <td>
+                                    <td data-label="Status">
                                         <?php
                                         $statusClass = '';
                                         $statusText = '';
