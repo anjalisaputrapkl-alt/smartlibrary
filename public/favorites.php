@@ -406,106 +406,6 @@ $pageTitle = 'Koleksi Favorit';
             margin: 0;
         }
 
-        /* Two Column Layout */
-        .layout-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
-        /* Form Card */
-        .form-card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .form-card h2 {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 0 0 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .form-card h2 iconify-icon {
-            width: 20px;
-            height: 20px;
-            color: var(--accent);
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--text);
-        }
-
-        .form-group select,
-        .form-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 13px;
-            font-family: 'Inter', system-ui, sans-serif;
-            transition: all 0.2s ease;
-        }
-
-        .form-group select:focus,
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(11, 61, 97, 0.1);
-        }
-
-        .btn {
-            padding: 10px 16px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .btn:hover {
-            background: #0a2c52;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(11, 61, 97, 0.2);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn iconify-icon {
-            width: 16px;
-            height: 16px;
-        }
-
-        .btn:disabled {
-            background: var(--muted);
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
         .favorites-count {
             font-size: 13px;
             font-weight: 600;
@@ -1038,11 +938,7 @@ $pageTitle = 'Koleksi Favorit';
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            .layout-container {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 1024px) {}
 
         @media (max-width: 768px) {
             .nav-toggle {
@@ -1270,53 +1166,6 @@ $pageTitle = 'Koleksi Favorit';
             </div>
         <?php endif; ?>
 
-        <!-- Two Column Layout -->
-        <div class="layout-container">
-            <!-- Form Section -->
-            <div class="form-card">
-                <h2>
-                    <iconify-icon icon="mdi:plus-circle-outline"></iconify-icon>
-                    Tambah Buku Favorit
-                </h2>
-
-                <form id="favoriteForm">
-                    <!-- Kategori Dropdown -->
-                    <div class="form-group">
-                        <label for="categorySelect">Pilih Kategori</label>
-                        <select id="categorySelect" name="kategori">
-                            <option value="">-- Semua Kategori --</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?php echo htmlspecialchars($cat); ?>">
-                                    <?php echo htmlspecialchars($cat); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <!-- Buku Dropdown -->
-                    <div class="form-group">
-                        <label for="bookSelect">Pilih Buku</label>
-                        <select id="bookSelect" name="id_buku" required>
-                            <option value="">-- Pilih Buku --</option>
-                            <?php foreach ($books as $book): ?>
-                                <option value="<?php echo $book['id_buku']; ?>">
-                                    <?php echo htmlspecialchars($book['judul']); ?>
-                                    <?php if ($book['kategori']): ?>
-                                        (<?php echo htmlspecialchars($book['kategori']); ?>)
-                                    <?php endif; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn">
-                        <iconify-icon icon="mdi:plus"></iconify-icon>
-                        Tambah ke Favorit
-                    </button>
-                </form>
-            </div>
-        </div>
-
         <!-- Favorites Grid Section -->
         <div>
             <div style="margin-bottom: 24px;">
@@ -1365,11 +1214,9 @@ $pageTitle = 'Koleksi Favorit';
                                 <div class="book-card-actions">
                                     <button class="btn-borrow"
                                         onclick="borrowBook(<?php echo $fav['id_buku']; ?>, '<?php echo htmlspecialchars(str_replace("'", "\\'", $fav['judul'])); ?>')">
-                                        <iconify-icon icon="mdi:book-open"></iconify-icon>
                                         Pinjam
                                     </button>
                                     <button class="btn-detail" onclick="viewDetail(<?php echo $fav['id_buku']; ?>)">
-                                        <iconify-icon icon="mdi:information"></iconify-icon>
                                         Detail
                                     </button>
                                 </div>
@@ -1457,74 +1304,6 @@ $pageTitle = 'Koleksi Favorit';
                 }
             });
         }
-
-        // Handle category change
-        document.getElementById('categorySelect').addEventListener('change', async function () {
-            const category = this.value;
-            const bookSelect = document.getElementById('bookSelect');
-
-            try {
-                const url = category
-                    ? `/perpustakaan-online/public/api/favorites.php?action=books_by_category&category=${encodeURIComponent(category)}`
-                    : `/perpustakaan-online/public/api/favorites.php?action=books_by_category`;
-
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if (data.success) {
-                    bookSelect.innerHTML = '<option value="">-- Pilih Buku --</option>';
-                    data.data.forEach(book => {
-                        const option = document.createElement('option');
-                        option.value = book.id_buku;
-                        option.textContent = `${book.judul} (${book.kategori || 'Tanpa Kategori'})`;
-                        bookSelect.appendChild(option);
-                    });
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Gagal memuat daftar buku');
-            }
-        });
-
-        // Handle form submission
-        document.getElementById('favoriteForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const bookId = document.getElementById('bookSelect').value;
-            const category = document.getElementById('categorySelect').value;
-
-            if (!bookId) {
-                alert('Silakan pilih buku terlebih dahulu');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('id_buku', bookId);
-            if (category) {
-                formData.append('kategori', category);
-            }
-
-            try {
-                const response = await fetch('/perpustakaan-online/public/api/favorites.php?action=add', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    alert('Buku berhasil ditambahkan ke favorit!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Gagal menambahkan buku ke favorit');
-            }
-        });
 
         // Handle remove favorite
         function removeFavorite(favoriteId) {

@@ -714,12 +714,14 @@ $pageTitle = 'Dashboard Siswa';
             text-align: center;
             position: relative;
             overflow: hidden;
+            border-radius: 12px 12px 0 0;
         }
 
         .book-cover iconify-icon {
             width: 48px;
             height: 48px;
             color: white;
+            pointer-events: none;
         }
 
         .book-cover img {
@@ -728,16 +730,15 @@ $pageTitle = 'Dashboard Siswa';
             object-fit: cover;
         }
 
-        .btn-love {
+        .book-cover .btn-love {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
+            top: 12px;
+            right: 12px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             border: none;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--text);
+            background: white;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -745,17 +746,39 @@ $pageTitle = 'Dashboard Siswa';
             transition: all 0.2s ease;
             font-size: 20px;
             padding: 0;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .btn-love:hover {
+        .book-cover .btn-love:hover {
             background: white;
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-love.loved {
+        .book-cover .btn-love:active {
+            transform: scale(1.05);
+        }
+
+        .book-cover .btn-love.loved {
+            background: white;
+        }
+
+        .book-cover .btn-love.loved:hover {
+            transform: scale(1.15);
+        }
+
+        .book-cover .btn-love iconify-icon {
+            width: 24px;
+            height: 24px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .book-cover .btn-love.loved iconify-icon {
             color: var(--danger);
         }
 
