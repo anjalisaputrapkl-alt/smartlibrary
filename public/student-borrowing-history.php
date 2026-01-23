@@ -1,6 +1,7 @@
 <?php
 session_start();
 $pdo = require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/MemberHelper.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user'])) {
@@ -10,15 +11,10 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $school_id = $user['school_id'];
-$nisn = $user['nisn'] ?? null;
 
-// Lookup member_id using NISN
-$memberStmt = $pdo->prepare(
-    'SELECT id FROM members WHERE nisn = :nisn AND school_id = :school_id LIMIT 1'
-);
-$memberStmt->execute(['nisn' => $nisn, 'school_id' => $school_id]);
-$member = $memberStmt->fetch();
-$memberId = $member ? $member['id'] : $user['id'];
+// Get member_id dengan auto-create jika belum ada
+$memberHelper = new MemberHelper($pdo);
+$member_id = $memberHelper->getMemberId($user);
 
 // Inisialisasi variabel
 $borrowingHistory = [];
@@ -66,7 +62,7 @@ try {
     $stmt = $pdo->prepare($query);
     
     // Sanitasi input
-    if (!$stmt->execute([$memberId])) {
+    if (!$stmt->execute([$member_id])) {
         throw new Exception('Gagal mengambil data peminjaman');
     }
 

@@ -19,36 +19,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Get database connection
 $pdo = require __DIR__ . '/../../src/db.php';
 require_once __DIR__ . '/../../src/NotificationsHelper.php';
+require_once __DIR__ . '/../../src/MemberHelper.php';
 
 try {
     // Get student data from session
     $student = $_SESSION['user'];
     $school_id = $student['school_id'] ?? null;
-    $nisn = $student['nisn'] ?? null;
 
-    if (!$nisn || !$school_id) {
+    if (!$school_id) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid session data']);
         exit;
     }
 
-    // Lookup member_id using NISN (connects users and members tables)
-    $memberStmt = $pdo->prepare(
-        'SELECT id FROM members WHERE nisn = :nisn AND school_id = :school_id LIMIT 1'
-    );
-    $memberStmt->execute([
-        'nisn' => $nisn,
-        'school_id' => $school_id
-    ]);
-    $member = $memberStmt->fetch();
-
-    if (!$member) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Profil anggota tidak ditemukan']);
-        exit;
-    }
-
-    $member_id = $member['id'];
+    // Get member_id dengan auto-create jika belum ada
+    $memberHelper = new MemberHelper($pdo);
+    $member_id = $memberHelper->getMemberId($student);
 
     // Get book_id from POST
     $book_id = (int) ($_POST['book_id'] ?? 0);

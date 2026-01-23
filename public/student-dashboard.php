@@ -1,6 +1,7 @@
 <?php
 session_start();
 $pdo = require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/MemberHelper.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user'])) {
@@ -10,7 +11,10 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $school_id = $user['school_id'];
-$student_id = $user['id'];
+
+// Get member_id dengan auto-create jika belum ada
+$memberHelper = new MemberHelper($pdo);
+$member_id = $memberHelper->getMemberId($user);
 
 // ===================== QUERY PEMINJAMAN SISWA =====================
 // Update overdue status
@@ -20,7 +24,7 @@ $pdo->prepare(
      AND member_id = :member_id
      AND returned_at IS NULL 
      AND due_at < NOW()'
-)->execute(['school_id' => $school_id, 'member_id' => $student_id]);
+)->execute(['school_id' => $school_id, 'member_id' => $member_id]);
 
 // Get all borrowing records untuk siswa ini
 $borrowStmt = $pdo->prepare(
@@ -32,7 +36,7 @@ $borrowStmt = $pdo->prepare(
      AND b.member_id = :member_id
      ORDER BY b.borrowed_at DESC'
 );
-$borrowStmt->execute(['school_id' => $school_id, 'member_id' => $student_id]);
+$borrowStmt->execute(['school_id' => $school_id, 'member_id' => $member_id]);
 $my_borrows = $borrowStmt->fetchAll();
 
 // Calculate statistics
