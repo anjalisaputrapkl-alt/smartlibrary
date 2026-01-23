@@ -4,25 +4,28 @@
  * Menangani operasi buku favorit siswa
  */
 
-class FavoriteModel {
+class FavoriteModel
+{
     private $pdo;
 
-    public function __construct($pdo) {
+    public function __construct($pdo)
+    {
         $this->pdo = $pdo;
     }
 
     /**
-     * Ambil daftar kategori unik dari tabel buku
+     * Ambil daftar kategori unik dari tabel books
      * 
      * @return array - Daftar kategori
      */
-    public function getCategories() {
+    public function getCategories()
+    {
         try {
             $query = "
-                SELECT DISTINCT kategori
-                FROM buku
-                WHERE kategori IS NOT NULL AND kategori != ''
-                ORDER BY kategori ASC
+                SELECT DISTINCT category
+                FROM books
+                WHERE category IS NOT NULL AND category != ''
+                ORDER BY category ASC
             ";
 
             $stmt = $this->pdo->prepare($query);
@@ -42,32 +45,33 @@ class FavoriteModel {
      * @param string $category - Kategori buku (optional)
      * @return array - Daftar buku
      */
-    public function getBooksByCategory($category = null) {
+    public function getBooksByCategory($category = null)
+    {
         try {
             if ($category) {
                 $query = "
                     SELECT 
-                        id_buku,
-                        judul,
-                        penulis,
-                        kategori,
-                        cover
-                    FROM buku
-                    WHERE kategori = ?
-                    ORDER BY judul ASC
+                        id as id_buku,
+                        title as judul,
+                        author as penulis,
+                        category as kategori,
+                        cover_image as cover
+                    FROM books
+                    WHERE category = ?
+                    ORDER BY title ASC
                 ";
                 $stmt = $this->pdo->prepare($query);
                 $stmt->execute([$category]);
             } else {
                 $query = "
                     SELECT 
-                        id_buku,
-                        judul,
-                        penulis,
-                        kategori,
-                        cover
-                    FROM buku
-                    ORDER BY judul ASC
+                        id as id_buku,
+                        title as judul,
+                        author as penulis,
+                        category as kategori,
+                        cover_image as cover
+                    FROM books
+                    ORDER BY title ASC
                 ";
                 $stmt = $this->pdo->prepare($query);
                 $stmt->execute();
@@ -86,12 +90,13 @@ class FavoriteModel {
      * @param int $bookId - ID buku
      * @return bool - true jika sudah favorit
      */
-    public function checkDuplicate($studentId, $bookId) {
+    public function checkDuplicate($studentId, $bookId)
+    {
         try {
             $query = "
                 SELECT COUNT(*) as total
-                FROM favorit_siswa
-                WHERE id_siswa = ? AND id_buku = ?
+                FROM favorites
+                WHERE student_id = ? AND book_id = ?
             ";
 
             $stmt = $this->pdo->prepare($query);
@@ -112,7 +117,8 @@ class FavoriteModel {
      * @param string $category - Kategori buku (optional)
      * @return bool - Berhasil atau tidak
      */
-    public function addFavorite($studentId, $bookId, $category = null) {
+    public function addFavorite($studentId, $bookId, $category = null)
+    {
         try {
             // Cek duplikasi
             if ($this->checkDuplicate($studentId, $bookId)) {
@@ -121,16 +127,16 @@ class FavoriteModel {
 
             // Ambil kategori dari buku jika tidak diberikan
             if (!$category) {
-                $bookQuery = "SELECT kategori FROM buku WHERE id_buku = ?";
+                $bookQuery = "SELECT category FROM books WHERE id = ?";
                 $bookStmt = $this->pdo->prepare($bookQuery);
                 $bookStmt->execute([$bookId]);
                 $book = $bookStmt->fetch(PDO::FETCH_ASSOC);
-                $category = $book['kategori'] ?? null;
+                $category = $book['category'] ?? null;
             }
 
-            // Insert ke tabel favorit
+            // Insert ke tabel favorites
             $query = "
-                INSERT INTO favorit_siswa (id_siswa, id_buku, kategori)
+                INSERT INTO favorites (student_id, book_id, category)
                 VALUES (?, ?, ?)
             ";
 
@@ -152,43 +158,44 @@ class FavoriteModel {
      * @param string $category - Filter kategori (optional)
      * @return array - Daftar favorit
      */
-    public function getFavorites($studentId, $category = null) {
+    public function getFavorites($studentId, $category = null)
+    {
         try {
             if ($category) {
                 $query = "
                     SELECT 
-                        f.id_favorit,
-                        f.id_siswa,
-                        f.id_buku,
-                        f.kategori,
-                        f.tanggal_ditambahkan,
-                        b.judul,
-                        b.penulis,
-                        b.kategori as buku_kategori,
-                        b.cover
-                    FROM favorit_siswa f
-                    JOIN buku b ON f.id_buku = b.id_buku
-                    WHERE f.id_siswa = ? AND f.kategori = ?
-                    ORDER BY f.tanggal_ditambahkan DESC
+                        f.id as id_favorit,
+                        f.student_id as id_siswa,
+                        f.book_id as id_buku,
+                        f.category as kategori,
+                        f.created_at as tanggal_ditambahkan,
+                        b.title as judul,
+                        b.author as penulis,
+                        b.category as buku_kategori,
+                        b.cover_image as cover
+                    FROM favorites f
+                    JOIN books b ON f.book_id = b.id
+                    WHERE f.student_id = ? AND f.category = ?
+                    ORDER BY f.created_at DESC
                 ";
                 $stmt = $this->pdo->prepare($query);
                 $stmt->execute([$studentId, $category]);
             } else {
                 $query = "
                     SELECT 
-                        f.id_favorit,
-                        f.id_siswa,
-                        f.id_buku,
-                        f.kategori,
-                        f.tanggal_ditambahkan,
-                        b.judul,
-                        b.penulis,
-                        b.kategori as buku_kategori,
-                        b.cover
-                    FROM favorit_siswa f
-                    JOIN buku b ON f.id_buku = b.id_buku
-                    WHERE f.id_siswa = ?
-                    ORDER BY f.tanggal_ditambahkan DESC
+                        f.id as id_favorit,
+                        f.student_id as id_siswa,
+                        f.book_id as id_buku,
+                        f.category as kategori,
+                        f.created_at as tanggal_ditambahkan,
+                        b.title as judul,
+                        b.author as penulis,
+                        b.category as buku_kategori,
+                        b.cover_image as cover
+                    FROM favorites f
+                    JOIN books b ON f.book_id = b.id
+                    WHERE f.student_id = ?
+                    ORDER BY f.created_at DESC
                 ";
                 $stmt = $this->pdo->prepare($query);
                 $stmt->execute([$studentId]);
@@ -207,11 +214,12 @@ class FavoriteModel {
      * @param int $favoriteId - ID favorit
      * @return bool - Berhasil atau tidak
      */
-    public function removeFavorite($studentId, $favoriteId) {
+    public function removeFavorite($studentId, $favoriteId)
+    {
         try {
             $query = "
-                DELETE FROM favorit_siswa
-                WHERE id_favorit = ? AND id_siswa = ?
+                DELETE FROM favorites
+                WHERE id = ? AND student_id = ?
             ";
 
             $stmt = $this->pdo->prepare($query);
@@ -231,12 +239,13 @@ class FavoriteModel {
      * @param int $studentId - ID siswa
      * @return int - Total favorit
      */
-    public function countFavorites($studentId) {
+    public function countFavorites($studentId)
+    {
         try {
             $query = "
                 SELECT COUNT(*) as total
-                FROM favorit_siswa
-                WHERE id_siswa = ?
+                FROM favorites
+                WHERE student_id = ?
             ";
 
             $stmt = $this->pdo->prepare($query);
@@ -252,7 +261,8 @@ class FavoriteModel {
     /**
      * Helper: Format tanggal
      */
-    public static function formatDate($date) {
+    public static function formatDate($date)
+    {
         if (empty($date)) {
             return '-';
         }

@@ -10,7 +10,15 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $school_id = $user['school_id'];
-$memberId = $user['id'];
+$nisn = $user['nisn'] ?? null;
+
+// Lookup member_id using NISN
+$memberStmt = $pdo->prepare(
+    'SELECT id FROM members WHERE nisn = :nisn AND school_id = :school_id LIMIT 1'
+);
+$memberStmt->execute(['nisn' => $nisn, 'school_id' => $school_id]);
+$member = $memberStmt->fetch();
+$memberId = $member ? $member['id'] : $user['id'];
 
 // Inisialisasi variabel
 $borrowingHistory = [];

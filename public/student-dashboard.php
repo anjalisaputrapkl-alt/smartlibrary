@@ -724,10 +724,41 @@ $pageTitle = 'Dashboard Siswa';
             object-fit: cover;
         }
 
-        .book-status {
+        .btn-love {
             position: absolute;
             top: 8px;
             right: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 20px;
+            padding: 0;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-love:hover {
+            background: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-love.loved {
+            color: var(--danger);
+        }
+
+        .book-status {
+            position: absolute;
+            top: 8px;
+            left: 8px;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 11px;
@@ -1639,7 +1670,7 @@ $pageTitle = 'Dashboard Siswa';
                             $statusClass = $isAvailable ? 'available' : 'unavailable';
                             $statusText = $isAvailable ? 'Tersedia' : 'Tidak Tersedia';
                             ?>
-                            <div class="book-card">
+                            <div class="book-card" data-book-id="<?php echo $book['id']; ?>">
                                 <div class="book-cover">
                                     <?php if (!empty($book['cover_image'])): ?>
                                         <img src="../img/covers/<?php echo htmlspecialchars($book['cover_image']); ?>"
@@ -1648,6 +1679,10 @@ $pageTitle = 'Dashboard Siswa';
                                     <?php else: ?>
                                         <iconify-icon icon="mdi:book-open-variant" width="48" height="48"></iconify-icon>
                                     <?php endif; ?>
+                                    <button class="btn-love"
+                                        onclick="toggleFavorite(event, <?php echo $book['id']; ?>, '<?php echo htmlspecialchars($book['title']); ?>')">
+                                        <iconify-icon icon="mdi:heart-outline" width="20" height="20"></iconify-icon>
+                                    </button>
                                     <span class="book-status <?php echo $statusClass; ?>"><?php echo $statusText; ?></span>
                                 </div>
                                 <div class="book-info">
@@ -1742,6 +1777,68 @@ $pageTitle = 'Dashboard Siswa';
 
     <script>
         let currentBookData = null;
+        let favorites = new Set();
+
+        // Load favorites on page load
+        async function loadFavorites() {
+            try {
+                const response = await fetch('/perpustakaan-online/public/api/favorites.php?action=get_favorites');
+                const data = await response.json();
+                if (data.success && data.data) {
+                    data.data.forEach(fav => {
+                        favorites.add(fav.id_buku);
+                        const btn = document.querySelector(`[data-book-id="${fav.id_buku}"] .btn-love`);
+                        if (btn) {
+                            btn.classList.add('loved');
+                            const icon = btn.querySelector('iconify-icon');
+                            if (icon) icon.setAttribute('icon', 'mdi:heart');
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading favorites:', error);
+            }
+        }
+
+        // Toggle favorite
+        async function toggleFavorite(e, bookId, bookTitle) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const btn = e.currentTarget;
+            const icon = btn.querySelector('iconify-icon');
+            const isLoved = btn.classList.contains('loved');
+
+            try {
+                const formData = new FormData();
+                formData.append('id_buku', bookId);
+
+                const action = isLoved ? 'remove' : 'add';
+                const response = await fetch(`/perpustakaan-online/public/api/favorites.php?action=${action}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    if (isLoved) {
+                        btn.classList.remove('loved');
+                        icon.setAttribute('icon', 'mdi:heart-outline');
+                        favorites.delete(bookId);
+                    } else {
+                        btn.classList.add('loved');
+                        icon.setAttribute('icon', 'mdi:heart');
+                        favorites.add(bookId);
+                    }
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Gagal mengubah favorite');
+            }
+        }
 
         // Navigation Sidebar Toggle
         const navToggle = document.getElementById('navToggle');
@@ -1770,6 +1867,11 @@ $pageTitle = 'Dashboard Siswa';
             if (window.innerWidth > 768) {
                 navSidebar.classList.remove('active');
             }
+        });
+
+        // Load favorites when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFavorites();
         });
 
         // Modal functions
