@@ -140,6 +140,7 @@ $pageTitle = 'Riwayat Peminjaman';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/sidebar.css">
     <link rel="stylesheet" href="../assets/css/student-borrowing-history.css">
 </head>
 
@@ -353,34 +354,5 @@ $pageTitle = 'Riwayat Peminjaman';
     </div>
 
     <script src="../assets/js/student-borrowing-history.js"></script>
-
-        // Request return function
-        function requestReturn(borrowId) {
-            if (!confirm('Apakah Anda ingin mengajukan pengembalian buku ini?')) {
-                return;
-            }
-
-            fetch('api/student-request-return.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'borrow_id=' + borrowId
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Permintaan pengembalian telah dikirim ke admin!');
-                        location.reload();
-                    } else {
-                        alert(data.message || 'Gagal mengajukan pengembalian');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan');
-                });
-        }
-    </script>
 </body>
 </html>

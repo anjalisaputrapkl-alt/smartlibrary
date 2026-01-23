@@ -1,0 +1,502 @@
+/* ============================================================
+   SIDEBAR STYLING - CONSOLIDATED
+   Navigation sidebar dan school profile header styling
+   ============================================================ */
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ===== NAVIGATION SIDEBAR CONTAINER ===== */
+.nav-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 240px;
+    background: linear-gradient(135deg, #0b3d61 0%, #062d4a 100%);
+    color: white;
+    padding: 24px 0;
+    z-index: 1002;
+    overflow-y: auto;
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.nav-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nav-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* ===== SCHOOL PROFILE HEADER ===== */
+.school-profile-header {
+    padding: 20px 20px 16px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: slideInDown 0.6s ease-out;
+}
+
+/* School Photo Wrapper */
+.school-photo-wrapper {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* School Photo Image */
+.school-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: fadeInScale 0.5s ease-out;
+    display: block;
+}
+
+/* School Photo Placeholder */
+.school-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 3px dashed rgba(255, 255, 255, 0.2);
+    font-size: 36px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.school-photo-placeholder iconify-icon {
+    font-size: 36px;
+}
+
+/* School Name */
+.school-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 6px 0;
+    line-height: 1.3;
+    word-break: break-word;
+    max-height: 45px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* School Info */
+.school-info {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 6px 0 0 0;
+    line-height: 1.4;
+}
+
+.school-info-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+    margin: 3px 0;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+.school-info-item iconify-icon {
+    font-size: 12px;
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.6);
+    width: 12px;
+    height: 12px;
+}
+
+.school-info-item span {
+    display: inline;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Edit Profile Button */
+.edit-profile-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.edit-profile-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.edit-profile-btn iconify-icon {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+}
+
+/* Show edit button for admin */
+body.is-admin .edit-profile-btn {
+    display: inline-flex;
+}
+
+/* Loading State */
+.school-photo.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== SIDEBAR HEADER (Alternative) ===== */
+.nav-sidebar-header {
+    padding: 0 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: white;
+}
+
+.nav-sidebar-header-icon {
+    font-size: 32px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+.nav-sidebar-header-icon iconify-icon {
+    width: 32px;
+    height: 32px;
+    color: white;
+}
+
+.nav-sidebar-header h2 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* ===== SIDEBAR DIVIDER ===== */
+.nav-sidebar-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 16px 0;
+}
+
+/* ===== SIDEBAR NAVIGATION MENU ===== */
+.nav-sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-sidebar-menu li {
+    margin: 0;
+}
+
+.nav-sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    position: relative;
+}
+
+.nav-sidebar-menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-sidebar-menu a.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-left-color: white;
+    font-weight: 600;
+}
+
+.nav-sidebar-menu-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+iconify-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.nav-sidebar-menu iconify-icon {
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-sidebar-menu a:hover iconify-icon,
+.nav-sidebar-menu a.active iconify-icon {
+    color: white;
+}
+
+/* ===== HAMBURGER TOGGLE BUTTON ===== */
+.nav-toggle {
+    display: none;
+    position: fixed;
+    top: 6px;
+    left: 12px;
+    z-index: 999;
+    background: var(--card, #FFFFFF);
+    color: var(--text, #0F172A);
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 0;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.nav-toggle:hover {
+    background: var(--bg, #F6F9FF);
+}
+
+.nav-toggle:active {
+    transform: scale(0.95);
+}
+
+.nav-toggle iconify-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--accent, #3A7FF2);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet: 768px and below */
+@media (max-width: 768px) {
+    .nav-sidebar {
+        animation: none !important;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 240px;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-sidebar.active {
+        transform: translateX(0);
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .school-profile-header {
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-bottom: none;
+    }
+
+    .school-photo-wrapper {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 10px;
+    }
+
+    .school-photo-placeholder iconify-icon {
+        font-size: 30px;
+    }
+
+    .school-name {
+        font-size: 13px;
+        max-height: 40px;
+    }
+
+    .school-info {
+        font-size: 10px;
+    }
+
+    .school-info-item {
+        margin: 2px 0;
+    }
+
+    .edit-profile-btn {
+        padding: 5px 10px;
+        font-size: 10px;
+        margin-top: 6px;
+    }
+}
+
+/* Mobile: 480px and below */
+@media (max-width: 480px) {
+    .nav-toggle {
+        width: 40px;
+        height: 40px;
+        left: 10px;
+        top: 6px;
+    }
+
+    .nav-toggle iconify-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-sidebar {
+        width: 200px;
+    }
+
+    .nav-sidebar-menu a {
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+
+    .school-profile-header {
+        padding: 12px 14px;
+        margin-bottom: 6px;
+    }
+
+    .school-photo-wrapper {
+        width: 54px;
+        height: 54px;
+        margin: 0 auto 8px;
+    }
+
+    .school-photo {
+        border-width: 2px;
+    }
+
+    .school-photo-placeholder {
+        border-width: 2px;
+    }
+
+    .school-photo-placeholder iconify-icon {
+        font-size: 28px;
+    }
+
+    .school-name {
+        font-size: 12px;
+        max-height: 36px;
+    }
+
+    .school-info {
+        font-size: 9px;
+    }
+
+    .school-info-item {
+        margin: 2px 0;
+        gap: 3px;
+    }
+
+    .school-info-item iconify-icon {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+    }
+}
+
+/* ===== DARK THEME SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+    .school-photo {
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .school-photo-placeholder {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .edit-profile-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .edit-profile-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+}
