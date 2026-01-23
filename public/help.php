@@ -406,6 +406,9 @@ $pageTitle = 'Bantuan';
             align-items: center;
             gap: 16px;
             color: var(--text);
+            padding: 16px 20px;
+            background: var(--muted-surface);
+            border-radius: 12px;
         }
 
         .page-header h1 iconify-icon {
