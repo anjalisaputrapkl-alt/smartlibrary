@@ -364,12 +364,6 @@
                 <li style="margin-bottom:10px;"><a href="#audience"
                     style="color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s ease;">Pengguna</a>
                 </li>
-                <li style="margin-bottom:10px;"><a href="#"
-                    style="color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s ease;">Harga</a>
-                </li>
-                <li><a href="#"
-                    style="color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s ease;">API</a>
-                </li>
               </ul>
             </div>
 
@@ -428,12 +422,12 @@
                 Kontak</h4>
               <ul style="list-style:none;margin:0;padding:0;">
                 <li style="margin-bottom:10px;"><a href="mailto:support@perpustakaan.edu"
-                    style="color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s ease;">📧
-                    support@perpustakaan.edu</a></li>
+                    style="color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s ease;">
+                    anjalisaputrapkl@gmail.com</a></li>
                 <li style="margin-bottom:10px;"><a href="tel:+622745551234"
-                    style="color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s ease;">📞
-                    (0274) 555-1234</a></li>
-                <li style="color:rgba(255,255,255,.7);font-size:13px;">🕐 Senin–Jumat 09:00–17:00</li>
+                    style="color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s ease;">
+                    +62 851-8737-8063</a></li>
+                <li style="color:rgba(255,255,255,.7);font-size:13px;">Senin–Jumat 09:00–17:00</li>
               </ul>
             </div>
           </div>
@@ -576,7 +570,7 @@
           <form method="post" action="public/api/login.php" class="login-modal-form">
             <input type="hidden" name="user_type" value="school">
             <div class="form-group">
-              <label>Email Admin</label>
+              <label>Email Sekolah</label>
               <input type="email" name="email" required placeholder="admin@sekolah.com">
             </div>
 
@@ -621,7 +615,7 @@
           </div>
 
           <div class="form-group">
-            <label>Email Admin</label>
+            <label>Email Sekolah</label>
             <input type="email" name="admin_email" required placeholder="admin@sch.id" pattern=".*@sch\.id$"
               title="Email harus menggunakan domain @sch.id">
             <small style="color: #6b7280; display: block; margin-top: 6px; font-size: 11px;">ⓘ Email harus menggunakan
@@ -646,58 +640,96 @@
 
     <!-- EMAIL VERIFICATION MODAL -->
     <div id="verificationModal" class="modal" onclick="closeVerificationModal(event)">
-      <div class="modal-content verification-modal-content" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeVerificationModal()">&times;</button>
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" id="verificationCloseBtn" onclick="closeVerificationModal()" style="display: none;">&times;</button>
 
-        <div class="verification-icon">✉️</div>
-        <h2 class="verification-title">Verifikasi Email Anda</h2>
-        <p class="verification-subtitle">Kode verifikasi telah dikirim ke email Anda</p>
-
-        <div class="verification-email-info">
-          Kode dikirim ke: <strong id="verificationEmail"></strong>
+        <div class="login-modal-header">
+          <div class="login-icon"></div>
+          <h2>Verifikasi Email</h2>
+          <p>Masukkan kode verifikasi yang telah dikirim ke email Anda</p>
         </div>
 
-        <div class="verification-error" id="verificationError"></div>
-        <div class="verification-success" id="verificationSuccess">✓ Verifikasi berhasil! Mengalihkan...</div>
+        <div style="background: #f0f9ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center;">
+          <p style="font-size: 13px; color: #1e40af; margin: 0; font-weight: 600;">Email: <span id="verificationEmail" style="color: #2563eb;"></span></p>
+        </div>
 
-        <form id="verificationForm" style="display: flex; flex-direction: column;">
+        <div class="verification-error" id="verificationError" style="display: none; background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #dc2626; font-size: 13px; text-align: center;"></div>
+        
+        <div class="verification-success" id="verificationSuccess" style="display: none; background: #dcfce7; border: 1px solid #86efac; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #16a34a; font-size: 13px; text-align: center; font-weight: 600;">Verifikasi berhasil! Mengalihkan...</div>
+
+        <form id="verificationForm" class="login-modal-form">
           <input type="hidden" id="verificationUserId" name="user_id">
 
-          <label style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 12px;">Masukkan Kode
-            Verifikasi (6 digit)</label>
-
-          <div class="code-input-group">
-            <input type="text" class="code-input" id="code1" maxlength="1" inputmode="numeric" required>
-            <input type="text" class="code-input" id="code2" maxlength="1" inputmode="numeric" required>
-            <input type="text" class="code-input" id="code3" maxlength="1" inputmode="numeric" required>
-            <input type="text" class="code-input" id="code4" maxlength="1" inputmode="numeric" required>
-            <input type="text" class="code-input" id="code5" maxlength="1" inputmode="numeric" required>
-            <input type="text" class="code-input" id="code6" maxlength="1" inputmode="numeric" required>
+          <div class="form-group">
+            <label>Kode Verifikasi (6 digit)</label>
+            <div class="code-input-group" style="display: flex; gap: 8px; justify-content: center; margin-top: 12px;">
+              <input type="text" class="code-input" id="code1" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code2" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code3" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code4" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code5" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code6" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+            </div>
           </div>
 
-          <div class="verification-info-box">
-            <strong>💡 Tip:</strong> Kode verifikasi terdiri dari 6 digit angka yang telah dikirim ke email Anda. Kode
-            berlaku selama 15 menit.
+          <div style="background: #fffbeb; border: 1px solid #fed7aa; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 12px; color: #92400e;">
+            <strong style="display: block; margin-bottom: 6px;">Tip Penting:</strong>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>Kode verifikasi terdiri dari 6 digit angka</li>
+              <li>Kode berlaku selama 15 menit</li>
+              <li>Cek folder spam jika tidak menerima email</li>
+            </ul>
           </div>
 
-          <button type="submit" class="btn-verify">Verifikasi Email</button>
+          <button type="submit" class="btn-modal-submit">Verifikasi Email</button>
         </form>
 
-        <div class="verification-resend">
-          <span class="verification-timer">Kode kadaluarsa dalam <span id="timerMinutes">15</span>:<span
-              id="timerSeconds">00</span></span>
-          <button type="button" class="btn-resend" id="resendBtn" disabled>Kirim Ulang</button>
+        <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+          <p style="font-size: 12px; color: #6b7280; margin: 0 0 8px 0;">
+            Kode kadaluarsa dalam <strong><span id="timerMinutes">15</span>:<span id="timerSeconds">00</span></strong>
+          </p>
+          <div style="display: flex; gap: 8px; justify-content: center;">
+            <button type="button" class="btn-modal-register" id="resendBtn" disabled style="font-size: 13px; cursor: not-allowed; opacity: 0.5; flex: 1;">Kirim Ulang Kode</button>
+            <button type="button" class="btn-modal-register" id="cancelRegistrationBtn" style="font-size: 13px; background: #ef4444; flex: 1;">Daftar Ulang</button>
+          </div>
         </div>
       </div>
     </div>
 
     <script>
-      // Check if login is required and auto-open modal
-      if (new URLSearchParams(window.location.search).get('login_required') === '1') {
-        window.addEventListener('load', () => {
+      // Check pending verification on page load
+      window.addEventListener('load', async () => {
+        // Check localStorage for pending verification
+        const pendingVerification = localStorage.getItem('pending_verification');
+        
+        if (pendingVerification) {
+          try {
+            const data = JSON.parse(pendingVerification);
+            const response = await fetch('public/api/check-pending-verification.php', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+              body: 'user_id=' + data.user_id
+            });
+            
+            const result = await response.json();
+            
+            if (result.success && result.has_pending) {
+              // Auto-open verification modal
+              openVerificationModal(result.user_id, result.email, result.verification_code);
+            } else {
+              // No longer pending, clear localStorage
+              localStorage.removeItem('pending_verification');
+            }
+          } catch (error) {
+            console.error('Error checking pending verification:', error);
+          }
+        }
+        
+        // Check if login is required
+        if (new URLSearchParams(window.location.search).get('login_required') === '1') {
           openLoginModal();
-        });
-      }
+        }
+      });
 
       function openLoginModal(e) {
         if (e) e.preventDefault();
@@ -715,6 +747,7 @@
 
       function closeUserTypeModal(e) {
         if (e && e.target.id !== 'userTypeModal') return;
+        clearLoginForms();
         document.getElementById('userTypeModal').style.display = 'none';
         document.body.style.overflow = 'auto';
       }
@@ -747,8 +780,28 @@
         showLoginForm(newType);
       }
 
+      // Clear all login forms
+      function clearLoginForms() {
+        // Clear student login form
+        const studentForm = document.getElementById('studentLoginForm');
+        if (studentForm) {
+          studentForm.querySelectorAll('input[type="text"], input[type="password"]').forEach(input => {
+            input.value = '';
+          });
+        }
+
+        // Clear school login form
+        const schoolForm = document.getElementById('schoolLoginForm');
+        if (schoolForm) {
+          schoolForm.querySelectorAll('input[type="email"], input[type="password"]').forEach(input => {
+            input.value = '';
+          });
+        }
+      }
+
       function closeLoginModal(e) {
         if (e && e.target.id !== 'loginModal') return;
+        clearLoginForms();
         document.getElementById('loginModal').style.display = 'none';
         document.body.style.overflow = 'auto';
       }
@@ -776,6 +829,8 @@
 
             const data = await response.json();
             if (data.success) {
+              // Clear form inputs
+              clearLoginForms();
               // Redirect to appropriate dashboard based on user type
               const redirectUrl = data.redirect_url
                 ? 'public/' + data.redirect_url
@@ -796,14 +851,33 @@
       // Register Modal Functions
       function openRegisterModal(e) {
         if (e) e.preventDefault();
+        // Clear form inputs sebelum membuka modal
+        clearRegisterForm();
         document.getElementById('registerModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
       }
 
       function closeRegisterModal(e) {
         if (e && e.target.id !== 'registerModal') return;
+        // Clear form inputs sebelum menutup modal
+        clearRegisterForm();
         document.getElementById('registerModal').style.display = 'none';
         document.body.style.overflow = 'auto';
+      }
+
+      function clearRegisterForm() {
+        // Clear all input fields di register form
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+          registerForm.reset();
+          // Explicitly clear all inputs
+          const inputs = registerForm.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
+          inputs.forEach(input => {
+            input.value = '';
+            input.style.borderColor = '#e5e7eb';
+            input.style.background = '#f9fafb';
+          });
+        }
       }
 
       // Handle register form submission
@@ -843,6 +917,13 @@
           try {
             const data = JSON.parse(text);
             if (data.success) {
+              // Simpan pending verification ke localStorage untuk auto-restore jika tab ditutup
+              localStorage.setItem('pending_verification', JSON.stringify({
+                user_id: data.user_id,
+                email: data.email,
+                timestamp: new Date().getTime()
+              }));
+
               // Tutup register modal dan buka verification modal
               closeRegisterModal();
 
@@ -880,24 +961,35 @@
 
         // Show verification code in modal for development
         if (verificationCode) {
+          // Cek apakah sudah ada code display sebelumnya
+          let existingDisplay = document.querySelector('.code-display-dev');
+          if (existingDisplay) {
+            existingDisplay.remove();
+          }
+
           const codeDisplay = document.createElement('div');
-          codeDisplay.style.cssText = 'background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; margin: 15px 0; text-align: center;';
+          codeDisplay.className = 'code-display-dev';
+          codeDisplay.style.cssText = 'background: #fef3c7; border: 2px solid #fbbf24; border-radius: 8px; padding: 15px; margin-bottom: 16px; text-align: center;';
           codeDisplay.innerHTML = `
-            <p style="color: #856404; margin: 0 0 8px 0; font-size: 12px;">KODE VERIFIKASI (untuk development):</p>
-            <div style="font-size: 32px; font-weight: bold; color: #ffc107; letter-spacing: 4px; font-family: 'Courier New', monospace;">${verificationCode}</div>
-            <p style="color: #856404; margin: 8px 0 0 0; font-size: 11px;">Copy kode di atas dan masukkan ke input field</p>
+            <p style="color: #92400e; margin: 0 0 8px 0; font-size: 12px; font-weight: 600;">KODE VERIFIKASI (untuk development):</p>
+            <div style="font-size: 32px; font-weight: bold; color: #f59e0b; letter-spacing: 4px; font-family: 'Courier New', monospace; margin: 0;">${verificationCode}</div>
           `;
-          const formContainer = document.querySelector('.verification-modal-content form');
-          formContainer.parentNode.insertBefore(codeDisplay, formContainer);
+          const form = document.getElementById('verificationForm');
+          form.parentNode.insertBefore(codeDisplay, form);
         }
 
         // Reset form
         document.querySelectorAll('.code-input').forEach(input => {
           input.value = '';
-          input.classList.remove('error');
+          input.style.borderColor = '#e5e7eb';
+          input.style.background = '#f9fafb';
         });
-        document.getElementById('verificationError').classList.remove('show');
-        document.getElementById('verificationSuccess').classList.remove('show');
+        
+        const errorDiv = document.getElementById('verificationError');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+        
+        document.getElementById('verificationSuccess').style.display = 'none';
 
         // Start countdown timer
         startVerificationTimer();
@@ -905,9 +997,9 @@
 
       function closeVerificationModal(e) {
         if (e && e.target.id !== 'verificationModal') return;
-        document.getElementById('verificationModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-        if (verificationTimer) clearInterval(verificationTimer);
+        // Jangan biarkan user menutup modal verifikasi
+        // Modal hanya bisa ditutup setelah verifikasi berhasil atau kode expired
+        return false;
       }
 
       function startVerificationTimer() {
@@ -924,17 +1016,24 @@
 
           // Enable resend button at 1 minute mark
           if (remainingTime <= 60 && remainingTime > 0) {
-            document.getElementById('timerMinutes').parentElement.classList.add('expires-soon');
-            document.getElementById('resendBtn').disabled = false;
+            const resendBtn = document.getElementById('resendBtn');
+            resendBtn.disabled = false;
+            resendBtn.style.opacity = '1';
+            resendBtn.style.cursor = 'pointer';
           }
 
           // Time expired
           if (remainingTime <= 0) {
             clearInterval(verificationTimer);
-            document.getElementById('verificationError').classList.add('show');
-            document.getElementById('verificationError').textContent = 'Kode verifikasi telah kadaluarsa. Silakan daftar ulang.';
-            document.querySelectorAll('.code-input').forEach(input => input.disabled = true);
-            document.querySelector('.btn-verify').disabled = true;
+            const errorDiv = document.getElementById('verificationError');
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = 'Kode verifikasi telah kadaluarsa. Silakan daftar ulang.';
+            
+            document.querySelectorAll('.code-input').forEach(input => {
+              input.disabled = true;
+              input.style.opacity = '0.5';
+            });
+            document.querySelector('.btn-modal-submit').disabled = true;
           }
         }, 1000);
       }
@@ -943,8 +1042,12 @@
       document.querySelectorAll('.code-input').forEach((input, index) => {
         input.addEventListener('input', (e) => {
           // Clear error on input
-          document.getElementById('verificationError').classList.remove('show');
-          input.classList.remove('error');
+          const errorDiv = document.getElementById('verificationError');
+          errorDiv.style.display = 'none';
+          errorDiv.textContent = '';
+          
+          e.target.style.borderColor = '#e5e7eb';
+          e.target.style.background = '#f9fafb';
 
           // Only allow numbers
           e.target.value = e.target.value.replace(/[^0-9]/g, '');
@@ -961,6 +1064,18 @@
             document.getElementById('code' + index).focus();
           }
         });
+
+        input.addEventListener('focus', (e) => {
+          e.target.style.borderColor = '#2563eb';
+          e.target.style.background = '#fff';
+        });
+
+        input.addEventListener('blur', (e) => {
+          if (!e.target.value) {
+            e.target.style.borderColor = '#e5e7eb';
+            e.target.style.background = '#f9fafb';
+          }
+        });
       });
 
       // Handle verification form submission
@@ -973,18 +1088,23 @@
 
         // Validate
         if (verificationCode.length !== 6) {
-          document.getElementById('verificationError').classList.add('show');
-          document.getElementById('verificationError').textContent = 'Silakan masukkan 6 digit kode verifikasi';
-          codeInputs.forEach(input => input.classList.add('error'));
+          const errorDiv = document.getElementById('verificationError');
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'Silakan masukkan 6 digit kode verifikasi';
+          codeInputs.forEach(input => {
+            input.style.borderColor = '#ef4444';
+            input.style.background = '#fee2e2';
+          });
           return;
         }
 
         const userId = document.getElementById('verificationUserId').value;
-        const submitBtn = document.querySelector('.btn-verify');
+        const submitBtn = document.querySelector('.btn-modal-submit');
 
         // Show loading state
-        submitBtn.classList.add('loading');
         submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sedang Memverifikasi...';
 
         try {
           const formData = new FormData();
@@ -1000,38 +1120,144 @@
 
           if (data.success) {
             // Show success message
-            document.getElementById('verificationSuccess').classList.add('show');
+            document.getElementById('verificationSuccess').style.display = 'block';
             clearInterval(verificationTimer);
+            codeInputs.forEach(input => {
+              input.disabled = true;
+              input.style.borderColor = '#10b981';
+              input.style.background = '#f0fdf4';
+            });
+            submitBtn.disabled = true;
+            document.getElementById('resendBtn').style.display = 'none';
+            document.getElementById('cancelRegistrationBtn').style.display = 'none';
+
+            // Clear pending verification from localStorage
+            localStorage.removeItem('pending_verification');
 
             // Redirect after 2 seconds
             setTimeout(() => {
+              document.getElementById('verificationModal').style.display = 'none';
+              document.body.style.overflow = 'auto';
               window.location.href = 'public/' + (data.redirect_url || 'index.php');
             }, 2000);
           } else {
             // Show error
-            document.getElementById('verificationError').classList.add('show');
-            document.getElementById('verificationError').textContent = data.message || 'Verifikasi gagal';
+            const errorDiv = document.getElementById('verificationError');
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = data.message || 'Verifikasi gagal. Silakan coba lagi.';
 
             // Add error state to inputs
-            codeInputs.forEach(input => input.classList.add('error'));
+            codeInputs.forEach(input => {
+              input.style.borderColor = '#ef4444';
+              input.style.background = '#fee2e2';
+            });
 
             // Reset button
-            submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
           }
         } catch (error) {
-          document.getElementById('verificationError').classList.add('show');
-          document.getElementById('verificationError').textContent = 'Terjadi kesalahan: ' + error.message;
-          submitBtn.classList.remove('loading');
+          const errorDiv = document.getElementById('verificationError');
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'Terjadi kesalahan: ' + error.message;
           submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
         }
       });
 
       // Resend verification code button (implementation for future enhancement)
       document.getElementById('resendBtn').addEventListener('click', async (e) => {
         e.preventDefault();
-        // Implementation untuk mengirim ulang kode
-        alert('Fitur mengirim ulang kode akan segera tersedia');
+        
+        const resendBtn = document.getElementById('resendBtn');
+        const originalText = resendBtn.textContent;
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'Mengirim...';
+
+        try {
+          const userId = document.getElementById('verificationUserId').value;
+          const formData = new FormData();
+          formData.append('user_id', userId);
+          formData.append('action', 'resend_code');
+
+          const response = await fetch('public/api/verify-email.php', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Clear previous code display
+            let existingDisplay = document.querySelector('.code-display-dev');
+            if (existingDisplay) {
+              existingDisplay.remove();
+            }
+
+            // Show new verification code
+            if (data.verification_code) {
+              const codeDisplay = document.createElement('div');
+              codeDisplay.className = 'code-display-dev';
+              codeDisplay.style.cssText = 'background: #fef3c7; border: 2px solid #fbbf24; border-radius: 8px; padding: 15px; margin-bottom: 16px; text-align: center;';
+              codeDisplay.innerHTML = `
+                <p style="color: #92400e; margin: 0 0 8px 0; font-size: 12px; font-weight: 600;">KODE VERIFIKASI BARU (untuk development):</p>
+                <div style="font-size: 32px; font-weight: bold; color: #f59e0b; letter-spacing: 4px; font-family: 'Courier New', monospace; margin: 0;">${data.verification_code}</div>
+              `;
+              const form = document.getElementById('verificationForm');
+              form.parentNode.insertBefore(codeDisplay, form);
+            }
+
+            // Clear code inputs
+            document.querySelectorAll('.code-input').forEach(input => {
+              input.value = '';
+              input.style.borderColor = '#e5e7eb';
+              input.style.background = '#f9fafb';
+            });
+
+            // Reset timer
+            startVerificationTimer();
+            
+            // Reset button
+            resendBtn.disabled = true;
+            resendBtn.textContent = originalText;
+            
+            alert('Kode verifikasi baru telah dikirim ke email Anda');
+          } else {
+            const errorDiv = document.getElementById('verificationError');
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = data.message || 'Gagal mengirim ulang kode verifikasi';
+            resendBtn.disabled = true;
+            resendBtn.textContent = originalText;
+          }
+        } catch (error) {
+          const errorDiv = document.getElementById('verificationError');
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'Terjadi kesalahan: ' + error.message;
+          resendBtn.disabled = true;
+          resendBtn.textContent = originalText;
+        }
+      });
+
+      // Cancel registration button
+      document.getElementById('cancelRegistrationBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        if (confirm('Apakah Anda yakin ingin membatalkan dan mendaftar ulang dengan email berbeda?')) {
+          // Clear verification modal
+          if (verificationTimer) clearInterval(verificationTimer);
+          document.getElementById('verificationModal').style.display = 'none';
+          
+          // Clear pending verification from localStorage
+          localStorage.removeItem('pending_verification');
+          
+          // Clear all forms
+          clearLoginForms();
+          clearRegisterForm();
+          
+          // Open register modal
+          document.getElementById('registerModal').style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        }
       });
 
       // Stat Counter Animation

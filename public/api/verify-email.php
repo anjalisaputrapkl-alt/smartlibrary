@@ -11,19 +11,82 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+$action = trim($_POST['action'] ?? 'verify');
 $user_id = intval($_POST['user_id'] ?? 0);
 $verification_code = trim($_POST['verification_code'] ?? '');
 
-if (!$user_id || empty($verification_code)) {
+if (!$user_id) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'User ID dan kode verifikasi harus diisi']);
+    echo json_encode(['success' => false, 'message' => 'User ID harus diisi']);
+    exit;
+}
+
+// Handle resend_code action
+if ($action === 'resend_code') {
+    try {
+        // Get user data
+        $stmt = $pdo->prepare(
+            'SELECT id, email, name, school_id FROM users WHERE id = :user_id'
+        );
+        $stmt->execute(['user_id' => $user_id]);
+        $user = $stmt->fetch();
+
+        if (!$user) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'User tidak ditemukan']);
+            exit;
+        }
+
+        // Generate new verification code
+        $new_code = generateVerificationCode();
+        $new_expires = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+
+        // Update user with new code and expiration
+        $stmt = $pdo->prepare(
+            'UPDATE users SET verification_code = :code, code_expires_at = :expires WHERE id = :user_id'
+        );
+        $stmt->execute([
+            'code' => $new_code,
+            'expires' => $new_expires,
+            'user_id' => $user_id
+        ]);
+
+        // Get school name for email
+        $stmt = $pdo->prepare('SELECT name FROM schools WHERE id = :school_id');
+        $stmt->execute(['school_id' => $user['school_id']]);
+        $school = $stmt->fetch();
+        $school_name = $school['name'] ?? 'Perpustakaan Digital';
+
+        // Send verification email with new code
+        $email_sent = sendVerificationEmail($user['email'], $school_name, $user['name'], $new_code);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Kode verifikasi baru telah dikirim ke email Anda',
+            'verification_code' => $new_code  // For development/testing
+        ]);
+        exit;
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Terjadi kesalahan saat mengirim ulang kode: ' . $e->getMessage()
+        ]);
+        exit;
+    }
+}
+
+// Verify code action (default)
+if (empty($verification_code)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Kode verifikasi harus diisi']);
     exit;
 }
 
 try {
-    // Get user dengan verification_code
+    // Get user dengan verification_code dan check expiration
     $stmt = $pdo->prepare(
-        'SELECT id, email, verification_code, created_at 
+        'SELECT id, email, verification_code, code_expires_at, is_verified 
          FROM users WHERE id = :user_id AND verification_code = :code'
     );
     $stmt->execute([
@@ -38,12 +101,21 @@ try {
         exit;
     }
 
-    // Cek apakah kode sudah expired (15 menit)
-    if (isVerificationCodeExpired($user['created_at'], 15)) {
+    // Check if already verified
+    if ($user['is_verified']) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Email sudah terverifikasi sebelumnya']);
+        exit;
+    }
+
+    // Cek apakah kode sudah expired
+    $now = new DateTime();
+    $expires = new DateTime($user['code_expires_at']);
+    if ($now > $expires) {
         http_response_code(401);
         echo json_encode([
             'success' => false,
-            'message' => 'Kode verifikasi telah kadaluarsa. Silakan daftar ulang.'
+            'message' => 'Kode verifikasi telah kadaluarsa. Silakan minta kode baru.'
         ]);
         exit;
     }

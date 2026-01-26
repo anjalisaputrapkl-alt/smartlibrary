@@ -64,19 +64,21 @@ try {
 
     // Generate verification code
     $verification_code = generateVerificationCode();
+    $code_expires_at = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 
     // Create admin user dengan status is_verified = 0
     $password_hash = password_hash($admin_password, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare(
-        'INSERT INTO users (school_id, name, email, password, verification_code, is_verified, role) 
-         VALUES (:school_id, :name, :email, :password, :verification_code, 0, "admin")'
+        'INSERT INTO users (school_id, name, email, password, verification_code, code_expires_at, is_verified, role) 
+         VALUES (:school_id, :name, :email, :password, :verification_code, :code_expires_at, 0, "admin")'
     );
     $stmt->execute([
         'school_id' => $school_id,
         'name' => $admin_name,
         'email' => $admin_email,
         'password' => $password_hash,
-        'verification_code' => $verification_code
+        'verification_code' => $verification_code,
+        'code_expires_at' => $code_expires_at
     ]);
     $user_id = $pdo->lastInsertId();
 
