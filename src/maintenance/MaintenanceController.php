@@ -2,40 +2,48 @@
 
 require_once __DIR__ . '/MaintenanceModel.php';
 
-class MaintenanceController {
+class MaintenanceController
+{
   private $model;
+  private $school_id;
 
-  public function __construct($pdo) {
+  public function __construct($pdo, $school_id)
+  {
     $this->model = new MaintenanceModel($pdo);
+    $this->school_id = (int) $school_id;
   }
 
   /**
-   * Get all maintenance records
+   * Get all maintenance records for the school
    */
-  public function getAll($limit = null, $offset = 0) {
-    return $this->model->getAll($limit, $offset);
+  public function getAll($limit = null, $offset = 0)
+  {
+    return $this->model->getAll($this->school_id, $limit, $offset);
   }
 
   /**
-   * Get maintenance records for a specific book
+   * Get maintenance records for a specific book in this school
    */
-  public function getByBook($book_id) {
-    return $this->model->getByBook($book_id);
+  public function getByBook($book_id)
+  {
+    return $this->model->getByBook($this->school_id, $book_id);
   }
 
   /**
-   * Get a single record by ID
+   * Get a single record by ID for this school
    */
-  public function getById($id) {
-    return $this->model->getById($id);
+  public function getById($id)
+  {
+    return $this->model->getById($this->school_id, $id);
   }
 
   /**
-   * Add new maintenance record
+   * Add new maintenance record for this school
    */
-  public function addRecord($book_id, $status, $notes = null) {
+  public function addRecord($book_id, $status, $priority = 'Normal', $notes = null, $follow_up_date = null)
+  {
     try {
-      $id = $this->model->addRecord($book_id, $status, $notes);
+      $id = $this->model->addRecord($this->school_id, $book_id, $status, $priority, $notes, $follow_up_date);
       return [
         'success' => true,
         'message' => 'Catatan maintenance berhasil ditambahkan',
@@ -50,11 +58,12 @@ class MaintenanceController {
   }
 
   /**
-   * Update maintenance record
+   * Update maintenance record for this school
    */
-  public function updateRecord($id, $status, $notes = null) {
+  public function updateRecord($id, $status, $priority = 'Normal', $notes = null, $follow_up_date = null)
+  {
     try {
-      $result = $this->model->updateRecord($id, $status, $notes);
+      $result = $this->model->updateRecord($this->school_id, $id, $status, $priority, $notes, $follow_up_date);
       if ($result) {
         return [
           'success' => true,
@@ -75,11 +84,12 @@ class MaintenanceController {
   }
 
   /**
-   * Delete maintenance record
+   * Delete maintenance record for this school
    */
-  public function deleteRecord($id) {
+  public function deleteRecord($id)
+  {
     try {
-      $result = $this->model->deleteRecord($id);
+      $result = $this->model->deleteRecord($this->school_id, $id);
       if ($result) {
         return [
           'success' => true,
@@ -100,28 +110,31 @@ class MaintenanceController {
   }
 
   /**
-   * Get count of records
+   * Get count of records for this school
    */
-  public function getCount() {
-    return $this->model->getCount();
+  public function getCount()
+  {
+    return $this->model->getCount($this->school_id);
   }
 
   /**
-   * Get list of books
+   * Get list of books for this school
    */
-  public function getBooks() {
-    return $this->model->getBooks();
+  public function getBooks()
+  {
+    return $this->model->getBooks($this->school_id);
   }
 
   /**
    * Handle AJAX requests
    */
-  public function handleAjax() {
+  public function handleAjax()
+  {
     // Bersihkan output buffer
     if (ob_get_level() > 0) {
       ob_clean();
     }
-    
+
     header('Content-Type: application/json; charset=utf-8');
     header('X-Content-Type-Options: nosniff');
 
@@ -138,26 +151,30 @@ class MaintenanceController {
         case 'add':
           $book_id = $_POST['book_id'] ?? null;
           $status = $_POST['status'] ?? null;
+          $priority = $_POST['priority'] ?? 'Normal';
           $notes = $_POST['notes'] ?? null;
+          $follow_up_date = $_POST['follow_up_date'] ?? null;
 
           if (!$book_id || !$status) {
             throw new Exception('Book ID dan Status harus diisi');
           }
 
-          $result = $this->addRecord($book_id, $status, $notes);
+          $result = $this->addRecord($book_id, $status, $priority, $notes, $follow_up_date);
           echo json_encode($result);
           break;
 
         case 'update':
           $id = $_POST['id'] ?? null;
           $status = $_POST['status'] ?? null;
+          $priority = $_POST['priority'] ?? 'Normal';
           $notes = $_POST['notes'] ?? null;
+          $follow_up_date = $_POST['follow_up_date'] ?? null;
 
           if (!$id || !$status) {
             throw new Exception('ID dan Status harus diisi');
           }
 
-          $result = $this->updateRecord($id, $status, $notes);
+          $result = $this->updateRecord($id, $status, $priority, $notes, $follow_up_date);
           echo json_encode($result);
           break;
 

@@ -23,8 +23,8 @@ require_once __DIR__ . '/../src/TrialLimitsManager.php';
 $pdo = require __DIR__ . '/../src/db.php';
 
 // Require authentication
-if (empty($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
-    header('Location: /perpustakaan-online/public/login.php');
+if (empty($_SESSION['user'])) {
+    header('Location: /perpustakaan-online/?login_required=1');
     exit;
 }
 
@@ -310,7 +310,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_activation'])
         <header>
             <h1><?php echo htmlspecialchars($school['name']); ?></h1>
             <p>ID Sekolah: #<?php echo $school_id; ?> | Admin:
-                <?php echo htmlspecialchars($_SESSION['user']['name']); ?></p>
+                <?php echo htmlspecialchars($_SESSION['user']['name']); ?>
+            </p>
             <span class="status-badge status-<?php echo $school['status']; ?>">
                 <?php echo ucfirst($school['status']); ?>
             </span>

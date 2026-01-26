@@ -130,11 +130,7 @@ try {
     );
     $stmt->execute(['user_id' => $user_id]);
 
-    // Set session untuk auto login
-    $_SESSION['user_id'] = $user_id;
-    $_SESSION['user_type'] = 'school';
-
-    // Get updated user info untuk response
+    // Get updated user info untuk session
     $stmt = $pdo->prepare(
         'SELECT id, school_id, name, email, role, is_verified 
          FROM users WHERE id = :user_id'
@@ -142,9 +138,35 @@ try {
     $stmt->execute(['user_id' => $user_id]);
     $verified_user = $stmt->fetch();
 
+    if (!$verified_user) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Gagal mengambil data user setelah verifikasi'
+        ]);
+        exit;
+    }
+
+    // Set session dengan data lengkap
+    $_SESSION['user'] = [
+        'id' => $verified_user['id'],
+        'school_id' => $verified_user['school_id'],
+        'name' => $verified_user['name'],
+        'email' => $verified_user['email'],
+        'role' => $verified_user['role'],
+        'is_verified' => $verified_user['is_verified']
+    ];
+
+    // Regenerate session ID untuk security
+    session_regenerate_id(true);
+
+    // Ensure session is saved before returning response
+    session_write_close();
+
+    // Return response dengan login success
     echo json_encode([
         'success' => true,
-        'message' => 'Email berhasil diverifikasi! Anda sekarang dapat login.',
+        'message' => 'Email berhasil diverifikasi!',
         'user' => $verified_user,
         'redirect_url' => 'index.php'
     ]);

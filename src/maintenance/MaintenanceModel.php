@@ -1,35 +1,42 @@
 <?php
 
-class MaintenanceModel {
+class MaintenanceModel
+{
   private $pdo;
 
-  public function __construct($pdo) {
+  public function __construct($pdo)
+  {
     $this->pdo = $pdo;
   }
 
   /**
-   * Get all maintenance records with book details
+   * Get all maintenance records with book details for a specific school
    */
-  public function getAll($limit = null, $offset = 0) {
+  public function getAll($school_id, $limit = null, $offset = 0)
+  {
     $sql = "SELECT 
               m.id,
               m.book_id,
               m.status,
               m.notes,
+              m.priority,
+              m.follow_up_date,
               m.updated_at,
               b.id as book_id,
               b.title as book_title,
               b.author as book_author
             FROM book_maintenance m
             JOIN books b ON m.book_id = b.id
+            WHERE b.school_id = :school_id
             ORDER BY m.updated_at DESC";
-    
+
     if ($limit) {
       $sql .= " LIMIT " . intval($limit) . " OFFSET " . intval($offset);
     }
 
     try {
-      $stmt = $this->pdo->query($sql);
+      $stmt = $this->pdo->prepare($sql);
+      $stmt->execute(['school_id' => (int) $school_id]);
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       error_log("MaintenanceModel::getAll() Error: " . $e->getMessage());
@@ -38,25 +45,28 @@ class MaintenanceModel {
   }
 
   /**
-   * Get maintenance records for a specific book
+   * Get maintenance records for a specific book in a school
    */
-  public function getByBook($book_id) {
+  public function getByBook($school_id, $book_id)
+  {
     $sql = "SELECT 
               m.id,
               m.book_id,
               m.status,
               m.notes,
+              m.priority,
+              m.follow_up_date,
               m.updated_at,
               b.title as book_title,
               b.author as book_author
             FROM book_maintenance m
             JOIN books b ON m.book_id = b.id
-            WHERE m.book_id = ?
+            WHERE m.book_id = :book_id AND b.school_id = :school_id
             ORDER BY m.updated_at DESC";
 
     try {
       $stmt = $this->pdo->prepare($sql);
-      $stmt->execute([(int) $book_id]);
+      $stmt->execute(['book_id' => (int) $book_id, 'school_id' => (int) $school_id]);
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       error_log("MaintenanceModel::getByBook() Error: " . $e->getMessage());
@@ -65,24 +75,27 @@ class MaintenanceModel {
   }
 
   /**
-   * Get a single maintenance record by ID
+   * Get a single maintenance record by ID for a specific school
    */
-  public function getById($id) {
+  public function getById($school_id, $id)
+  {
     $sql = "SELECT 
               m.id,
               m.book_id,
               m.status,
               m.notes,
+              m.priority,
+              m.follow_up_date,
               m.updated_at,
               b.title as book_title,
               b.author as book_author
             FROM book_maintenance m
             JOIN books b ON m.book_id = b.id
-            WHERE m.id = ?";
+            WHERE m.id = :id AND b.school_id = :school_id";
 
     try {
       $stmt = $this->pdo->prepare($sql);
-      $stmt->execute([(int) $id]);
+      $stmt->execute(['id' => (int) $id, 'school_id' => (int) $school_id]);
       return $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       error_log("MaintenanceModel::getById() Error: " . $e->getMessage());
@@ -91,14 +104,15 @@ class MaintenanceModel {
   }
 
   /**
-   * Add a new maintenance record
+   * Add a new maintenance record for a school
    */
-  public function addRecord($book_id, $status, $notes = null) {
-    // Validate book exists
-    $checkStmt = $this->pdo->prepare("SELECT id FROM books WHERE id = ?");
-    $checkStmt->execute([(int) $book_id]);
+  public function addRecord($school_id, $book_id, $status, $priority = 'Normal', $notes = null, $follow_up_date = null)
+  {
+    // Validate book exists and belongs to this school
+    $checkStmt = $this->pdo->prepare("SELECT id FROM books WHERE id = :book_id AND school_id = :school_id");
+    $checkStmt->execute(['book_id' => (int) $book_id, 'school_id' => (int) $school_id]);
     if (!$checkStmt->fetch()) {
-      throw new Exception("Book ID {$book_id} tidak ditemukan");
+      throw new Exception("Book ID {$book_id} tidak ditemukan atau bukan milik sekolah Anda");
     }
 
     // Validate status
@@ -107,14 +121,16 @@ class MaintenanceModel {
       throw new Exception("Status '{$status}' tidak valid. Pilih: " . implode(', ', $validStatuses));
     }
 
-    $sql = "INSERT INTO book_maintenance (book_id, status, notes) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO book_maintenance (book_id, status, priority, notes, follow_up_date) VALUES (:book_id, :status, :priority, :notes, :follow_up_date)";
 
     try {
       $stmt = $this->pdo->prepare($sql);
       $result = $stmt->execute([
-        (int) $book_id,
-        $status,
-        $notes ?: null
+        ':book_id' => (int) $book_id,
+        ':status' => $status,
+        ':priority' => $priority,
+        ':notes' => $notes ?: null,
+        ':follow_up_date' => $follow_up_date ?: null
       ]);
       return $result ? $this->pdo->lastInsertId() : false;
     } catch (Exception $e) {
@@ -124,23 +140,33 @@ class MaintenanceModel {
   }
 
   /**
-   * Update maintenance record
+   * Update maintenance record for a school
    */
-  public function updateRecord($id, $status, $notes = null) {
+  public function updateRecord($school_id, $id, $status, $priority = 'Normal', $notes = null, $follow_up_date = null)
+  {
     // Validate status
     $validStatuses = ['Good', 'Worn Out', 'Damaged', 'Missing', 'Need Repair', 'Replaced'];
     if (!in_array($status, $validStatuses)) {
       throw new Exception("Status '{$status}' tidak valid. Pilih: " . implode(', ', $validStatuses));
     }
 
-    $sql = "UPDATE book_maintenance SET status = ?, notes = ?, updated_at = NOW() WHERE id = ?";
+    // Check that record belongs to this school
+    $checkStmt = $this->pdo->prepare("SELECT m.id FROM book_maintenance m JOIN books b ON m.book_id = b.id WHERE m.id = :id AND b.school_id = :school_id");
+    $checkStmt->execute(['id' => (int) $id, 'school_id' => (int) $school_id]);
+    if (!$checkStmt->fetch()) {
+      throw new Exception("Catatan maintenance tidak ditemukan atau bukan milik sekolah Anda");
+    }
+
+    $sql = "UPDATE book_maintenance SET status = :status, priority = :priority, notes = :notes, follow_up_date = :follow_up_date, updated_at = NOW() WHERE id = :id";
 
     try {
       $stmt = $this->pdo->prepare($sql);
       $result = $stmt->execute([
-        $status,
-        $notes ?: null,
-        (int) $id
+        ':status' => $status,
+        ':priority' => $priority,
+        ':notes' => $notes ?: null,
+        ':follow_up_date' => $follow_up_date ?: null,
+        ':id' => (int) $id
       ]);
       return $result ? $stmt->rowCount() : false;
     } catch (Exception $e) {
@@ -150,14 +176,22 @@ class MaintenanceModel {
   }
 
   /**
-   * Delete maintenance record
+   * Delete maintenance record for a school
    */
-  public function deleteRecord($id) {
-    $sql = "DELETE FROM book_maintenance WHERE id = ?";
+  public function deleteRecord($school_id, $id)
+  {
+    // Check that record belongs to this school
+    $checkStmt = $this->pdo->prepare("SELECT m.id FROM book_maintenance m JOIN books b ON m.book_id = b.id WHERE m.id = :id AND b.school_id = :school_id");
+    $checkStmt->execute(['id' => (int) $id, 'school_id' => (int) $school_id]);
+    if (!$checkStmt->fetch()) {
+      throw new Exception("Catatan maintenance tidak ditemukan atau bukan milik sekolah Anda");
+    }
+
+    $sql = "DELETE FROM book_maintenance WHERE id = :id";
 
     try {
       $stmt = $this->pdo->prepare($sql);
-      $result = $stmt->execute([(int) $id]);
+      $result = $stmt->execute([':id' => (int) $id]);
       return $result ? $stmt->rowCount() : false;
     } catch (Exception $e) {
       error_log("MaintenanceModel::deleteRecord() Error: " . $e->getMessage());
@@ -166,11 +200,13 @@ class MaintenanceModel {
   }
 
   /**
-   * Get count of maintenance records
+   * Get count of maintenance records for a school
    */
-  public function getCount() {
+  public function getCount($school_id)
+  {
     try {
-      $stmt = $this->pdo->query("SELECT COUNT(*) FROM book_maintenance");
+      $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM book_maintenance m JOIN books b ON m.book_id = b.id WHERE b.school_id = :school_id");
+      $stmt->execute(['school_id' => (int) $school_id]);
       return (int) $stmt->fetchColumn();
     } catch (Exception $e) {
       error_log("MaintenanceModel::getCount() Error: " . $e->getMessage());
@@ -179,13 +215,15 @@ class MaintenanceModel {
   }
 
   /**
-   * Get list of books for dropdown
+   * Get list of books for dropdown from a specific school
    */
-  public function getBooks() {
-    $sql = "SELECT id, title, author FROM books ORDER BY title ASC";
+  public function getBooks($school_id)
+  {
+    $sql = "SELECT id, title, author FROM books WHERE school_id = :school_id ORDER BY title ASC";
 
     try {
-      $stmt = $this->pdo->query($sql);
+      $stmt = $this->pdo->prepare($sql);
+      $stmt->execute(['school_id' => (int) $school_id]);
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       error_log("MaintenanceModel::getBooks() Error: " . $e->getMessage());

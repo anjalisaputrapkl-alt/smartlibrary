@@ -641,7 +641,8 @@
     <!-- EMAIL VERIFICATION MODAL -->
     <div id="verificationModal" class="modal" onclick="closeVerificationModal(event)">
       <div class="modal-content" onclick="event.stopPropagation()">
-        <button class="modal-close" id="verificationCloseBtn" onclick="closeVerificationModal()" style="display: none;">&times;</button>
+        <button class="modal-close" id="verificationCloseBtn" onclick="closeVerificationModal()"
+          style="display: none;">&times;</button>
 
         <div class="login-modal-header">
           <div class="login-icon"></div>
@@ -649,13 +650,19 @@
           <p>Masukkan kode verifikasi yang telah dikirim ke email Anda</p>
         </div>
 
-        <div style="background: #f0f9ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center;">
-          <p style="font-size: 13px; color: #1e40af; margin: 0; font-weight: 600;">Email: <span id="verificationEmail" style="color: #2563eb;"></span></p>
+        <div
+          style="background: #f0f9ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center;">
+          <p style="font-size: 13px; color: #1e40af; margin: 0; font-weight: 600;">Email: <span id="verificationEmail"
+              style="color: #2563eb;"></span></p>
         </div>
 
-        <div class="verification-error" id="verificationError" style="display: none; background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #dc2626; font-size: 13px; text-align: center;"></div>
-        
-        <div class="verification-success" id="verificationSuccess" style="display: none; background: #dcfce7; border: 1px solid #86efac; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #16a34a; font-size: 13px; text-align: center; font-weight: 600;">Verifikasi berhasil! Mengalihkan...</div>
+        <div class="verification-error" id="verificationError"
+          style="display: none; background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #dc2626; font-size: 13px; text-align: center;">
+        </div>
+
+        <div class="verification-success" id="verificationSuccess"
+          style="display: none; background: #dcfce7; border: 1px solid #86efac; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #16a34a; font-size: 13px; text-align: center; font-weight: 600;">
+          Verifikasi berhasil! Mengalihkan...</div>
 
         <form id="verificationForm" class="login-modal-form">
           <input type="hidden" id="verificationUserId" name="user_id">
@@ -663,16 +670,23 @@
           <div class="form-group">
             <label>Kode Verifikasi (6 digit)</label>
             <div class="code-input-group" style="display: flex; gap: 8px; justify-content: center; margin-top: 12px;">
-              <input type="text" class="code-input" id="code1" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
-              <input type="text" class="code-input" id="code2" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
-              <input type="text" class="code-input" id="code3" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
-              <input type="text" class="code-input" id="code4" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
-              <input type="text" class="code-input" id="code5" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
-              <input type="text" class="code-input" id="code6" maxlength="1" inputmode="numeric" required style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code1" maxlength="1" inputmode="numeric" required
+                style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code2" maxlength="1" inputmode="numeric" required
+                style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code3" maxlength="1" inputmode="numeric" required
+                style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code4" maxlength="1" inputmode="numeric" required
+                style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code5" maxlength="1" inputmode="numeric" required
+                style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
+              <input type="text" class="code-input" id="code6" maxlength="1" inputmode="numeric" required
+                style="width: 44px; height: 44px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e5e7eb; border-radius: 8px; background: #f9fafb; transition: all 0.2s ease;">
             </div>
           </div>
 
-          <div style="background: #fffbeb; border: 1px solid #fed7aa; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 12px; color: #92400e;">
+          <div
+            style="background: #fffbeb; border: 1px solid #fed7aa; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 12px; color: #92400e;">
             <strong style="display: block; margin-bottom: 6px;">Tip Penting:</strong>
             <ul style="margin: 0; padding-left: 20px;">
               <li>Kode verifikasi terdiri dari 6 digit angka</li>
@@ -689,8 +703,10 @@
             Kode kadaluarsa dalam <strong><span id="timerMinutes">15</span>:<span id="timerSeconds">00</span></strong>
           </p>
           <div style="display: flex; gap: 8px; justify-content: center;">
-            <button type="button" class="btn-modal-register" id="resendBtn" disabled style="font-size: 13px; cursor: not-allowed; opacity: 0.5; flex: 1;">Kirim Ulang Kode</button>
-            <button type="button" class="btn-modal-register" id="cancelRegistrationBtn" style="font-size: 13px; background: #ef4444; flex: 1;">Daftar Ulang</button>
+            <button type="button" class="btn-modal-register" id="resendBtn" disabled
+              style="font-size: 13px; cursor: not-allowed; opacity: 0.5; flex: 1;">Kirim Ulang Kode</button>
+            <button type="button" class="btn-modal-register" id="cancelRegistrationBtn"
+              style="font-size: 13px; background: #ef4444; flex: 1;">Daftar Ulang</button>
           </div>
         </div>
       </div>
@@ -701,18 +717,18 @@
       window.addEventListener('load', async () => {
         // Check localStorage for pending verification
         const pendingVerification = localStorage.getItem('pending_verification');
-        
+
         if (pendingVerification) {
           try {
             const data = JSON.parse(pendingVerification);
             const response = await fetch('public/api/check-pending-verification.php', {
               method: 'POST',
-              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: 'user_id=' + data.user_id
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success && result.has_pending) {
               // Auto-open verification modal
               openVerificationModal(result.user_id, result.email, result.verification_code);
@@ -724,7 +740,7 @@
             console.error('Error checking pending verification:', error);
           }
         }
-        
+
         // Check if login is required
         if (new URLSearchParams(window.location.search).get('login_required') === '1') {
           openLoginModal();
@@ -984,11 +1000,11 @@
           input.style.borderColor = '#e5e7eb';
           input.style.background = '#f9fafb';
         });
-        
+
         const errorDiv = document.getElementById('verificationError');
         errorDiv.style.display = 'none';
         errorDiv.textContent = '';
-        
+
         document.getElementById('verificationSuccess').style.display = 'none';
 
         // Start countdown timer
@@ -1028,7 +1044,7 @@
             const errorDiv = document.getElementById('verificationError');
             errorDiv.style.display = 'block';
             errorDiv.textContent = 'Kode verifikasi telah kadaluarsa. Silakan daftar ulang.';
-            
+
             document.querySelectorAll('.code-input').forEach(input => {
               input.disabled = true;
               input.style.opacity = '0.5';
@@ -1045,7 +1061,7 @@
           const errorDiv = document.getElementById('verificationError');
           errorDiv.style.display = 'none';
           errorDiv.textContent = '';
-          
+
           e.target.style.borderColor = '#e5e7eb';
           e.target.style.background = '#f9fafb';
 
@@ -1111,7 +1127,7 @@
           formData.append('user_id', userId);
           formData.append('verification_code', verificationCode);
 
-          const response = await fetch('public/api/verify-email.php', {
+          const response = await fetch('public/api/verify-and-login.php', {
             method: 'POST',
             body: formData
           });
@@ -1138,7 +1154,9 @@
             setTimeout(() => {
               document.getElementById('verificationModal').style.display = 'none';
               document.body.style.overflow = 'auto';
-              window.location.href = 'public/' + (data.redirect_url || 'index.php');
+              // Redirect ke public folder dengan route yang sesuai
+              const redirectUrl = data.redirect_url || 'index.php';
+              window.location.href = 'public/' + redirectUrl;
             }, 2000);
           } else {
             // Show error
@@ -1168,7 +1186,7 @@
       // Resend verification code button (implementation for future enhancement)
       document.getElementById('resendBtn').addEventListener('click', async (e) => {
         e.preventDefault();
-        
+
         const resendBtn = document.getElementById('resendBtn');
         const originalText = resendBtn.textContent;
         resendBtn.disabled = true;
@@ -1216,11 +1234,11 @@
 
             // Reset timer
             startVerificationTimer();
-            
+
             // Reset button
             resendBtn.disabled = true;
             resendBtn.textContent = originalText;
-            
+
             alert('Kode verifikasi baru telah dikirim ke email Anda');
           } else {
             const errorDiv = document.getElementById('verificationError');
@@ -1241,19 +1259,19 @@
       // Cancel registration button
       document.getElementById('cancelRegistrationBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        
+
         if (confirm('Apakah Anda yakin ingin membatalkan dan mendaftar ulang dengan email berbeda?')) {
           // Clear verification modal
           if (verificationTimer) clearInterval(verificationTimer);
           document.getElementById('verificationModal').style.display = 'none';
-          
+
           // Clear pending verification from localStorage
           localStorage.removeItem('pending_verification');
-          
+
           // Clear all forms
           clearLoginForms();
           clearRegisterForm();
-          
+
           // Open register modal
           document.getElementById('registerModal').style.display = 'flex';
           document.body.style.overflow = 'hidden';

@@ -5,7 +5,11 @@ requireAuth();
 require_once __DIR__ . '/../src/db.php';
 require_once __DIR__ . '/../src/maintenance/MaintenanceController.php';
 
-$controller = new MaintenanceController($pdo);
+// Get school_id from session
+$school_id = $_SESSION['user']['school_id'];
+
+// Pass school_id to controller
+$controller = new MaintenanceController($pdo, $school_id);
 
 // Get all records and books FIRST
 $records = $controller->getAll();
