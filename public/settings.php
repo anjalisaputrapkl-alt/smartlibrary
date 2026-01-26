@@ -29,9 +29,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update basic school info
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
-        if ($name === '' || $slug === '') {
-            $error = 'Nama dan slug wajib diisi.';
+
+        if ($name === '') {
+            $error = 'Nama sekolah wajib diisi.';
         } else {
+            // Auto-generate slug from name if not provided
+            if ($slug === '') {
+                $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9\s-]/', '', $name)));
+                $slug = preg_replace('/\s+/', '-', $slug);
+                $slug = preg_replace('/-+/', '-', $slug);
+                $slug = trim($slug, '-');
+            }
+
             // ensure slug unique
             $stmt = $pdo->prepare('SELECT id FROM schools WHERE slug = :slug AND id != :id');
             $stmt->execute(['slug' => $slug, 'id' => $sid]);
@@ -61,21 +70,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $data = [
                 'email' => trim($_POST['school_email'] ?? '') ?: null,
-                'phone' => trim($_POST['school_phone'] ?? '') ?: null,
-                'address' => trim($_POST['school_address'] ?? '') ?: null,
                 'npsn' => trim($_POST['school_npsn'] ?? '') ?: null,
-                'website' => trim($_POST['school_website'] ?? '') ?: null,
             ];
-
-            // Add founded_year if provided
-            if (isset($_POST['school_founded_year']) && $_POST['school_founded_year']) {
-                $data['founded_year'] = intval($_POST['school_founded_year']);
-            }
 
             $schoolProfileModel->updateSchoolProfile($sid, $data);
             $profile_success = 'Data profil sekolah berhasil diperbarui.';
         } catch (Exception $e) {
             $profile_error = 'Gagal memperbarui data profil: ' . $e->getMessage();
+        }
+    } elseif ($action === 'update_password') {
+        // Update user (admin) password
+        try {
+            $password_old = $_POST['school_password_old'] ?? '';
+            $password_new = $_POST['school_password_new'] ?? '';
+            $password_confirm = $_POST['school_password_confirm'] ?? '';
+
+            // Validate inputs
+            if (empty($password_old) || empty($password_new) || empty($password_confirm)) {
+                throw new Exception('Semua field password harus diisi.');
+            }
+
+            if ($password_new !== $password_confirm) {
+                throw new Exception('Password baru dan konfirmasi password tidak cocok.');
+            }
+
+            if (strlen($password_new) < 6) {
+                throw new Exception('Password baru minimal 6 karakter.');
+            }
+
+            // Verify old password from users table
+            $stmt = $pdo->prepare('SELECT password FROM users WHERE id = :id');
+            $stmt->execute(['id' => $user['id']]);
+            $user_data = $stmt->fetch();
+
+            if (!$user_data || !password_verify($password_old, $user_data['password'])) {
+                throw new Exception('Password lama tidak sesuai.');
+            }
+
+            // Update password in users table
+            $hashed_password = password_hash($password_new, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare('UPDATE users SET password = :password WHERE id = :id');
+            $stmt->execute(['password' => $hashed_password, 'id' => $user['id']]);
+
+            $profile_success = 'Password berhasil diubah.';
+        } catch (Exception $e) {
+            $profile_error = 'Gagal mengubah password: ' . $e->getMessage();
         }
     } elseif ($action === 'upload_photo') {
         // Handle photo upload
@@ -122,6 +161,9 @@ $school = $stmt->fetch();
 
 // Get current theme
 $currentTheme = $themeModel->getSchoolTheme($sid);
+
+// Debug: Display what we got from database
+// var_dump($school); // Uncomment for debugging
 
 // Safety check
 if (!$school) {
@@ -251,13 +293,6 @@ if (!$school) {
                                         value="<?php echo htmlspecialchars($school['name'] ?? ''); ?>">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="slug">Slug (untuk URL)</label>
-                                    <input id="slug" name="slug" required
-                                        value="<?php echo htmlspecialchars($school['slug'] ?? ''); ?>">
-                                    <small>Gunakan huruf kecil, angka, dan tanda hubung (-)</small>
-                                </div>
-
                                 <button type="submit" class="btn btn-submit">
                                     <iconify-icon icon="mdi:content-save"
                                         style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Simpan
@@ -376,41 +411,49 @@ if (!$school) {
                                 </div>
                             </div>
 
-                            <div class="form-group" style="margin-bottom: 12px;">
-                                <label for="school_phone">Nomor Telepon</label>
-                                <input id="school_phone" name="school_phone" type="tel" placeholder="021-1234567"
-                                    value="<?php echo htmlspecialchars($school['phone'] ?? ''); ?>">
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 12px;">
-                                <label for="school_address">Alamat Lengkap</label>
-                                <textarea id="school_address" name="school_address" placeholder="Jl. Pendidikan No. 123"
-                                    rows="2"
-                                    style="font-family: inherit; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px;"><?php echo htmlspecialchars($school['address'] ?? ''); ?></textarea>
-                            </div>
-
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-                                <div class="form-group">
-                                    <label for="school_website">Website (Opsional)</label>
-                                    <input id="school_website" name="school_website" type="url"
-                                        placeholder="https://example.com"
-                                        value="<?php echo htmlspecialchars($school['website'] ?? ''); ?>">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="school_founded_year">Tahun Berdiri (Opsional)</label>
-                                    <input id="school_founded_year" name="school_founded_year" type="number"
-                                        placeholder="2000" min="1900" max="<?php echo date('Y'); ?>"
-                                        value="<?php echo intval($school['founded_year'] ?? 0) > 0 ? htmlspecialchars($school['founded_year']) : ''; ?>">
-                                </div>
-                            </div>
-
                             <button type="submit" class="btn btn-submit">
                                 <iconify-icon icon="mdi:content-save"
                                     style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Simpan
                                 Profil
                             </button>
                         </form>
+
+                        <!-- Change Password Form -->
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">
+                                <iconify-icon icon="mdi:lock"
+                                    style="font-size: 18px; vertical-align: middle; margin-right: 8px;"></iconify-icon>Ganti
+                                Password
+                            </h3>
+
+                            <form method="post" class="school-form">
+                                <input type="hidden" name="action" value="update_password">
+
+                                <div class="form-group" style="margin-bottom: 12px;">
+                                    <label for="school_password_old">Password Lama</label>
+                                    <input id="school_password_old" name="school_password_old" type="password"
+                                        placeholder="Masukkan password lama" required>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 12px;">
+                                    <label for="school_password_new">Password Baru</label>
+                                    <input id="school_password_new" name="school_password_new" type="password"
+                                        placeholder="Masukkan password baru (minimal 6 karakter)" required>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 12px;">
+                                    <label for="school_password_confirm">Konfirmasi Password Baru</label>
+                                    <input id="school_password_confirm" name="school_password_confirm" type="password"
+                                        placeholder="Ulangi password baru" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">
+                                    <iconify-icon icon="mdi:lock-reset"
+                                        style="font-size: 16px; vertical-align: middle; margin-right: 6px;"></iconify-icon>Ganti
+                                    Password
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                 </div>

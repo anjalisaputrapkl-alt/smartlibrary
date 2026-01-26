@@ -169,6 +169,18 @@ small {
     gap: 6px;
 }
 
+.btn-submit:hover {
+    background: var(--accent) !important;
+    color: white !important;
+    border-color: var(--accent) !important;
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.btn-submit:active {
+    transform: none !important;
+}
+
 .btn-icon {
     vertical-align: middle;
 }
