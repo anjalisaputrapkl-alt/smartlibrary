@@ -25,8 +25,9 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Get the inserted NISN for password generation
     $nisn = $_POST['nisn'];
-    // Default password: NISN
-    $default_password = password_hash($nisn, PASSWORD_BCRYPT);
+    $password = $_POST['password'];
+    // Hash the password
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
     // Create student account in users table
     $userStmt = $pdo->prepare(
@@ -37,13 +38,13 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
       'sid' => $sid,
       'name' => $_POST['name'],
       'email' => $_POST['email'],
-      'password' => $default_password,
+      'password' => $hashed_password,
       'role' => 'student',
       'nisn' => $nisn
     ]);
 
     // Success message
-    $_SESSION['success'] = 'Murid berhasil ditambahkan. Akun siswa otomatis terbuat dengan NISN: ' . $nisn . ' dan Password: ' . $nisn;
+    $_SESSION['success'] = 'Murid berhasil ditambahkan. Akun siswa otomatis terbuat dengan NISN: ' . $nisn;
     header('Location: members.php');
     exit;
   } catch (Exception $e) {
@@ -57,17 +58,30 @@ if ($action === 'edit' && isset($_GET['id'])) {
   $id = (int) $_GET['id'];
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare(
-      'UPDATE members SET name=:name,email=:email,member_no=:no,nisn=:nisn
+      'UPDATE members SET name=:name,email=:email,nisn=:nisn
        WHERE id=:id AND school_id=:sid'
     );
     $stmt->execute([
       'name' => $_POST['name'],
       'email' => $_POST['email'],
-      'no' => $_POST['member_no'],
       'nisn' => $_POST['nisn'],
       'id' => $id,
       'sid' => $sid
     ]);
+
+    // Update password jika diisi
+    if (!empty($_POST['password'])) {
+      $hashed_password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+      $updatePasswordStmt = $pdo->prepare(
+        'UPDATE users SET password=:password WHERE nisn=:nisn AND role=:role'
+      );
+      $updatePasswordStmt->execute([
+        'password' => $hashed_password,
+        'nisn' => $_POST['nisn'],
+        'role' => 'student'
+      ]);
+    }
+
     header('Location: members.php');
     exit;
   }
@@ -156,25 +170,31 @@ $members = $stmt->fetchAll();
             <div
               style="background: #e0f2fe; border-left: 4px solid #0284c7; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 12px; color: #0c4a6e;">
               <strong>ℹ️ Info:</strong> Ketika murid ditambahkan, akun siswa akan otomatis terbuat. <strong>Siswa login
-                dengan NISN dan Password = NISN</strong>. Password dapat diubah setelah login pertama kali.
+                dengan NISN sebagai username dan password yang Anda buat</strong>.
             </div>
           <?php endif; ?>
-          <form method="post" action="<?= $action === 'edit' ? '' : 'members.php?action=add' ?>">
+          <form method="post" action="<?= $action === 'edit' ? '' : 'members.php?action=add' ?>" autocomplete="off"
+            id="member-form">
             <div class="form-group">
               <label>Nama Lengkap</label>
-              <input name="name" required value="<?= $member['name'] ?? '' ?>">
+              <input type="text" name="name" required autocomplete="off"
+                value="<?= $action === 'edit' && isset($member['name']) ? htmlspecialchars($member['name']) : '' ?>">
             </div>
             <div class="form-group">
               <label>Email</label>
-              <input type="email" name="email" required value="<?= $member['email'] ?? '' ?>">
-            </div>
-            <div class="form-group">
-              <label>No Murid</label>
-              <input name="member_no" required value="<?= $member['member_no'] ?? '' ?>">
+              <input type="email" name="email" required autocomplete="off"
+                value="<?= $action === 'edit' && isset($member['email']) ? htmlspecialchars($member['email']) : '' ?>">
             </div>
             <div class="form-group">
               <label>NISN Siswa</label>
-              <input name="nisn" required placeholder="Nomor Induk Siswa Nasional" value="<?= $member['nisn'] ?? '' ?>">
+              <input type="text" name="nisn" required placeholder="Nomor Induk Siswa Nasional" autocomplete="off"
+                value="<?= $action === 'edit' && isset($member['nisn']) ? htmlspecialchars($member['nisn']) : '' ?>">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" name="password" autocomplete="new-password" <?= $action === 'edit' ? '' : 'required' ?>
+                placeholder="<?= $action === 'edit' ? 'Kosongkan jika tidak ingin mengubah password' : 'Buat password untuk siswa' ?>"
+                value="">
             </div>
             <button class="btn" type="submit">
               <?= $action === 'edit' ? 'Simpan Perubahan' : 'Tambah Murid' ?>
@@ -191,7 +211,6 @@ $members = $stmt->fetchAll();
                   <th>ID</th>
                   <th>Nama</th>
                   <th>Email</th>
-                  <th>No Murid</th>
                   <th>NISN</th>
                   <th>Status Akun</th>
                   <th>Aksi</th>
@@ -208,7 +227,6 @@ $members = $stmt->fetchAll();
                     <td>#<?= $m['id'] ?></td>
                     <td><strong><?= htmlspecialchars($m['name']) ?></strong></td>
                     <td><?= htmlspecialchars($m['email']) ?></td>
-                    <td><?= htmlspecialchars($m['member_no']) ?></td>
                     <td><strong><?= htmlspecialchars($m['nisn']) ?></strong></td>
                     <td>
                       <?php if ($userExists): ?>
@@ -243,14 +261,10 @@ $members = $stmt->fetchAll();
 
         <div class="card" style="grid-column: 1/-1">
           <h2>Statistik Murid</h2>
-          <div class="stats-container">
+          <div class="stats-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
             <div class="stat-card">
               <div class="stat-label">Total Murid</div>
               <div class="stat-value"><?= count($members) ?></div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Murid Baru</div>
-              <div class="stat-value">—</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">Email Terdaftar</div>
@@ -308,6 +322,32 @@ $members = $stmt->fetchAll();
   </div>
 
   <script src="../assets/js/members.js"></script>
+  <script>
+    // Only reset form fields when in ADD mode, not EDIT mode
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('member-form');
+      if (form) {
+        // Check if we're in edit mode by checking if name field has a value
+        const nameField = form.querySelector('input[name="name"]');
+        const isEditMode = nameField && nameField.value.trim() !== '';
+
+        // Only clear password field (always reset password on load)
+        const passwordField = form.querySelector('input[name="password"]');
+        if (passwordField) {
+          passwordField.value = '';
+        }
+
+        // If in ADD mode, clear all fields
+        if (!isEditMode) {
+          form.reset();
+          const inputs = form.querySelectorAll('input');
+          inputs.forEach(input => {
+            input.value = '';
+          });
+        }
+      }
+    });
+  </script>
 
 </body>
 

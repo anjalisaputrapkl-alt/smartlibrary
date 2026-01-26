@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
         navSidebar.classList.toggle('active');
     });
 
+    // Also add mousedown for touch devices
+    navToggle.addEventListener('mousedown', function (e) {
+        e.stopPropagation();
+    });
+
     /**
      * Close sidebar when clicking on a navigation link
      */

@@ -193,48 +193,28 @@ if (!$school) {
                                 <div class="theme-grid">
                                     <button type="submit" formaction="" name="theme_name" value="light"
                                         class="btn btn-secondary theme-btn theme-btn-light" data-theme="light">
-                                        <iconify-icon icon="mdi:white-balance-sunny"
-                                            class="theme-btn-icon"></iconify-icon>Light
+                                        Light
                                     </button>
                                     <button type="submit" formaction="" name="theme_name" value="dark"
                                         class="btn btn-secondary theme-btn theme-btn-dark" data-theme="dark">
-                                        <iconify-icon icon="mdi:moon-waning-crescent"
-                                            class="theme-btn-icon"></iconify-icon>Dark
+                                        Dark
                                     </button>
                                     <button type="submit" formaction="" name="theme_name" value="blue"
                                         class="btn btn-secondary theme-btn theme-btn-blue" data-theme="blue">
-                                        <iconify-icon icon="mdi:circle-multiple"
-                                            class="theme-btn-icon"></iconify-icon>Blue
+                                        Blue
                                     </button>
                                     <button type="submit" formaction="" name="theme_name" value="monochrome"
                                         class="btn btn-secondary theme-btn theme-btn-monochrome"
                                         data-theme="monochrome">
-                                        <iconify-icon icon="mdi:checkbox-multiple-blank-circle-outline"
-                                            class="theme-btn-icon"></iconify-icon>Monochrome
+                                        Monochrome
                                     </button>
                                     <button type="submit" formaction="" name="theme_name" value="sepia"
                                         class="btn btn-secondary theme-btn theme-btn-sepia" data-theme="sepia">
-                                        <iconify-icon icon="mdi:image-filter-vintage"
-                                            class="theme-btn-icon"></iconify-icon>Sepia
-                                    </button>
-                                    <button type="submit" formaction="" name="theme_name" value="slate"
-                                        class="btn btn-secondary theme-btn theme-btn-slate" data-theme="slate">
-                                        <iconify-icon icon="mdi:palette-gray"
-                                            class="theme-btn-icon"></iconify-icon>Slate
-                                    </button>
-                                    <button type="submit" formaction="" name="theme_name" value="ocean"
-                                        class="btn btn-secondary theme-btn theme-btn-ocean" data-theme="ocean">
-                                        <iconify-icon icon="mdi:water" class="theme-btn-icon"></iconify-icon>Ocean
+                                        Sepia
                                     </button>
                                     <button type="submit" formaction="" name="theme_name" value="sunset"
                                         class="btn btn-secondary theme-btn theme-btn-sunset" data-theme="sunset">
-                                        <iconify-icon icon="mdi:weather-sunset"
-                                            class="theme-btn-icon"></iconify-icon>Sunset
-                                    </button>
-                                    <button type="submit" formaction="" name="theme_name" value="teal"
-                                        class="btn btn-secondary theme-btn theme-btn-teal" data-theme="teal">
-                                        <iconify-icon icon="mdi:water-opacity"
-                                            class="theme-btn-icon"></iconify-icon>Teal
+                                        Sunset
                                     </button>
                                 </div>
                             </form>

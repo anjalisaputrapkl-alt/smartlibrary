@@ -229,7 +229,7 @@ $pageTitle = 'Koleksi Favorit';
         .nav-toggle {
             display: none;
             position: fixed;
-            top: 6px;
+            top: 4px;
             left: 12px;
             z-index: 999;
             background: var(--card);
@@ -347,7 +347,7 @@ $pageTitle = 'Koleksi Favorit';
             width: 40px;
             height: 40px;
             border-radius: 8px;
-            background: linear-gradient(135deg, var(--accent), #2563eb);
+            background: var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1043,7 +1043,7 @@ $pageTitle = 'Koleksi Favorit';
                 width: 40px;
                 height: 40px;
                 left: 10px;
-                top: 6px;
+                top: 4px;
             }
 
             .nav-toggle iconify-icon {
@@ -1290,22 +1290,6 @@ $pageTitle = 'Koleksi Favorit';
     </div>
 
     <script>
-        // Toggle sidebar on mobile
-        const navToggle = document.getElementById('navToggle');
-        const navSidebar = document.getElementById('navSidebar');
-
-        if (navToggle) {
-            navToggle.addEventListener('click', () => {
-                navSidebar.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!navSidebar.contains(e.target) && !navToggle.contains(e.target)) {
-                    navSidebar.classList.remove('active');
-                }
-            });
-        }
-
         // Handle remove favorite
         function removeFavorite(favoriteId) {
             if (!confirm('Yakin ingin menghapus buku ini dari favorit?')) {

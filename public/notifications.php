@@ -89,7 +89,8 @@ function getLabel($type)
     <?php include 'partials/student-sidebar.php'; ?>
 
     <!-- Hamburger Menu Button -->
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" tabindex="0"
+        onclick="toggleNavSidebar(event)">
         <iconify-icon icon="mdi:menu" width="24" height="24"></iconify-icon>
     </button>
 
@@ -235,7 +236,20 @@ function getLabel($type)
         <?php endif; ?>
     </div>
 
+    <script>
+        // Direct handler untuk toggle sidebar
+        function toggleNavSidebar(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const sidebar = document.getElementById('navSidebar') || document.querySelector('.nav-sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('active');
+                console.log('Sidebar toggled - active:', sidebar.classList.contains('active'));
+            }
+        }
+    </script>
     <script src="../assets/js/notifications.js"></script>
+    <script src="../assets/js/sidebar.js"></script>
 </body>
 
 </html>

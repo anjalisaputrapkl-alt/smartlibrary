@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 23, 2026 at 07:17 AM
+-- Generation Time: Jan 26, 2026 at 03:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,6 +41,13 @@ CREATE TABLE `books` (
   `cover_image` varchar(225) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `books`
+--
+
+INSERT INTO `books` (`id`, `school_id`, `title`, `author`, `isbn`, `category`, `copies`, `created_at`, `shelf`, `row_number`, `cover_image`) VALUES
+(35, 15, 'Madilog', 'Tan Malaka', '9786025792403', 'Non-Fiksi', 0, '2026-01-23 06:42:15', '1A', 1, 'book_1769150535_6973184795d2f.jpeg');
+
 -- --------------------------------------------------------
 
 --
@@ -72,6 +79,13 @@ CREATE TABLE `borrows` (
   `status` enum('borrowed','returned','overdue','pending_return') DEFAULT 'borrowed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `borrows`
+--
+
+INSERT INTO `borrows` (`id`, `school_id`, `book_id`, `member_id`, `borrowed_at`, `due_at`, `returned_at`, `status`) VALUES
+(40, 15, 35, 18, '2026-01-23 13:57:39', '2026-01-30 13:57:39', '2026-01-26 08:03:41', 'returned');
+
 -- --------------------------------------------------------
 
 --
@@ -86,6 +100,14 @@ CREATE TABLE `favorites` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `favorites`
+--
+
+INSERT INTO `favorites` (`id`, `student_id`, `book_id`, `category`, `created_at`) VALUES
+(39, 26, 35, NULL, '2026-01-23 06:57:31'),
+(51, 24, 35, NULL, '2026-01-26 01:26:08');
+
 -- --------------------------------------------------------
 
 --
@@ -97,12 +119,19 @@ CREATE TABLE `members` (
   `school_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `member_no` varchar(100) DEFAULT NULL,
   `nisn` varchar(20) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `members`
+--
+
+INSERT INTO `members` (`id`, `school_id`, `name`, `email`, `nisn`, `status`, `created_at`) VALUES
+(16, 15, 'Anjali Saputra', 'anjalisaputra@gmail.com', '111111', 'active', '2026-01-23 06:42:39'),
+(17, 15, 'Adi Triyanto', 'adi@gmail.com', '222222', 'active', '2026-01-23 06:43:09'),
+(18, 15, 'Surya Ali Rafsanjani', 'surya@gmail.com', '333333', 'active', '2026-01-23 06:43:36');
 
 -- --------------------------------------------------------
 
@@ -121,6 +150,26 @@ CREATE TABLE `notifications` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `school_id`, `student_id`, `title`, `message`, `type`, `is_read`, `created_at`, `updated_at`) VALUES
+(52, 15, 26, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 06:57:31', '2026-01-23 06:57:31'),
+(53, 15, 26, 'Peminjaman Berhasil', 'Anda telah meminjam buku \"Madilog\". Harap dikembalikan sebelum tanggal 30/01/2026.', 'borrow', 0, '2026-01-23 06:57:39', '2026-01-23 06:57:39'),
+(54, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:17:35', '2026-01-23 07:17:35'),
+(55, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:17:56', '2026-01-23 07:17:56'),
+(56, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:32', '2026-01-23 07:18:32'),
+(57, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:32', '2026-01-23 07:18:32'),
+(58, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:33', '2026-01-23 07:18:33'),
+(59, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:33', '2026-01-23 07:18:33'),
+(60, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:34', '2026-01-23 07:18:34'),
+(61, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:34', '2026-01-23 07:18:34'),
+(62, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:34', '2026-01-23 07:18:34'),
+(63, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:35', '2026-01-23 07:18:35'),
+(64, 15, 25, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-23 07:18:35', '2026-01-23 07:18:35'),
+(65, 15, 24, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Madilog\" ke koleksi favorit Anda.', 'info', 0, '2026-01-26 01:26:08', '2026-01-26 01:26:08');
 
 -- --------------------------------------------------------
 
@@ -165,6 +214,13 @@ CREATE TABLE `schools` (
   `founded_year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `schools`
+--
+
+INSERT INTO `schools` (`id`, `name`, `slug`, `status`, `activation_code`, `created_at`, `email`, `phone`, `address`, `description`, `logo`, `profile_picture`, `npsn`, `website`, `photo_path`, `founded_year`) VALUES
+(15, 'SMK BINA MANDIRI MULTIMEDIA', 'smk-bina-mandiri-multimedia', 'pending', NULL, '2026-01-23 06:39:39', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'public/uploads/school-photos/school_1769150429_697317dd05f14.png', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -180,6 +236,13 @@ CREATE TABLE `school_themes` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `school_themes`
+--
+
+INSERT INTO `school_themes` (`id`, `school_id`, `theme_name`, `custom_colors`, `typography`, `created_at`, `updated_at`) VALUES
+(21, 15, 'sunset', NULL, NULL, '2026-01-23 06:40:08', '2026-01-26 01:50:22');
 
 -- --------------------------------------------------------
 
@@ -203,6 +266,15 @@ CREATE TABLE `siswa` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `siswa`
+--
+
+INSERT INTO `siswa` (`id_siswa`, `nama_lengkap`, `nisn`, `kelas`, `jurusan`, `tanggal_lahir`, `jenis_kelamin`, `alamat`, `email`, `no_hp`, `foto`, `created_at`, `updated_at`) VALUES
+(24, 'Anjali Saputra', '111111', NULL, NULL, NULL, NULL, NULL, 'anjalisaputra@gmail.com', '081234567890', NULL, '2026-01-26 01:14:56', '2026-01-26 01:19:02'),
+(25, 'Adi Triyanto', '222222', NULL, NULL, NULL, NULL, NULL, 'adi@gmail.com', NULL, NULL, '2026-01-23 07:05:37', '2026-01-23 07:05:37'),
+(26, 'Surya Ali Rafsanjani', '333333', NULL, NULL, NULL, NULL, NULL, 'surya@gmail.com', NULL, NULL, '2026-01-23 06:44:22', '2026-01-23 06:44:22');
+
 -- --------------------------------------------------------
 
 --
@@ -217,11 +289,22 @@ CREATE TABLE `users` (
   `nisn` varchar(20) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `verification_code` varchar(10) DEFAULT NULL,
+  `code_expires_at` timestamp NULL DEFAULT NULL,
   `is_verified` tinyint(1) DEFAULT 0,
   `verified_at` timestamp NULL DEFAULT NULL,
   `role` enum('admin','librarian','student') DEFAULT 'librarian',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `school_id`, `name`, `email`, `nisn`, `password`, `verification_code`, `code_expires_at`, `is_verified`, `verified_at`, `role`, `created_at`) VALUES
+(23, 15, 'Andy', 'smkbinamandirimultimedia@sch.id', NULL, '$2y$10$VNIIb0ovjeX6x3c9t3rux.gkMoDslzuVLNCWAeclHsq4yZCswXQbC', NULL, NULL, 1, '2026-01-23 06:39:47', 'admin', '2026-01-23 06:39:39'),
+(24, 15, 'Anjali Saputra', 'anjalisaputra@gmail.com', '111111', '$2y$10$E6YuBFhMMGHQWmCvZqVhEuUJ97/ABZ0hY0sHLR3bPr6AUKPxK9GXK', NULL, NULL, 0, NULL, 'student', '2026-01-23 06:42:39'),
+(25, 15, 'Adi Triyanto', 'adi@gmail.com', '222222', '$2y$10$jAE1d4EwWHxjWNw/HAi3f.iT4U77Wzjm1Xt73w7Z290hPWmF.VxHm', NULL, NULL, 0, NULL, 'student', '2026-01-23 06:43:09'),
+(26, 15, 'Surya Ali Rafsanjani', 'surya@gmail.com', '333333', '$2y$10$mVhcPdqB.P/NMvV4eNYjaeEKj5995ePzM6rh6ivITQdRARIcATgfe', NULL, NULL, 0, NULL, 'student', '2026-01-23 06:43:36');
 
 --
 -- Indexes for dumped tables
@@ -268,7 +351,6 @@ ALTER TABLE `favorites`
 ALTER TABLE `members`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nisn` (`nisn`),
-  ADD KEY `idx_members_school_no` (`school_id`,`member_no`),
   ADD KEY `idx_members_school_status` (`school_id`,`status`);
 
 --
@@ -339,7 +421,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `book_maintenance`
@@ -351,25 +433,25 @@ ALTER TABLE `book_maintenance`
 -- AUTO_INCREMENT for table `borrows`
 --
 ALTER TABLE `borrows`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `notifikasi`
@@ -381,25 +463,25 @@ ALTER TABLE `notifikasi`
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `school_themes`
 --
 ALTER TABLE `school_themes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `siswa`
 --
 ALTER TABLE `siswa`
-  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables

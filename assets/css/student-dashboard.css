@@ -208,9 +208,9 @@ iconify-icon {
 .nav-toggle {
     display: none;
     position: fixed;
-    top: 6px;
+    top: 4px;
     left: 12px;
-    z-index: 999;
+    z-index: 1001;
     background: var(--card);
     color: var(--text);
     cursor: pointer;
@@ -222,6 +222,7 @@ iconify-icon {
     padding: 0;
     transition: all 0.2s ease;
     border: none;
+    pointer-events: auto;
 }
 
 .nav-toggle:hover {
@@ -327,7 +328,7 @@ iconify-icon {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent), #2563eb);
+    background: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1111,7 +1112,9 @@ iconify-icon {
 
 @media (max-width: 768px) {
     .nav-toggle {
-        display: flex;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     .nav-sidebar {
@@ -1129,6 +1132,7 @@ iconify-icon {
         margin-left: 0;
         padding: 12px 0;
         padding-left: 12px;
+        z-index: 99;
     }
 
     .header-container {
@@ -1343,11 +1347,13 @@ iconify-icon {
 /* Extra small devices (< 480px) */
 @media (max-width: 480px) {
     .nav-toggle {
-        display: flex;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
         width: 40px;
         height: 40px;
         left: 10px;
-        top: 6px;
+        top: 4px;
     }
 
     .nav-toggle iconify-icon {

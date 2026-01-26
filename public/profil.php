@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
             $userId
         ]);
 
-        $success_message = '✅ Profil berhasil diperbarui!';
+        $success_message = 'Profil berhasil diperbarui!';
     } catch (Exception $e) {
         $error_message = '❌ Error: ' . htmlspecialchars($e->getMessage());
         error_log('Profile update error: ' . $e->getMessage());
@@ -402,7 +402,7 @@ $pageTitle = 'Profil Saya';
         .nav-toggle {
             display: none;
             position: fixed;
-            top: 6px;
+            top: 4px;
             left: 12px;
             z-index: 999;
             background: var(--card);
@@ -461,7 +461,7 @@ $pageTitle = 'Profil Saya';
             gap: 12px;
             text-decoration: none;
             color: var(--text);
-            margin-left: 7px;
+            margin-left: 0;
         }
 
         .header-brand-icon {
@@ -522,7 +522,7 @@ $pageTitle = 'Profil Saya';
             width: 40px;
             height: 40px;
             border-radius: 8px;
-            background: linear-gradient(135deg, var(--accent), #2563eb);
+            background: var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -861,7 +861,7 @@ $pageTitle = 'Profil Saya';
                 width: 40px;
                 height: 40px;
                 left: 10px;
-                top: 6px;
+                top: 4px;
             }
 
             .nav-toggle iconify-icon {

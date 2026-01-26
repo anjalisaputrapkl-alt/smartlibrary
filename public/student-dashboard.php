@@ -391,35 +391,6 @@ $pageTitle = 'Dashboard Siswa';
             }
         }
 
-        // Navigation Sidebar Toggle
-        const navToggle = document.getElementById('navToggle');
-        const navSidebar = document.getElementById('navSidebar');
-
-        navToggle.addEventListener('click', () => {
-            navSidebar.classList.toggle('active');
-        });
-
-        // Close sidebar when clicking on a link
-        document.querySelectorAll('.nav-sidebar-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navSidebar.classList.remove('active');
-            });
-        });
-
-        // Close sidebar when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navSidebar.contains(e.target) && !navToggle.contains(e.target)) {
-                navSidebar.classList.remove('active');
-            }
-        });
-
-        // Close sidebar on window resize if >= 768px
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                navSidebar.classList.remove('active');
-            }
-        });
-
         // Load favorites when page loads
         document.addEventListener('DOMContentLoaded', () => {
             loadFavorites();

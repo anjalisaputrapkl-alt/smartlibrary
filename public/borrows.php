@@ -60,6 +60,46 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/borrows.css">
   <style>
+    :root {
+      --primary: #3A7FF2;
+      --primary-2: #7AB8F5;
+      --primary-dark: #0A1A4F;
+      --bg: #F6F9FF;
+      --muted: #F3F7FB;
+      --card: #FFFFFF;
+      --surface: #FFFFFF;
+      --muted-surface: #F7FAFF;
+      --border: #E6EEF8;
+      --text: #0F172A;
+      --text-muted: #50607A;
+      --accent: #3A7FF2;
+      --accent-light: #e0f2fe;
+      --success: #10B981;
+      --warning: #f59e0b;
+      --danger: #EF4444;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #3A7FF2;
+        --primary-2: #7AB8F5;
+        --primary-dark: #0A1A4F;
+        --bg: #0f172a;
+        --muted: #1e293b;
+        --card: #1e293b;
+        --surface: #1e293b;
+        --muted-surface: #334155;
+        --border: #334155;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --accent: #3A7FF2;
+        --accent-light: #e0f2fe;
+        --success: #10B981;
+        --warning: #f59e0b;
+        --danger: #EF4444;
+      }
+    }
+
     .content {
       grid-template-columns: 1fr;
     }
@@ -68,7 +108,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
       grid-template-columns: 1fr;
     }
 
-    .main > div {
+    .main>div {
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -76,7 +116,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
 
     .stats-section {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
 
@@ -91,7 +131,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
 
     .stat-card:hover {
       border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .stat-label {
@@ -105,7 +145,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
     .stat-value {
       font-size: 28px;
       font-weight: 600;
-      color: var(--accent);
+      color: var(--text);
     }
 
     .borrows-table {
@@ -159,26 +199,31 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
       font-size: 12px;
       font-weight: 600;
       width: fit-content;
+      margin-left: -10px;
     }
 
     .status-borrowed {
       background: #dbeafe;
       color: #1e40af;
+      margin-left: -10px;
     }
 
     .status-overdue {
       background: #fee2e2;
       color: #991b1b;
+      margin-left: -10px;
     }
 
     .status-returned {
       background: #dcfce7;
       color: #166534;
+      margin-left: -10px;
     }
 
     .status-pending {
       background: #fef3c7;
       color: #92400e;
+      margin-left: -10px;
     }
 
     .btn-return {
@@ -194,6 +239,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
       text-decoration: none;
       transition: all 0.2s ease;
       white-space: nowrap;
+      margin-left: -50px;
     }
 
     .btn-return:hover {
@@ -219,6 +265,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
       text-decoration: none;
       transition: all 0.2s ease;
       white-space: nowrap;
+      margin-left: -12px;
     }
 
     .btn-confirm-return:hover {
@@ -301,11 +348,11 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
             </div>
             <div class="stat-card">
               <div class="stat-label">Terlambat</div>
-              <div class="stat-value" style="color: var(--danger);"><?= $overdueBorrows ?></div>
+              <div class="stat-value"><?= $overdueBorrows ?></div>
             </div>
             <div class="stat-card">
               <div class="stat-label">Menunggu Konfirmasi</div>
-              <div class="stat-value" style="color: #f59e0b;"><?= $pendingReturns ?></div>
+              <div class="stat-value"><?= $pendingReturns ?></div>
             </div>
           </div>
 
@@ -331,11 +378,12 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
                   </tr>
                 </thead>
                 <tbody>
-                  <?php 
+                  <?php
                   $no = 1;
-                  foreach ($borrows as $br): 
-                    if ($br['status'] !== 'pending_return') continue;
-                  ?>
+                  foreach ($borrows as $br):
+                    if ($br['status'] !== 'pending_return')
+                      continue;
+                    ?>
                     <tr>
                       <td class="table-no"><?= $no++ ?></td>
                       <td><strong><?= htmlspecialchars($br['title']) ?></strong></td>
@@ -380,11 +428,12 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
                   </tr>
                 </thead>
                 <tbody>
-                  <?php 
+                  <?php
                   $no = 1;
-                  foreach ($borrows as $br): 
-                    if ($br['status'] === 'returned' || $br['status'] === 'pending_return') continue;
-                  ?>
+                  foreach ($borrows as $br):
+                    if ($br['status'] === 'returned' || $br['status'] === 'pending_return')
+                      continue;
+                    ?>
                     <tr>
                       <td class="table-no"><?= $no++ ?></td>
                       <td><strong><?= htmlspecialchars($br['title']) ?></strong></td>
@@ -432,11 +481,12 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
                   </tr>
                 </thead>
                 <tbody>
-                  <?php 
+                  <?php
                   $no = 1;
-                  foreach ($borrows as $br): 
-                    if ($br['status'] !== 'returned') continue;
-                  ?>
+                  foreach ($borrows as $br):
+                    if ($br['status'] !== 'returned')
+                      continue;
+                    ?>
                     <tr>
                       <td class="table-no"><?= $no++ ?></td>
                       <td><strong><?= htmlspecialchars($br['title']) ?></strong></td>

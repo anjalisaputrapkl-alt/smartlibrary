@@ -140,12 +140,6 @@ if (isset($_SESSION['user'])) {
             </a>
         </li>
         <li>
-            <a href="settings.php" <?php echo $currentPage === 'settings.php' ? 'class="active"' : ''; ?>>
-                <iconify-icon icon="mdi:cog" width="18" height="18"></iconify-icon>
-                Pengaturan
-            </a>
-        </li>
-        <li>
             <a href="logout.php" <?php echo $currentPage === 'logout.php' ? 'class="active"' : ''; ?>>
                 <iconify-icon icon="mdi:logout" width="18" height="18"></iconify-icon>
                 Logout
