@@ -4,7 +4,6 @@ require __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/maintenance/DamageController.php';
 requireAuth();
 
-$pdo = $pdo;
 $schoolId = (int) $_SESSION['user']['school_id'];
 
 // Summary stats
