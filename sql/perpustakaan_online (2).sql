@@ -219,24 +219,6 @@ INSERT INTO `notifications` (`id`, `school_id`, `student_id`, `title`, `message`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifikasi`
---
-
-CREATE TABLE `notifikasi` (
-  `id_notifikasi` int(11) NOT NULL,
-  `id_siswa` int(11) NOT NULL,
-  `judul` varchar(255) NOT NULL,
-  `pesan` text NOT NULL,
-  `jenis_notifikasi` enum('telat','peringatan','pengembalian','info','sukses','buku','default') DEFAULT 'default',
-  `tanggal` datetime DEFAULT current_timestamp(),
-  `status_baca` tinyint(1) DEFAULT 0 COMMENT '0 = belum dibaca, 1 = sudah dibaca',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `schools`
 --
 
@@ -294,35 +276,6 @@ CREATE TABLE `school_themes` (
 INSERT INTO `school_themes` (`id`, `school_id`, `theme_name`, `custom_colors`, `typography`, `created_at`, `updated_at`) VALUES
 (1, 3, 'light', NULL, NULL, '2026-01-26 02:41:21', '2026-01-26 02:41:21'),
 (2, 4, 'dark', NULL, NULL, '2026-01-26 02:43:32', '2026-01-27 03:56:30');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `siswa`
---
-
-CREATE TABLE `siswa` (
-  `id_siswa` int(11) NOT NULL,
-  `nama_lengkap` varchar(100) NOT NULL,
-  `nisn` varchar(20) DEFAULT NULL,
-  `kelas` varchar(20) DEFAULT NULL,
-  `jurusan` varchar(50) DEFAULT NULL,
-  `tanggal_lahir` date DEFAULT NULL,
-  `jenis_kelamin` char(1) DEFAULT NULL,
-  `alamat` text DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `no_hp` varchar(15) DEFAULT NULL,
-  `foto` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `siswa`
---
-
-INSERT INTO `siswa` (`id_siswa`, `nama_lengkap`, `nisn`, `kelas`, `jurusan`, `tanggal_lahir`, `jenis_kelamin`, `alamat`, `email`, `no_hp`, `foto`, `created_at`, `updated_at`) VALUES
-(4, 'Anjali Saputra', '0094234', 'XI', 'Rekayasa Perangkat Lunak', '2008-01-17', 'L', 'Limus', 'anjalisaputra@gmail.com', '089234234', 'uploads/siswa/siswa_4_1769479766_69781e562270d.webp', '2026-01-26 03:07:53', '2026-01-27 02:09:26');
 
 -- --------------------------------------------------------
 
@@ -432,18 +385,7 @@ ALTER TABLE `notifications`
   ADD KEY `idx_student_type` (`student_id`,`type`,`created_at`);
 
 --
--- Indexes for table `notifikasi`
---
-ALTER TABLE `notifikasi`
-  ADD PRIMARY KEY (`id_notifikasi`),
-  ADD KEY `idx_siswa` (`id_siswa`),
-  ADD KEY `idx_status` (`status_baca`),
-  ADD KEY `idx_jenis` (`jenis_notifikasi`),
-  ADD KEY `idx_tanggal` (`tanggal`);
-ALTER TABLE `notifikasi` ADD FULLTEXT KEY `ft_search` (`judul`,`pesan`);
-
---
--- Indexes for table `schools`
+-- Indexes for table `users`
 --
 ALTER TABLE `schools`
   ADD PRIMARY KEY (`id`),
@@ -459,14 +401,6 @@ ALTER TABLE `school_themes`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `school_id` (`school_id`),
   ADD KEY `idx_school_id` (`school_id`);
-
---
--- Indexes for table `siswa`
---
-ALTER TABLE `siswa`
-  ADD PRIMARY KEY (`id_siswa`),
-  ADD KEY `idx_nisn` (`nisn`),
-  ADD KEY `idx_email` (`email`);
 
 --
 -- Indexes for table `users`
@@ -525,12 +459,6 @@ ALTER TABLE `notifications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `notifikasi`
---
-ALTER TABLE `notifikasi`
-  MODIFY `id_notifikasi` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
@@ -541,12 +469,6 @@ ALTER TABLE `schools`
 --
 ALTER TABLE `school_themes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `siswa`
---
-ALTER TABLE `siswa`
-  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`

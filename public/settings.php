@@ -349,8 +349,8 @@ if (!$school) {
                                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
                                             onerror="this.src='../assets/img/default-school.png';">
                                     <?php else: ?>
-                                        <img src="../assets/img/default-school.png" alt="Foto Profil Default"
-                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                        <iconify-icon icon="mdi:school"
+                                            style="font-size: 40px; color: #a0aec0;"></iconify-icon>
                                     <?php endif; ?>
                                 </div>
                                 <small style="color: #6b7280; display: block; font-size: 11px;">500x500px max
