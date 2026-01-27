@@ -853,9 +853,13 @@
                 : 'public/index.php';
               window.location.href = redirectUrl;
             } else {
-              // Show detailed error message
+              // Show detailed error message without alert dialog
               console.error('Login Error:', data);
-              alert(data.message || 'Login gagal. Silakan coba lagi.');
+              const errorMsg = data.message || 'Login gagal. Silakan coba lagi.';
+              // Show error in a more subtle way instead of alert
+              if (e.target.id !== 'verificationForm') {
+                alert(errorMsg);
+              }
             }
           } catch (error) {
             console.error('Login Request Error:', error);
@@ -1135,8 +1139,6 @@
           const data = await response.json();
 
           if (data.success) {
-            // Show success message
-            document.getElementById('verificationSuccess').style.display = 'block';
             clearInterval(verificationTimer);
             codeInputs.forEach(input => {
               input.disabled = true;
@@ -1159,7 +1161,7 @@
               window.location.href = 'public/' + redirectUrl;
             }, 2000);
           } else {
-            // Show error
+            // Show error tanpa alert dialog
             const errorDiv = document.getElementById('verificationError');
             errorDiv.style.display = 'block';
             errorDiv.textContent = data.message || 'Verifikasi gagal. Silakan coba lagi.';
