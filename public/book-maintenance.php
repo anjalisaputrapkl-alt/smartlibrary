@@ -109,6 +109,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/book-maintenance.css">
+  <link rel="stylesheet" href="../assets/css/damage-section.css">
 </head>
 
 <body>
@@ -128,15 +129,149 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     </div>
 
     <div class="content">
-      <div class="main">
+      <!-- Filter Section -->
+      <div class="card">
+        <h2>Filter & Statistik</h2>
+        <div class="filter-bar">
+          <input type="text" id="searchInput" placeholder="Cari judul buku...">
+          <select id="statusFilter">
+            <option value="">Status</option>
+            <option value="Good">Good</option>
+            <option value="Worn Out">Worn Out</option>
+            <option value="Damaged">Damaged</option>
+            <option value="Missing">Missing</option>
+            <option value="Need Repair">Need Repair</option>
+          </select>
+          <select id="priorityFilter">
+            <option value="">Prioritas</option>
+            <option value="Low">Low</option>
+            <option value="Normal">Normal</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+          <button class="btn btn-danger" onclick="resetFilter();"><iconify-icon icon="mdi:redo"></iconify-icon>
+            Reset</button>
+        </div>
+        <div class="stats-bar">
+          <div class="stat-item">
+            <div class="stat-label">Total</div>
+            <div class="stat-value"><?= $totalRecords ?></div>
+          </div>
+        </div>
+      </div>
 
-        <div>
-          <div class="card">
-            <h2>Filter & Statistik</h2>
-            <div class="filter-bar">
-              <input type="text" id="searchInput" placeholder="Cari judul buku atau penulis..." onkeyup="filterTable()">
-              <select id="statusFilter" onchange="filterTable()">
-                <option value="">-- Semua Status --</option>
+      <!-- Table Section -->
+      <div class="card">
+        <h2>Daftar Catatan (<?= count($records) ?>)</h2>
+        <?php if (empty($records)): ?>
+          <p style="text-align: center; color: var(--muted); padding: 32px 0;">
+            Belum ada catatan maintenance.
+          </p>
+        <?php else: ?>
+          <div class="table-wrap">
+            <table>
+              <colgroup>
+                <col class="id">
+                <col class="title">
+                <col class="author">
+                <col class="status">
+                <col class="priority">
+                <col class="notes">
+                <col class="followup">
+                <col class="date">
+                <col class="action">
+              </colgroup>
+
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Judul Buku</th>
+                  <th>Penulis</th>
+                  <th>Status</th>
+                  <th>Prioritas</th>
+                  <th>Catatan</th>
+                  <th>Follow-up</th>
+                  <th>Update</th>
+                  <th class="text-center">Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <?php foreach ($records as $r): ?>
+                  <tr>
+                    <td>#<?= $r['id'] ?></td>
+                    <td><strong><?= htmlspecialchars($r['book_title']) ?></strong></td>
+                    <td><?= htmlspecialchars($r['book_author']) ?></td>
+                    <td>
+                      <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $r['status'])) ?>">
+                        <?= htmlspecialchars($r['status']) ?>
+                      </span>
+                    </td>
+                    <td>
+                      <?php
+                      $priority = $r['priority'] ?? 'Normal';
+                      $priority_color = $priority === 'Urgent' ? '#dc2626' : ($priority === 'High' ? '#f59e0b' : '#6b7280');
+                      ?>
+                      <span
+                        style="display: inline-block; padding: 4px 8px; background: rgba(220, 38, 38, 0.1); color: <?= $priority_color ?>; border-radius: 4px; font-size: 11px; font-weight: 600;">
+                        <?= htmlspecialchars($priority) ?>
+                      </span>
+                    </td>
+                    <td>
+                      <?= $r['notes'] ? htmlspecialchars(substr($r['notes'], 0, 30)) . (strlen($r['notes']) > 30 ? '...' : '') : '-' ?>
+                    </td>
+                    <td style="font-size: 12px;">
+                      <?php
+                      $followup = $r['follow_up_date'] ?? null;
+                      if ($followup) {
+                        echo date('d M Y', strtotime($followup));
+                      } else {
+                        echo '-';
+                      }
+                      ?>
+                    </td>
+                    <td style="font-size: 12px;"><?= date('d M Y', strtotime($r['updated_at'])) ?></td>
+                    <td class="text-center">
+                      <div class="actions">
+                        <button class="btn btn-sm btn-secondary" onclick="openEditModal(<?= $r['id'] ?>)"><iconify-icon
+                            icon="mdi:pencil" style="vertical-align: middle;"></iconify-icon> Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteRecord(<?= $r['id'] ?>)"><iconify-icon
+                            icon="mdi:trash-can" style="vertical-align: middle;"></iconify-icon> Hapus</button>
+                      </div>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php endif; ?>
+      </div>
+    </div>
+
+    <!-- Modal Add/Edit -->
+    <div id="maintenanceModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header" id="modalTitle">Tambah Catatan Maintenance</div>
+        <div class="modal-body">
+          <form id="maintenanceForm">
+            <input type="hidden" id="recordId" name="id" value="">
+
+            <div class="form-group">
+              <label for="bookId">Pilih Buku</label>
+              <select id="bookId" name="book_id" required>
+                <option value="">-- Pilih Buku --</option>
+                <?php foreach ($books as $b): ?>
+                  <option value="<?= $b['id'] ?>">
+                    <?= htmlspecialchars($b['title']) . ' - ' . htmlspecialchars($b['author']) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select id="status" name="status" required>
+                <option value="">-- Pilih Status --</option>
                 <option value="Good">Good (Bagus)</option>
                 <option value="Worn Out">Worn Out (Aus)</option>
                 <option value="Damaged">Damaged (Rusak)</option>
@@ -144,199 +279,46 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
                 <option value="Need Repair">Need Repair (Perlu Perbaikan)</option>
                 <option value="Replaced">Replaced (Diganti)</option>
               </select>
-              <select id="priorityFilter" onchange="filterTable()">
-                <option value="">-- Semua Prioritas --</option>
-                <option value="Low">Low</option>
+            </div>
+
+            <div class="form-group">
+              <label for="priority">Prioritas</label>
+              <select id="priority" name="priority">
                 <option value="Normal">Normal</option>
+                <option value="Low">Low</option>
                 <option value="High">High</option>
                 <option value="Urgent">Urgent</option>
               </select>
-              <div class="filter-buttons">
-                <button class="btn btn-danger" onclick="resetFilter();"><iconify-icon icon="mdi:redo"
-                    style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Reset</button>
-              </div>
             </div>
-            <div class="stats-container">
-              <div class="stat-card">
-                <div class="stat-label">Total Catatan</div>
-                <div class="stat-value"><?= $totalRecords ?></div>
-              </div>
+
+            <div class="form-group">
+              <label for="followUpDate">Tanggal Follow-up (Opsional)</label>
+              <input type="date" id="followUpDate" name="follow_up_date">
             </div>
-          </div>
+
+            <div class="form-group">
+              <label for="notes">Catatan / Keterangan</label>
+              <textarea id="notes" name="notes" placeholder="Deskripsikan kondisi buku..."></textarea>
+            </div>
+          </form>
         </div>
-
-        <div>
-
-          <?php if (empty($records)): ?>
-            <p style="text-align: center; color: var(--muted); padding: 32px 0;">
-              Belum ada catatan maintenance. <a href="#" onclick="openAddModal(); return false;"
-                style="color: var(--accent); text-decoration: none; font-weight: 600;">Buat catatan pertama</a>
-            </p>
-          <?php else: ?>
-            <div class="card">
-              <h2>Daftar Catatan Maintenance (<?= count($records) ?>)</h2>
-              <div class="table-wrap">
-                <table>
-                  <colgroup>
-                    <col class="id">
-                    <col class="title">
-                    <col class="author">
-                    <col class="status">
-                    <col class="priority">
-                    <col class="notes">
-                    <col class="followup">
-                    <col class="date">
-                    <col class="action">
-                  </colgroup>
-
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Judul Buku</th>
-                      <th>Penulis</th>
-                      <th>Status</th>
-                      <th>Prioritas</th>
-                      <th>Catatan</th>
-                      <th>Follow-up</th>
-                      <th>Update</th>
-                      <th class="text-center">Aksi</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <?php foreach ($records as $r): ?>
-                      <tr>
-                        <td>#<?= $r['id'] ?></td>
-                        <td><strong><?= htmlspecialchars($r['book_title']) ?></strong></td>
-                        <td><?= htmlspecialchars($r['book_author']) ?></td>
-                        <td>
-                          <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $r['status'])) ?>">
-                            <?= htmlspecialchars($r['status']) ?>
-                          </span>
-                        </td>
-                        <td>
-                          <?php
-                          $priority = $r['priority'] ?? 'Normal';
-                          $priority_color = $priority === 'Urgent' ? '#dc2626' : ($priority === 'High' ? '#f59e0b' : '#6b7280');
-                          ?>
-                          <span
-                            style="display: inline-block; padding: 4px 8px; background: rgba(220, 38, 38, 0.1); color: <?= $priority_color ?>; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                            <?= htmlspecialchars($priority) ?>
-                          </span>
-                        </td>
-                        <td>
-                          <?= $r['notes'] ? htmlspecialchars(substr($r['notes'], 0, 30)) . (strlen($r['notes']) > 30 ? '...' : '') : '-' ?>
-                        </td>
-                        <td style="font-size: 12px;">
-                          <?php
-                          $followup = $r['follow_up_date'] ?? null;
-                          if ($followup) {
-                            echo date('d M Y', strtotime($followup));
-                          } else {
-                            echo '-';
-                          }
-                          ?>
-                        </td>
-                        <td style="font-size: 12px;"><?= date('d M Y', strtotime($r['updated_at'])) ?></td>
-                        <td class="text-center">
-                          <div class="actions">
-                            <button class="btn btn-sm btn-secondary" onclick="openEditModal(<?= $r['id'] ?>)"><iconify-icon
-                                icon="mdi:pencil" style="vertical-align: middle;"></iconify-icon> Edit</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteRecord(<?= $r['id'] ?>)"><iconify-icon
-                                icon="mdi:trash-can" style="vertical-align: middle;"></iconify-icon> Hapus</button>
-                          </div>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          <?php endif; ?>
-
-          <div class="card">
-            <h2>Pertanyaan Umum</h2>
-            <div class="faq-item">
-              <div class="faq-question">Bagaimana cara menambah catatan maintenance baru? <span>+</span></div>
-              <div class="faq-answer">Klik tombol "+ Tambah Catatan" di pojok kanan atas, pilih buku dari dropdown, atur
-                status dan prioritas, kemudian isi catatan keterangan. Tekan "Simpan" untuk menyimpan catatan.</div>
-            </div>
-          </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()"><iconify-icon icon="mdi:close"
+              style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Batal</button>
+          <button class="btn" onclick="saveRecord()"><iconify-icon icon="mdi:content-save"
+              style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Simpan</button>
         </div>
-
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Modal Add/Edit -->
-  <div id="maintenanceModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header" id="modalTitle">Tambah Catatan Maintenance</div>
-      <div class="modal-body">
-        <form id="maintenanceForm">
-          <input type="hidden" id="recordId" name="id" value="">
-
-          <div class="form-group">
-            <label for="bookId">Pilih Buku</label>
-            <select id="bookId" name="book_id" required>
-              <option value="">-- Pilih Buku --</option>
-              <?php foreach ($books as $b): ?>
-                <option value="<?= $b['id'] ?>">
-                  <?= htmlspecialchars($b['title']) . ' - ' . htmlspecialchars($b['author']) ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="status">Status</label>
-            <select id="status" name="status" required>
-              <option value="">-- Pilih Status --</option>
-              <option value="Good">Good (Bagus)</option>
-              <option value="Worn Out">Worn Out (Aus)</option>
-              <option value="Damaged">Damaged (Rusak)</option>
-              <option value="Missing">Missing (Hilang)</option>
-              <option value="Need Repair">Need Repair (Perlu Perbaikan)</option>
-              <option value="Replaced">Replaced (Diganti)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="priority">Prioritas</label>
-            <select id="priority" name="priority">
-              <option value="Normal">Normal</option>
-              <option value="Low">Low</option>
-              <option value="High">High</option>
-              <option value="Urgent">Urgent</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="followUpDate">Tanggal Follow-up (Opsional)</label>
-            <input type="date" id="followUpDate" name="follow_up_date">
-          </div>
-
-          <div class="form-group">
-            <label for="notes">Catatan / Keterangan</label>
-            <textarea id="notes" name="notes" placeholder="Deskripsikan kondisi buku..."></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal()"><iconify-icon icon="mdi:close"
-            style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Batal</button>
-        <button class="btn" onclick="saveRecord()"><iconify-icon icon="mdi:content-save"
-            style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Simpan</button>
       </div>
     </div>
-  </div>
 
-  <script>
-    // Data untuk digunakan di book-maintenance.js
-    window.recordsData = <?php echo json_encode($records); ?>;
-  </script>
-  <script src="../assets/js/book-maintenance.js"></script>
+    <!-- Include Damage Tracking Section -->
+    <?php include __DIR__ . '/partials/damage-section.php'; ?>
+
+    <script>
+      // Data untuk digunakan di book-maintenance.js
+      window.recordsData = <?php echo json_encode($records); ?>;
+    </script>
+    <script src="../assets/js/book-maintenance.js"></script>
 
 </body>
 

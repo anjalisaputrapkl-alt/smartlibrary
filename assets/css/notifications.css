@@ -527,6 +527,7 @@ body {
     display: flex;
     gap: 16px;
     align-items: flex-start;
+    min-width: 0;
 }
 
 .notification-card-icon {
@@ -573,14 +574,17 @@ body {
 
 .notification-card-body {
     flex: 1;
+    min-width: 0;
 }
 
 .notification-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
+    align-items: center;
     margin-bottom: 8px;
     gap: 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
 }
 
 .notification-card-title {
@@ -588,6 +592,12 @@ body {
     font-weight: 600;
     color: #000000;
     margin: 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .notification-card-badge {
@@ -641,6 +651,9 @@ body {
     color: #000000;
     margin: 0 0 8px 0;
     line-height: 1.5;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .notification-card-footer {
@@ -869,7 +882,8 @@ body {
     }
 
     .notification-card-header {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        min-width: 0;
     }
 
     .notification-card-badge {

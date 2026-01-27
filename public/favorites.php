@@ -447,7 +447,7 @@ $pageTitle = 'Koleksi Favorit';
 
         .favorites-grid .book-card-cover {
             width: 100%;
-            height: 220px;
+            aspect-ratio: 2 / 3;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
@@ -531,6 +531,9 @@ $pageTitle = 'Koleksi Favorit';
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         .favorites-grid .book-card-author {
@@ -689,6 +692,7 @@ $pageTitle = 'Koleksi Favorit';
             position: sticky;
             top: 0;
             background: var(--card);
+            z-index: 10;
         }
 
         .modal-header h2 {
@@ -729,11 +733,13 @@ $pageTitle = 'Koleksi Favorit';
             flex-direction: column;
             gap: 16px;
             flex-shrink: 0;
+            min-width: 0;
+            max-width: 200px;
         }
 
         .modal-book-cover {
             width: 200px;
-            height: 300px;
+            aspect-ratio: 2 / 3;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 12px;
             display: flex;
@@ -759,11 +765,14 @@ $pageTitle = 'Koleksi Favorit';
             font-size: 18px;
             font-weight: 700;
             color: var(--text);
-            line-height: 1.4;
+            line-height: 1.5;
             word-wrap: break-word;
             overflow-wrap: break-word;
             word-break: break-word;
             white-space: normal;
+            margin: 0;
+            min-width: 0;
+            width: 100%;
         }
 
         .modal-book-info {
@@ -876,7 +885,7 @@ $pageTitle = 'Koleksi Favorit';
 
             .modal-book-cover {
                 width: 100%;
-                height: 250px;
+                aspect-ratio: 2 / 3;
             }
         }
 
@@ -1034,7 +1043,7 @@ $pageTitle = 'Koleksi Favorit';
             }
 
             .favorites-grid .book-card-cover {
-                height: 180px;
+                aspect-ratio: 2 / 3;
             }
         }
 
@@ -1113,7 +1122,7 @@ $pageTitle = 'Koleksi Favorit';
             }
 
             .favorites-grid .book-card-cover {
-                height: 160px;
+                aspect-ratio: 2 / 3;
             }
 
             .book-card {

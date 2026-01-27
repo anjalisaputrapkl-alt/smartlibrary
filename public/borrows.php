@@ -43,6 +43,7 @@ $totalBorrows = count($borrows);
 $activeBorrows = count(array_filter($borrows, fn($b) => $b['status'] !== 'returned' && $b['status'] !== 'pending_return'));
 $overdueBorrows = count(array_filter($borrows, fn($b) => $b['status'] === 'overdue'));
 $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pending_return'));
+$withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
 ?>
 <!doctype html>
 <html lang="id">
@@ -424,6 +425,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
                     <th>Tanggal Pinjam</th>
                     <th>Jatuh Tempo</th>
                     <th>Status</th>
+                    <th>Denda</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -445,6 +447,17 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
                           <span class="status-badge status-overdue">Terlambat</span>
                         <?php else: ?>
                           <span class="status-badge status-borrowed">Dipinjam</span>
+                        <?php endif; ?>
+                      </td>
+                      <td style="text-align: center;">
+                        <?php if (!empty($br['fine_amount'])): ?>
+                          <span
+                            style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                            💳 Rp <?= number_format($br['fine_amount'], 0, ',', '.') ?>
+                            (<?= $br['fine_status'] === 'paid' ? '✅ Paid' : '⏳ Unpaid' ?>)
+                          </span>
+                        <?php else: ?>
+                          <span style="color: #6b7280;">-</span>
                         <?php endif; ?>
                       </td>
                       <td>
@@ -477,6 +490,7 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
                     <th>Nama Siswa</th>
                     <th>Tanggal Pinjam</th>
                     <th>Tanggal Kembali</th>
+                    <th>Denda</th>
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -493,6 +507,16 @@ $pendingReturns = count(array_filter($borrows, fn($b) => $b['status'] === 'pendi
                       <td><?= htmlspecialchars($br['member_name']) ?></td>
                       <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
                       <td><?= $br['returned_at'] ? date('d/m/Y', strtotime($br['returned_at'])) : '-' ?></td>
+                      <td style="text-align: center;">
+                        <?php if (!empty($br['fine_amount'])): ?>
+                          <span
+                            style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                            💳 Rp <?= number_format($br['fine_amount'], 0, ',', '.') ?>
+                          </span>
+                        <?php else: ?>
+                          <span style="color: #6b7280;">-</span>
+                        <?php endif; ?>
+                      </td>
                       <td>
                         <span class="status-badge status-returned">Dikembalikan</span>
                       </td>

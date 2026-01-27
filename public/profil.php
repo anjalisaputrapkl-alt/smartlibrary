@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto']) && isset($_P
         $update = $pdo->prepare("UPDATE siswa SET foto = ?, updated_at = NOW() WHERE id_siswa = ?");
         $update->execute([$photo_path, $userId]);
 
-        $success_message = '✅ Foto berhasil diubah!';
+        $success_message = 'Foto berhasil diubah!';
 
         // Refresh siswa data to show new photo
         $stmt = $pdo->prepare("SELECT foto FROM siswa WHERE id_siswa = ?");
@@ -762,6 +762,117 @@ $pageTitle = 'Profil Saya';
             min-height: 80px;
         }
 
+        /* Photo Upload Styles */
+        .photo-upload-section {
+            background: linear-gradient(135deg, rgba(58, 127, 242, 0.05) 0%, rgba(122, 184, 245, 0.05) 100%);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .photo-upload-section.drag-over {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(58, 127, 242, 0.1) 0%, rgba(122, 184, 245, 0.1) 100%);
+        }
+
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .upload-text {
+            text-align: center;
+        }
+
+        .upload-text h4 {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .upload-text p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .file-input-label:hover {
+            background: #062d4a;
+            transform: translateY(-2px);
+        }
+
+        .file-input-label:active {
+            transform: translateY(0);
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            margin: 0;
+        }
+
+        .profile-photo-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary-2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 48px;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+        }
+
         @media (max-width: 768px) {
             .nav-toggle {
                 display: flex;
@@ -948,7 +1059,16 @@ $pageTitle = 'Profil Saya';
     <div class="container-main">
         <div class="card">
             <div class="profile-header">
-                <img src="<?php echo htmlspecialchars($photoUrl); ?>" alt="Foto" class="profile-photo">
+                <?php
+                $photoExists = $siswa['foto'] && file_exists(__DIR__ . '/' . $siswa['foto']);
+                if ($photoExists):
+                    ?>
+                    <img src="<?php echo htmlspecialchars($photoUrl); ?>" alt="Foto" class="profile-photo">
+                <?php else: ?>
+                    <div class="profile-photo-placeholder">
+                        <?php echo strtoupper(substr($siswa['nama_lengkap'], 0, 1)); ?>
+                    </div>
+                <?php endif; ?>
                 <div class="profile-info">
                     <h2><?php echo htmlspecialchars($siswa['nama_lengkap']); ?></h2>
                     <p><?php echo htmlspecialchars($siswa['nisn'] ?? 'NISN: -'); ?> -
@@ -958,23 +1078,29 @@ $pageTitle = 'Profil Saya';
             </div>
 
             <!-- Photo Upload Section -->
-            <div style="background: var(--surface); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                <h4 style="color: var(--text); font-size: 14px; font-weight: 600; margin-bottom: 12px;">Ubah Foto Profil
-                </h4>
-                <form method="POST" enctype="multipart/form-data"
-                    style="display: flex; gap: 12px; align-items: flex-start;">
-                    <div style="flex: 1;">
-                        <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" class="form-input"
-                            style="width: 100%;" required>
-                        <small style="color: var(--text-muted); display: block; margin-top: 4px;">Format: JPG, PNG, WEBP
-                            (Max
-                            5MB)</small>
+            <div class="photo-upload-section" id="uploadSection">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="upload-area">
+                        <div class="upload-icon">
+                            <iconify-icon icon="mdi:cloud-upload-outline" width="32" height="32"></iconify-icon>
+                        </div>
+                        <div class="upload-text">
+                            <h4>Ubah Foto Profil</h4>
+                            <p>Drag dan drop foto atau klik untuk memilih</p>
+                        </div>
+                        <div class="file-input-wrapper">
+                            <label class="file-input-label" for="fotoInput">
+                                <iconify-icon icon="mdi:image-plus" width="18" height="18"></iconify-icon>
+                                Pilih Foto
+                            </label>
+                            <input type="file" name="foto" id="fotoInput" accept="image/jpeg,image/png,image/webp"
+                                required>
+                        </div>
+                        <p class="file-info">JPG, PNG, atau WEBP • Max 5MB</p>
                     </div>
-                    <button type="submit" name="upload_photo" value="1" class="btn primary"
-                        style="margin-top: 0;">Upload</button>
+                    <input type="hidden" name="upload_photo" value="1">
                 </form>
             </div>
-
             <div class="divider"></div>
 
             <?php if (!empty($success_message)): ?>
@@ -1090,6 +1216,43 @@ $pageTitle = 'Profil Saya';
     </div>
 
     <script>
+        // File upload functionality
+        const uploadSection = document.getElementById('uploadSection');
+        const fotoInput = document.getElementById('fotoInput');
+        const uploadForm = uploadSection.querySelector('form');
+
+        // Prevent default drag and drop behavior
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadSection.classList.add('drag-over');
+        });
+
+        uploadSection.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadSection.classList.remove('drag-over');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadSection.classList.remove('drag-over');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fotoInput.files = files;
+                uploadForm.submit();
+            }
+        });
+
+        // Handle file selection from file manager
+        fotoInput.addEventListener('change', (e) => {
+            if (fotoInput.files.length > 0) {
+                uploadForm.submit();
+            }
+        });
+
         // Toggle sidebar on hamburger menu click
         const navToggle = document.getElementById('navToggle');
         const navSidebar = document.querySelector('.nav-sidebar');
