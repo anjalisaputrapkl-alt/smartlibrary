@@ -601,7 +601,7 @@ ALTER TABLE `favorites`
 --
 
 CREATE TABLE `barcode_sessions` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `school_id` int(11) NOT NULL,
   `session_token` varchar(32) NOT NULL UNIQUE,
   `status` enum('active','completed','expired') DEFAULT 'active',

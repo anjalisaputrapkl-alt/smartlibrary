@@ -67,11 +67,12 @@ function restoreSessionFromStorage() {
 
         currentSessionId = session.sessionId;
         currentSessionToken = session.sessionToken;
-        sessionData.member = session.member;
-        sessionData.books = session.books;
+        sessionData.member = session.member || null;
+        sessionData.books = session.books || [];
 
         console.log('[STORAGE] Session restored from localStorage');
         console.log('[STORAGE] Session age:', Math.round(ageMinutes), 'minutes');
+        console.log('[STORAGE] Restored session ID:', currentSessionId);
         return true;
     } catch (error) {
         console.error('[STORAGE] Error restoring session:', error);
@@ -162,8 +163,12 @@ btnVerifySession.addEventListener('click', async () => {
         }
 
         // Session verified
+        console.log('[VERIFY] Response data details:', JSON.stringify(data.data));
         currentSessionId = data.data.session_id;
         currentSessionToken = token;
+
+        console.log('[VERIFY] Set currentSessionId to:', currentSessionId);
+        console.log('[VERIFY] Set currentSessionToken to:', currentSessionToken);
 
         // Save to localStorage
         saveSessionToStorage();
@@ -330,19 +335,30 @@ async function processMemberScan(barcode) {
     showLoading(true);
 
     try {
+        console.log('[MEMBER-SCAN] Barcode scanned:', barcode);
+        console.log('[MEMBER-SCAN] Session ID:', currentSessionId);
+        console.log('[MEMBER-SCAN] Session Token:', currentSessionToken);
+
+        const payload = {
+            session_id: currentSessionId,
+            barcode: barcode,
+            type: 'member'
+        };
+
+        console.log('[MEMBER-SCAN] Sending payload:', JSON.stringify(payload));
+
         const response = await fetch(API_BASE_PATH + 'process-barcode-scan.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                session_id: currentSessionId,
-                barcode: barcode,
-                type: 'member'
-            })
+            body: JSON.stringify(payload)
         });
 
+        console.log('[MEMBER-SCAN] Response status:', response.status);
+
         const data = await response.json();
+        console.log('[MEMBER-SCAN] Response data:', data);
 
         if (!response.ok || !data.success) {
             showError(scanError, data.message || 'Pemindaian gagal');
@@ -387,19 +403,30 @@ async function processBookScan(barcode) {
     showLoading(true);
 
     try {
+        console.log('[BOOK-SCAN] Barcode scanned:', barcode);
+        console.log('[BOOK-SCAN] Session ID:', currentSessionId);
+        console.log('[BOOK-SCAN] Session Token:', currentSessionToken);
+
+        const payload = {
+            session_id: currentSessionId,
+            barcode: barcode,
+            type: 'book'
+        };
+
+        console.log('[BOOK-SCAN] Sending payload:', JSON.stringify(payload));
+
         const response = await fetch(API_BASE_PATH + 'process-barcode-scan.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                session_id: currentSessionId,
-                barcode: barcode,
-                type: 'book'
-            })
+            body: JSON.stringify(payload)
         });
 
+        console.log('[BOOK-SCAN] Response status:', response.status);
+
         const data = await response.json();
+        console.log('[BOOK-SCAN] Response data:', data);
 
         if (!response.ok || !data.success) {
             showError(scanError, data.message || 'Pemindaian buku gagal');
@@ -574,7 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('%c✓ Session restored from localStorage', 'color: green; font-weight: bold;');
         console.log('Session ID:', currentSessionId);
         console.log('Member:', sessionData.member?.name || 'None');
-        console.log('Scanned books:', sessionData.books.length);
+        console.log('Scanned books:', sessionData.books?.length || 0);
         
         // Fill in the session token field (for display/reference)
         sessionToken.value = currentSessionToken;

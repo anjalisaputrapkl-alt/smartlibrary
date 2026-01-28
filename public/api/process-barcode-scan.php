@@ -17,9 +17,36 @@ try {
     $barcode = $data['barcode'] ?? '';
     $scan_type = $data['type'] ?? 'book'; // 'member' or 'book'
 
+    // Debug logging
+    error_log('[BARCODE] Raw data: ' . json_encode($data));
+    error_log('[BARCODE] Parsed session_id: ' . $session_id . ', barcode: ' . $barcode . ', type: ' . $scan_type);
+
     if (!$session_id || !$barcode) {
         http_response_code(400);
+        error_log('[BARCODE] Missing required fields: session_id=' . $session_id . ', barcode=' . $barcode);
         echo json_encode(['success' => false, 'message' => 'Session ID and barcode are required']);
+        exit;
+    }
+
+    // Parse barcode format (e.g., "NISN:0094234" or "ISBN:9786020656069" or plain barcode)
+    $barcodeValue = $barcode;
+    $detectedType = $scan_type;
+
+    if (strpos($barcode, 'NISN:') === 0) {
+        $barcodeValue = substr($barcode, 5); // Remove "NISN:" prefix
+        $detectedType = 'member';
+    } elseif (strpos($barcode, 'ISBN:') === 0) {
+        $barcodeValue = substr($barcode, 5); // Remove "ISBN:" prefix
+        $detectedType = 'book';
+    }
+
+    // Use detected type if barcode has prefix, otherwise use provided type
+    $scan_type = (strpos($barcode, ':') !== false) ? $detectedType : $scan_type;
+
+    // Ensure barcode value is not empty after parsing
+    if (empty($barcodeValue)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid barcode format']);
         exit;
     }
 
@@ -48,8 +75,8 @@ try {
         );
         $memberStmt->execute([
             'school_id' => $school_id,
-            'barcode' => $barcode,
-            'id' => is_numeric($barcode) ? (int) $barcode : 0
+            'barcode' => $barcodeValue,
+            'id' => is_numeric($barcodeValue) ? (int) $barcodeValue : 0
         ]);
         $member = $memberStmt->fetch();
 
@@ -67,7 +94,7 @@ try {
         );
         $updateStmt->execute([
             'member_id' => $member['id'],
-            'barcode' => $barcode,
+            'barcode' => $barcodeValue,
             'id' => $session_id
         ]);
 
@@ -90,8 +117,8 @@ try {
         );
         $bookStmt->execute([
             'school_id' => $school_id,
-            'barcode' => $barcode,
-            'id' => is_numeric($barcode) ? (int) $barcode : 0
+            'barcode' => $barcodeValue,
+            'id' => is_numeric($barcodeValue) ? (int) $barcodeValue : 0
         ]);
         $book = $bookStmt->fetch();
 

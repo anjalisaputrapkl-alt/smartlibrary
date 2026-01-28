@@ -15,6 +15,9 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
     $token = $data['token'] ?? null;
 
+    error_log('[VERIFY-SESSION] Token received: ' . ($token ? 'yes' : 'no'));
+    error_log('[VERIFY-SESSION] Token value: ' . substr($token ?? '', 0, 8) . '...');
+
     if (!$token) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Token is required']);
@@ -28,6 +31,12 @@ try {
     );
     $stmt->execute(['token' => $token]);
     $session = $stmt->fetch();
+
+    error_log('[VERIFY-SESSION] Query result: ' . ($session ? 'found' : 'not found'));
+    if ($session) {
+        error_log('[VERIFY-SESSION] Session ID: ' . $session['id']);
+        error_log('[VERIFY-SESSION] Session status: ' . $session['status']);
+    }
 
     if (!$session) {
         http_response_code(404);
@@ -60,12 +69,14 @@ try {
     $_SESSION['barcode_session_id'] = $session['id'];
     $_SESSION['barcode_school_id'] = $session['school_id'];
 
+    error_log('[VERIFY-SESSION] Returning session_id: ' . $session['id'] . ', school_id: ' . $session['school_id']);
+
     echo json_encode([
         'success' => true,
         'message' => 'Session verified',
         'data' => [
-            'session_id' => $session['id'],
-            'school_id' => $session['school_id']
+            'session_id' => (int) $session['id'],
+            'school_id' => (int) $session['school_id']
         ]
     ]);
 
