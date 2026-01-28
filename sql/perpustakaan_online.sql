@@ -594,14 +594,52 @@ ALTER TABLE `favorites`
   ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `barcode_sessions`
+--
+
+CREATE TABLE `barcode_sessions` (
+  `id` int(11) NOT NULL,
+  `school_id` int(11) NOT NULL,
+  `session_token` varchar(32) NOT NULL UNIQUE,
+  `status` enum('active','completed','expired') DEFAULT 'active',
+  `member_barcode` varchar(255) DEFAULT NULL,
+  `member_id` int(11) DEFAULT NULL,
+  `books_scanned` longtext DEFAULT NULL COMMENT 'JSON array of scanned book data',
+  `due_date` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `expires_at` timestamp NOT NULL DEFAULT (current_timestamp() + interval 30 minute)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
 --
 -- Constraints for table `members`
 --
 ALTER TABLE `members`
   ADD CONSTRAINT `members_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE;
 
+ALTER TABLE `barcode_sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `school_id` (`school_id`),
+  ADD KEY `member_id` (`member_id`);
+
 --
--- Constraints for table `notifications`
+-- AUTO_INCREMENT for table `barcode_sessions`
+--
+ALTER TABLE `barcode_sessions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for table `barcode_sessions`
+--
+ALTER TABLE `barcode_sessions`
+  ADD CONSTRAINT `barcode_sessions_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `barcode_sessions_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE SET NULL;
+
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
