@@ -337,6 +337,88 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
     <div class="content">
       <div class="main">
         <div>
+          <!-- Barcode Scanner Button -->
+          <div style="display: flex; gap: 12px; margin-bottom: 24px; align-items: center;">
+            <button id="btnStartBarcodeSession" class="btn-barcode-start"
+              style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 14px;">
+              <iconify-icon icon="mdi:barcode-scan"></iconify-icon>
+              Mulai Peminjaman Barcode
+            </button>
+
+            <div id="barcodeSessionDisplay"
+              style="display: none; padding: 12px 16px; background: #e0f2fe; border: 1px solid #0284c7; border-radius: 8px; flex: 1;">
+              <div
+                style="font-size: 12px; color: #0369a1; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                Kode Sesi Aktif</div>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                <code id="sessionTokenDisplay"
+                  style="font-family: 'Monaco', 'Courier New', monospace; font-weight: 600; font-size: 13px; color: #0369a1; background: white; padding: 8px 12px; border-radius: 4px; flex: 1; user-select: all;">---</code>
+                <button id="btnCopySessionToken" class="btn-copy"
+                  style="padding: 8px 12px; background: white; color: #0369a1; border: 1px solid #0284c7; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s ease;">
+                  Salin
+                </button>
+                <button id="btnEndBarcodeSession" class="btn-end"
+                  style="padding: 8px 12px; background: white; color: #0369a1; border: 1px solid #0284c7; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s ease;">
+                  Selesai
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barcode Session Live Data -->
+          <div id="barcodeSessionPanel" style="display: none; margin-bottom: 24px;">
+            <div class="card"
+              style="background: linear-gradient(135deg, #f0f4ff 0%, #f8f1ff 100%); border: 2px solid #667eea;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="margin: 0;">📱 Sesi Pemindaian Aktif</h2>
+                <span id="sessionStatus"
+                  style="padding: 4px 12px; background: #10b981; color: white; border-radius: 20px; font-size: 12px; font-weight: 600;">AKTIF</span>
+              </div>
+
+              <div id="barcodeSessionContent">
+                <div style="text-align: center; padding: 24px; color: #667eea;">
+                  <p style="font-size: 14px; margin-bottom: 8px;">Tunggu pemindaian dari smartphone...</p>
+                  <div
+                    style="display: inline-block; width: 32px; height: 32px; border: 3px solid #667eea; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;">
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px;">
+                <h3
+                  style="font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">
+                  Info Sesi</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
+                  <div>
+                    <span style="color: #999;">Anggota:</span>
+                    <div id="sessionMemberInfo" style="font-weight: 600; color: #1a1a1a; margin-top: 4px;">-</div>
+                  </div>
+                  <div>
+                    <span style="color: #999;">Buku Terscan:</span>
+                    <div id="sessionBooksCount" style="font-weight: 600; color: #1a1a1a; margin-top: 4px;">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="sessionBooksDisplay" style="margin-top: 16px; display: none;">
+                <h3
+                  style="font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">
+                  Buku yang Dipindai</h3>
+                <div id="sessionBooksList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+              </div>
+
+              <div style="margin-top: 16px; display: flex; gap: 12px;">
+                <input type="date" id="barcodeDueDate" class="barcode-input-due"
+                  style="flex: 1; padding: 10px 12px; border: 1px solid #667eea; border-radius: 6px; font-size: 13px;"
+                  placeholder="Pilih jatuh tempo">
+                <button id="btnCompleteBarcodeSession" class="btn-complete"
+                  style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: all 0.3s ease; white-space: nowrap;">
+                  Simpan Peminjaman
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Statistics Section -->
           <div class="stats-section">
             <div class="stat-card">
@@ -533,6 +615,307 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
   </div>
 
   <script>
+    // ========================================================================
+    // Barcode Scanner Session Management
+    // ========================================================================
+
+    let currentBarcodeSessionId = null;
+    let currentBarcodeToken = null;
+    let pollingInterval = null;
+
+    // localStorage functions
+    function saveBarcodeSessionToStorage() {
+      const sessionState = {
+        sessionId: currentBarcodeSessionId,
+        token: currentBarcodeToken,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('barcodeSession', JSON.stringify(sessionState));
+    }
+
+    function restoreBarcodeSessionFromStorage() {
+      const stored = localStorage.getItem('barcodeSession');
+      if (!stored) return false;
+
+      try {
+        const session = JSON.parse(stored);
+        const ageMinutes = (Date.now() - session.timestamp) / 1000 / 60;
+
+        // Session expired after 30 minutes
+        if (ageMinutes > 30) {
+          localStorage.removeItem('barcodeSession');
+          return false;
+        }
+
+        // Restore session
+        currentBarcodeSessionId = session.sessionId;
+        currentBarcodeToken = session.token;
+        return true;
+      } catch (e) {
+        console.error('Error restoring barcode session:', e);
+        return false;
+      }
+    }
+
+    function clearBarcodeSessionStorage() {
+      localStorage.removeItem('barcodeSession');
+    }
+
+    const btnStartBarcodeSession = document.getElementById('btnStartBarcodeSession');
+    const btnEndBarcodeSession = document.getElementById('btnEndBarcodeSession');
+    const btnCopySessionToken = document.getElementById('btnCopySessionToken');
+    const btnCompleteBarcodeSession = document.getElementById('btnCompleteBarcodeSession');
+    const barcodeSessionDisplay = document.getElementById('barcodeSessionDisplay');
+    const barcodeSessionPanel = document.getElementById('barcodeSessionPanel');
+    const sessionTokenDisplay = document.getElementById('sessionTokenDisplay');
+    const barcodeDueDate = document.getElementById('barcodeDueDate');
+
+    // Try to restore barcode session from localStorage on page load
+    if (restoreBarcodeSessionFromStorage()) {
+      console.log('✓ Barcode session restored from localStorage');
+      console.log('Session ID:', currentBarcodeSessionId);
+
+      // Show session display
+      sessionTokenDisplay.textContent = currentBarcodeToken;
+      barcodeSessionDisplay.style.display = 'flex';
+      barcodeSessionPanel.style.display = 'block';
+
+      // Hide start button
+      btnStartBarcodeSession.style.display = 'none';
+
+      // Resume polling
+      startPolling();
+    }
+
+    // Start Barcode Session
+    btnStartBarcodeSession.addEventListener('click', async () => {
+      btnStartBarcodeSession.disabled = true;
+      btnStartBarcodeSession.style.opacity = '0.6';
+
+      try {
+        const response = await fetch('api/create-barcode-session.php', {
+          method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          alert('Gagal membuat sesi barcode: ' + (data.message || 'Unknown error'));
+          btnStartBarcodeSession.disabled = false;
+          btnStartBarcodeSession.style.opacity = '1';
+          return;
+        }
+
+        // Store session info
+        currentBarcodeSessionId = data.data.session_id;
+        currentBarcodeToken = data.data.token;
+
+        // Save to localStorage
+        saveBarcodeSessionToStorage();
+
+        // Show session display
+        sessionTokenDisplay.textContent = currentBarcodeToken;
+        barcodeSessionDisplay.style.display = 'flex';
+        barcodeSessionPanel.style.display = 'block';
+
+        // Hide start button
+        btnStartBarcodeSession.style.display = 'none';
+
+        // Start polling for updates
+        startPolling();
+
+        // Set default due date (7 days from today)
+        const today = new Date();
+        const dueDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+        barcodeDueDate.valueAsDate = dueDate;
+
+        alert('Sesi barcode dibuat!\n\nToken: ' + currentBarcodeToken + '\n\nBuka link berikut di smartphone:\nhttp://localhost/perpustakaan-online/public/barcode-scan.php');
+
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan: ' + error.message);
+        btnStartBarcodeSession.disabled = false;
+        btnStartBarcodeSession.style.opacity = '1';
+      }
+    });
+
+    // Copy Session Token
+    btnCopySessionToken.addEventListener('click', () => {
+      const token = sessionTokenDisplay.textContent;
+      navigator.clipboard.writeText(token).then(() => {
+        btnCopySessionToken.textContent = '✓ Tersalin';
+        setTimeout(() => {
+          btnCopySessionToken.textContent = 'Salin';
+        }, 2000);
+      });
+    });
+
+    // Start Polling
+    function startPolling() {
+      if (pollingInterval) clearInterval(pollingInterval);
+
+      // Poll every 2 seconds
+      pollingInterval = setInterval(pollSessionData, 2000);
+
+      // Initial poll
+      pollSessionData();
+    }
+
+    // Poll Session Data
+    async function pollSessionData() {
+      if (!currentBarcodeSessionId) return;
+
+      try {
+        const response = await fetch(`api/get-barcode-session-data.php?session_id=${currentBarcodeSessionId}`);
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          return;
+        }
+
+        // Save session data to keep it alive
+        saveBarcodeSessionToStorage();
+
+        const sessionData = data.data;
+
+        // Update member info
+        const memberInfo = sessionData.member;
+        if (memberInfo) {
+          document.getElementById('sessionMemberInfo').textContent = memberInfo.name;
+        }
+
+        // Update books count
+        const booksCount = sessionData.books_count || 0;
+        document.getElementById('sessionBooksCount').textContent = booksCount;
+
+        // Update books list
+        const booksList = document.getElementById('sessionBooksList');
+        if (sessionData.books_scanned && sessionData.books_scanned.length > 0) {
+          booksList.innerHTML = '';
+          sessionData.books_scanned.forEach((book, index) => {
+            const bookItem = document.createElement('div');
+            bookItem.style.cssText = 'padding: 8px 12px; background: white; border-left: 3px solid #667eea; border-radius: 4px; font-size: 13px;';
+            bookItem.innerHTML = `
+              <div style="font-weight: 600; color: #1a1a1a;">${escapeHtml(book.title)}</div>
+              <div style="font-size: 11px; color: #999; margin-top: 2px;">ISBN: ${escapeHtml(book.isbn || '-')}</div>
+            `;
+            booksList.appendChild(bookItem);
+          });
+          document.getElementById('sessionBooksDisplay').style.display = 'block';
+        }
+
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }
+
+    // End Barcode Session
+    btnEndBarcodeSession.addEventListener('click', () => {
+      if (confirm('Akhiri sesi pemindaian?')) {
+        stopPolling();
+        resetBarcodeSession();
+      }
+    });
+
+    // Complete Barcode Borrowing
+    btnCompleteBarcodeSession.addEventListener('click', async () => {
+      const dueDate = barcodeDueDate.value;
+
+      if (!dueDate) {
+        alert('Pilih tanggal jatuh tempo');
+        return;
+      }
+
+      if (!confirm('Simpan peminjaman dengan tanggal jatuh tempo: ' + dueDate + '?')) {
+        return;
+      }
+
+      btnCompleteBarcodeSession.disabled = true;
+      btnCompleteBarcodeSession.style.opacity = '0.6';
+
+      try {
+        const response = await fetch('api/complete-barcode-borrowing.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            session_id: currentBarcodeSessionId,
+            due_date: dueDate
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          alert('Gagal menyimpan peminjaman: ' + (data.message || 'Unknown error'));
+          btnCompleteBarcodeSession.disabled = false;
+          btnCompleteBarcodeSession.style.opacity = '1';
+          return;
+        }
+
+        alert('✓ Peminjaman berhasil disimpan!\n\n' + data.data.borrows_created + ' buku telah dipinjam.');
+
+        // Reset and reload
+        stopPolling();
+        resetBarcodeSession();
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
+
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan: ' + error.message);
+        btnCompleteBarcodeSession.disabled = false;
+        btnCompleteBarcodeSession.style.opacity = '1';
+      }
+    });
+
+    // Stop Polling
+    function stopPolling() {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+      }
+    }
+
+    // Reset Barcode Session UI
+    function resetBarcodeSession() {
+      currentBarcodeSessionId = null;
+      currentBarcodeToken = null;
+
+      // Clear storage
+      clearBarcodeSessionStorage();
+
+      barcodeSessionDisplay.style.display = 'none';
+      barcodeSessionPanel.style.display = 'none';
+      btnStartBarcodeSession.style.display = 'inline-flex';
+      btnStartBarcodeSession.disabled = false;
+      btnStartBarcodeSession.style.opacity = '1';
+
+      document.getElementById('sessionMemberInfo').textContent = '-';
+      document.getElementById('sessionBooksCount').textContent = '0';
+      document.getElementById('sessionBooksList').innerHTML = '';
+      document.getElementById('sessionBooksDisplay').style.display = 'none';
+      barcodeDueDate.value = '';
+
+      btnCompleteBarcodeSession.disabled = false;
+      btnCompleteBarcodeSession.style.opacity = '1';
+    }
+
+    // Utility function
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      stopPolling();
+    });
+
+    // Original confirmReturn function
     function confirmReturn(borrowId) {
       if (!confirm('Konfirmasi pengembalian buku ini?')) {
         return;
@@ -559,6 +942,15 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
           alert('Terjadi kesalahan');
         });
     }
+
+    // Add spin animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 
 </body>
