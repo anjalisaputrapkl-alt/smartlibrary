@@ -18,7 +18,7 @@ requireAuth();
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8f9fa;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -33,7 +33,7 @@ requireAuth();
 
         .header {
             text-align: center;
-            color: white;
+            color: #1a1a1a;
             margin-bottom: 24px;
             padding: 16px;
         }
@@ -41,49 +41,78 @@ requireAuth();
         .header h1 {
             font-size: 28px;
             margin-bottom: 4px;
-            font-weight: 600;
+            font-weight: 700;
+            color: #2c3e50;
         }
 
         .header p {
             font-size: 14px;
-            opacity: 0.9;
+            color: #7f8c8d;
         }
 
         .card {
             background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8ecf1;
         }
 
         .card h2 {
             font-size: 20px;
-            margin-bottom: 16px;
-            color: #1a1a1a;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 700;
         }
 
         .reader {
             width: 100%;
-            height: 350px;
+            aspect-ratio: 1 / 1;
+            position: relative;
             background: #000;
             border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #e8ecf1;
             overflow: hidden;
-            margin-bottom: 16px;
+        }
+
+        /* Force scanner video to be square */
+        #reader video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+
+        #reader__scan_region {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #reader__dashboard_section {
+            display: none !important;
+        }
+
+        #reader__dashboard_section_csr {
+            width: 100% !important;
+            height: 100% !important;
         }
 
         .info-text {
             font-size: 13px;
-            color: #666;
-            margin-bottom: 16px;
-            padding: 12px;
-            background: #f0f8ff;
+            color: #555;
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            background: #f0f5fa;
             border-radius: 6px;
-            border-left: 4px solid #667eea;
+            border-left: 3px solid #3498db;
         }
 
         .status-message {
             font-size: 13px;
-            padding: 12px;
+            padding: 12px 14px;
             border-radius: 6px;
             margin-bottom: 16px;
             text-align: center;
@@ -91,28 +120,28 @@ requireAuth();
         }
 
         .status-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #ecf9f3;
+            color: #1e7e5f;
+            border: 1px solid #d5ede7;
         }
 
         .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fef3f2;
+            color: #c4302b;
+            border: 1px solid #f9d8d6;
         }
 
         .status-message.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+            background: #f0f5fa;
+            color: #2c5aa0;
+            border: 1px solid #dce7f0;
         }
 
         .btn {
             width: 100%;
             padding: 12px 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -125,27 +154,27 @@ requireAuth();
         }
 
         .btn-danger {
-            background: #ef4444;
+            background: #e74c3c;
             color: white;
         }
 
         .btn-danger:hover {
-            background: #dc2626;
+            background: #c0392b;
         }
 
         .mode-indicator {
-            margin-bottom: 16px;
-            padding: 12px;
-            background: #e0f2fe;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: #f8fbfe;
             border-radius: 6px;
-            border-left: 4px solid #0284c7;
+            border-left: 3px solid #3498db;
         }
 
         .mode-text {
             font-size: 12px;
-            font-weight: 600;
-            color: #0c4a6e;
-            margin-bottom: 8px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
         }
 
         .mode-buttons {
@@ -155,32 +184,36 @@ requireAuth();
 
         .mode-btn {
             flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 4px;
+            padding: 9px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             font-weight: 600;
             cursor: pointer;
             font-size: 12px;
             transition: all 0.3s;
+            background: white;
+            color: #555;
         }
 
         .mode-btn.active {
-            background: #0284c7;
+            background: #3498db;
             color: white;
+            border-color: #3498db;
         }
 
         .mode-btn.inactive {
-            background: #cbd5e1;
-            color: #1e293b;
+            background: white;
+            color: #888;
+            border-color: #ddd;
         }
 
         .member-display {
             display: none;
-            margin-bottom: 16px;
-            padding: 12px;
-            background: #d1fae5;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: #ecf9f3;
             border-radius: 6px;
-            border-left: 4px solid #059669;
+            border-left: 3px solid #27ae60;
         }
 
         .member-display.show {
@@ -189,54 +222,55 @@ requireAuth();
 
         .member-label {
             font-size: 12px;
-            font-weight: 600;
-            color: #065f46;
+            font-weight: 700;
+            color: #1e7e5f;
             margin-bottom: 8px;
         }
 
         .member-info {
             font-size: 14px;
             font-weight: 600;
-            color: #047857;
+            color: #2c3e50;
         }
 
         .scan-count {
-            margin-bottom: 16px;
-            padding: 12px;
-            background: #f0fdf4;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: #ecf9f3;
             border-radius: 6px;
-            border-left: 4px solid #22c55e;
+            border-left: 3px solid #27ae60;
             font-size: 13px;
-            color: #166534;
+            color: #1e7e5f;
             font-weight: 500;
         }
 
         .scanned-items {
-            margin-bottom: 16px;
-            background: #f9fafb;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e8ecf1;
             overflow: hidden;
         }
 
         .scanned-items table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         .scanned-items th {
-            background: #f3f4f6;
-            padding: 10px;
+            background: #f8f9fa;
+            padding: 12px;
             text-align: left;
-            font-weight: 600;
-            color: #374151;
-            border-bottom: 1px solid #e5e7eb;
+            font-weight: 700;
+            color: #2c3e50;
+            border-bottom: 1px solid #e8ecf1;
         }
 
         .scanned-items td {
-            padding: 10px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 12px;
+            border-bottom: 1px solid #e8ecf1;
+            color: #555;
         }
 
         .scanned-items tr:last-child td {
@@ -244,75 +278,76 @@ requireAuth();
         }
 
         .scanned-items tbody tr:hover {
-            background: #f0fdf4;
+            background: #f8fbfe;
         }
 
         .btn-remove {
-            padding: 4px 8px;
-            background: #ef4444;
+            padding: 5px 10px;
+            background: #e74c3c;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
             font-weight: 600;
+            transition: all 0.3s;
         }
 
         .btn-remove:hover {
-            background: #dc2626;
+            background: #c0392b;
         }
 
         .btn-group {
             display: flex;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .btn-primary {
             flex: 1;
             padding: 12px 16px;
-            background: #10b981;
+            background: #27ae60;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .btn-primary:hover {
-            background: #059669;
+            background: #229954;
         }
 
         .btn-primary:disabled {
-            background: #d1d5db;
+            background: #bdc3c7;
             cursor: not-allowed;
         }
 
         .btn-secondary {
             flex: 1;
             padding: 12px 16px;
-            background: #6b7280;
+            background: #95a5a6;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .btn-secondary:hover {
-            background: #4b5563;
+            background: #7f8c8d;
         }
 
         .instruction {
-            margin-bottom: 16px;
-            padding: 12px;
-            background: #fef3c7;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: #fef9e7;
             border-radius: 6px;
-            border-left: 4px solid #d97706;
+            border-left: 3px solid #f39c12;
             font-size: 13px;
-            color: #b45309;
+            color: #7d6608;
         }
 
         .loading-overlay {
@@ -322,7 +357,7 @@ requireAuth();
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -336,8 +371,8 @@ requireAuth();
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #3498db;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 16px;
@@ -362,83 +397,76 @@ requireAuth();
 
 <body>
     <div class="container">
-        <div class="header">
-            <h1>📖 Pemindai Barcode</h1>
-            <p>Sistem Perpustakaan Sekolah</p>
+
+        <div class="info-text">
+            Arahkan kamera ke barcode untuk memulai pemindaian
         </div>
 
-        <div class="card">
-            <h2>Pemindai Barcode</h2>
+        <!-- QR Reader -->
+        <div id="reader" class="reader"></div>
 
-            <div class="info-text">
-                ✓ Arahkan kamera ke barcode untuk memulai pemindaian
-            </div>
+        <!-- Status Message -->
+        <div id="statusMessage" class="status-message info" style="display: none;"></div>
 
-            <!-- QR Reader -->
-            <div id="reader" class="reader"></div>
-
-            <!-- Status Message -->
-            <div id="statusMessage" class="status-message info" style="display: none;"></div>
-
-            <!-- Mode Indicator -->
-            <div class="mode-indicator">
-                <div class="mode-text">📋 Mode Pemindaian:</div>
-                <div class="mode-buttons">
-                    <button class="mode-btn active" id="btnModeMember">1️⃣ Scan Anggota</button>
-                    <button class="mode-btn inactive" id="btnModeBook">2️⃣ Scan Buku</button>
-                </div>
-            </div>
-
-            <!-- Member Display -->
-            <div class="member-display" id="memberDisplay">
-                <div class="member-label">✓ Anggota Terpilih:</div>
-                <div class="member-info">
-                    <span id="memberName"></span> (NISN: <span id="memberNisn"></span>)
-                </div>
-            </div>
-
-            <!-- Scan Count -->
-            <div class="scan-count" id="scanCount" style="display: none;">
-                📚 Buku yang di-scan: <strong id="bookCount">0</strong>
-            </div>
-
-            <!-- Scanned Items List -->
-            <div class="scanned-items" id="scannedItems" style="display: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Buku</th>
-                            <th style="width: 50px;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scannedItemsList">
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="btn-group" id="actionButtons" style="display: none;">
-                <button class="btn-primary" id="btnSubmit" onclick="submitScannedBooks()">
-                    ✓ Kirim Data
-                </button>
-                <button class="btn-secondary" id="btnClear" onclick="clearScannedBooks()">
-                    🗑️ Hapus Semua
-                </button>
-            </div>
-
-            <!-- Instruction -->
-            <div class="instruction">
-                ℹ️ Silakan scan NISN Anda terlebih dahulu, kemudian scan barcode buku yang ingin dipinjam. Data akan
-                tampil di sistem admin secara realtime.
-            </div>
-
-            <!-- Logout Button -->
-            <div style="margin-top: 24px;">
-                <button class="btn btn-danger" id="btnLogout">
-                    🚪 Logout
-                </button>
+        <!-- Mode Indicator -->
+        <div class="mode-indicator">
+            <div class="mode-text">Mode Pemindaian</div>
+            <div class="mode-buttons">
+                <button class="mode-btn active" id="btnModeMember">Scan Anggota</button>
+                <button class="mode-btn inactive" id="btnModeBook">Scan Buku</button>
             </div>
         </div>
+
+        <!-- Member Display -->
+        <div class="member-display" id="memberDisplay">
+            <div class="member-label">Anggota Terpilih</div>
+            <div class="member-info">
+                <span id="memberName"></span> (NISN: <span id="memberNisn"></span>)
+            </div>
+        </div>
+
+        <!-- Scan Count -->
+        <div class="scan-count" id="scanCount" style="display: none;">
+            Buku yang di-scan: <strong id="bookCount">0</strong>
+        </div>
+
+        <!-- Scanned Items List -->
+        <div class="scanned-items" id="scannedItems" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Buku</th>
+                        <th style="width: 50px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="scannedItemsList">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group" id="actionButtons" style="display: none;">
+            <button class="btn-primary" id="btnSubmit" onclick="submitScannedBooks()">
+                Kirim Data
+            </button>
+            <button class="btn-secondary" id="btnClear" onclick="clearScannedBooks()">
+                Hapus Semua
+            </button>
+        </div>
+
+        <!-- Instruction -->
+        <div class="instruction">
+            Silakan scan NISN Anda terlebih dahulu, kemudian scan barcode buku yang ingin dipinjam. Data akan
+            tampil di sistem admin secara realtime.
+        </div>
+
+        <!-- Logout Button -->
+        <div style="margin-top: 24px;">
+            <button class="btn btn-danger" id="btnLogout">
+                Logout
+            </button>
+        </div>
+    </div>
     </div>
 
     <!-- Loading Overlay -->
@@ -477,11 +505,11 @@ requireAuth();
                 onScanSuccess,
                 onScanError
             ).then(() => {
-                console.log('[SCANNER] ✓ Started');
-                showStatus('✓ Kamera aktif - siap memindai barcode', 'info');
+                console.log('[SCANNER] Started');
+                showStatus('Kamera aktif - siap memindai barcode', 'info');
             }).catch(err => {
                 console.error('[SCANNER] Error:', err);
-                showStatus('⚠️ Gagal mengakses kamera', 'error');
+                showStatus('Gagal mengakses kamera', 'error');
             });
         }
 
@@ -538,7 +566,7 @@ requireAuth();
                 console.log('[API] Response:', data);
 
                 if (!data.success) {
-                    showStatus('❌ Barcode tidak ditemukan', 'error');
+                    showStatus('Barcode tidak ditemukan', 'error');
                     showLoading(false);
                     return;
                 }
@@ -546,7 +574,7 @@ requireAuth();
                 // Handle member scan
                 if (scanMode === 'member') {
                     if (data.data.type !== 'member') {
-                        showStatus('❌ Ini buku, bukan anggota!', 'error');
+                        showStatus('Ini buku, bukan anggota!', 'error');
                         showLoading(false);
                         return;
                     }
@@ -555,18 +583,18 @@ requireAuth();
                     switchMode('book');
                     scannedBooks = []; // Reset books list
                     updateScannedList();
-                    showStatus('✓ Anggota dipilih. Sekarang scan buku', 'success');
+                    showStatus('Anggota dipilih. Sekarang scan buku', 'success');
                 }
                 // Handle book scan
                 else if (scanMode === 'book') {
                     if (!currentMember) {
-                        showStatus('❌ Scan anggota dulu!', 'error');
+                        showStatus('Scan anggota dulu!', 'error');
                         switchMode('member');
                         showLoading(false);
                         return;
                     }
                     if (data.data.type !== 'book') {
-                        showStatus('❌ Ini anggota, bukan buku!', 'error');
+                        showStatus('Ini anggota, bukan buku!', 'error');
                         showLoading(false);
                         return;
                     }
@@ -580,12 +608,12 @@ requireAuth();
                     });
 
                     updateScannedList();
-                    showStatus('✓ ' + data.data.name + ' ditambahkan', 'success');
+                    showStatus(data.data.name + ' ditambahkan', 'success');
                 }
 
             } catch (error) {
                 console.error('[ERROR]', error);
-                showStatus('❌ Error: ' + error.message, 'error');
+                showStatus('Error: ' + error.message, 'error');
             }
 
             showLoading(false);
@@ -632,13 +660,13 @@ requireAuth();
             if (confirm('Hapus semua buku yang sudah di-scan?')) {
                 scannedBooks = [];
                 updateScannedList();
-                showStatus('Daftar buku dihapus', 'info');
+                showStatus('Daftar buku telah dihapus', 'info');
             }
         }
 
         async function submitScannedBooks() {
             if (scannedBooks.length === 0) {
-                showStatus('❌ Tidak ada buku untuk dikirim', 'error');
+                showStatus('Tidak ada buku untuk dikirim', 'error');
                 return;
             }
 
@@ -666,20 +694,20 @@ requireAuth();
                 console.log('[SUBMIT] Response:', data);
 
                 if (data.success) {
-                    showStatus(`✓ ${data.inserted} peminjaman berhasil disimpan! Tunggu konfirmasi admin.`, 'success');
+                    showStatus(`${data.inserted} peminjaman berhasil disimpan! Tunggu konfirmasi admin.`, 'success');
                     scannedBooks = [];
                     updateScannedList();
                     currentMember = null;
                     document.getElementById('memberDisplay').classList.remove('show');
                     switchMode('member');
                 } else {
-                    showStatus('❌ Error: ' + (data.message || 'Gagal menyimpan'), 'error');
+                    showStatus('Error: ' + (data.message || 'Gagal menyimpan'), 'error');
                     btnSubmit.disabled = false;
                     btnClear.disabled = false;
                 }
             } catch (error) {
                 console.error('[SUBMIT] Error:', error);
-                showStatus('❌ Error: ' + error.message, 'error');
+                showStatus('Error: ' + error.message, 'error');
                 btnSubmit.disabled = false;
                 btnClear.disabled = false;
             }
@@ -767,7 +795,7 @@ requireAuth();
 
         document.getElementById('btnModeBook').addEventListener('click', () => {
             if (!currentMember) {
-                showStatus('❌ Scan anggota dulu!', 'error');
+                showStatus('Scan anggota dulu!', 'error');
             } else {
                 switchMode('book');
             }
