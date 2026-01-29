@@ -339,7 +339,7 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
         <div>
           <!-- Barcode Scanner Button -->
           <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-            <a href="barcode-scan.php" class="btn-barcode-start"
+            <a href="barcode-scan-simple.php" class="btn-barcode-start"
               style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 14px; text-decoration: none;">
               <iconify-icon icon="mdi:barcode-scan"></iconify-icon>
               Buka Pemindai Barcode

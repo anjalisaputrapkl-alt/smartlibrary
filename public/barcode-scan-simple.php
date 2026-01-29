@@ -303,8 +303,34 @@
             <!-- Status Message -->
             <div id="statusMessage" class="status-message info" style="display: none;"></div>
 
-            <!-- Barcode Input (Hidden - auto filled by scanner) -->
-            <input type="hidden" id="scannedBarcode">
+            <!-- Scan Mode Indicator -->
+            <div
+                style="margin-bottom: 16px; padding: 12px; background: #e0f2fe; border-radius: 6px; border-left: 4px solid #0284c7;">
+                <div style="font-size: 12px; font-weight: 600; color: #0c4a6e; margin-bottom: 8px;">
+                    📋 Mode Pemindaian Saat Ini:
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="scan-mode-btn active" data-mode="member" id="btnModeMember"
+                        style="flex: 1; padding: 8px; background: #0284c7; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px;">
+                        1️⃣ Scan Anggota (NISN)
+                    </button>
+                    <button class="scan-mode-btn" data-mode="book" id="btnModeBook"
+                        style="flex: 1; padding: 8px; background: #cbd5e1; color: #1e293b; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px;">
+                        2️⃣ Scan Buku (ISBN)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Current Member Display -->
+            <div id="memberDisplay"
+                style="display: none; margin-bottom: 16px; padding: 12px; background: #d1fae5; border-radius: 6px; border-left: 4px solid #059669;">
+                <div style="font-size: 12px; font-weight: 600; color: #065f46; margin-bottom: 8px;">
+                    ✓ Anggota Terpilih:
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #047857;">
+                    <span id="memberName"></span> (NISN: <span id="memberNisn"></span>)
+                </div>
+            </div>
 
             <!-- Debug Panel -->
             <div
@@ -333,9 +359,9 @@
 
             <!-- Scanned Items Section -->
             <div class="scanned-items">
-                <h3>📋 Item Terpindai</h3>
+                <h3>📋 Data Peminjaman</h3>
                 <div id="scannedList">
-                    <p class="empty-message">Belum ada item yang dipindai</p>
+                    <p class="empty-message">Belum ada data peminjaman</p>
                 </div>
             </div>
 
@@ -372,6 +398,11 @@
         let scannedItems = [];
         let lastScannedTime = 0;
         const SCAN_DELAY = 1000; // Prevent duplicate scans
+
+        let scanMode = 'member'; // 'member' atau 'book'
+        let currentMember = null;
+        let borrowRecords = []; // Array untuk track (member + book) pairs
+        let statusTimeoutId = null; // Track status timeout
 
         // ============================================================================
         // Initialize Scanner
@@ -454,7 +485,7 @@
         }
 
         // ============================================================================
-        // Process Barcode
+        // Process Barcode - Beda logic untuk member vs book
         // ============================================================================
 
         async function processBarcode(barcode) {
@@ -464,9 +495,10 @@
             const parsedBarcode = parseBarcode(barcode);
             console.log('[PARSE] Original:', barcode);
             console.log('[PARSE] Parsed:', parsedBarcode);
+            console.log('[MODE] Current mode:', scanMode);
 
             showLoading(true);
-            showStatus('Memproses barcode...', 'info');
+            showStatus(`Memproses barcode ${scanMode}...`, 'info');
 
             try {
                 console.log('[API] Sending barcode:', parsedBarcode);
@@ -494,20 +526,125 @@
                     return;
                 }
 
-                // Add to scanned items
-                addScannedItem(data.data);
-                showStatus('✓ ' + (data.data.name || 'Item') + ' berhasil dipindai', 'success');
+                // Handle member scan
+                if (scanMode === 'member') {
+                    if (data.data.type !== 'member') {
+                        showStatus('❌ Barcode ini adalah buku, bukan anggota. Scan NISN anggota terlebih dahulu!', 'error');
+                        showLoading(false);
+                        return;
+                    }
+                    currentMember = data.data;
+                    displayMemberInfo();
+                    switchScanMode('book');
+                    showStatus('✓ Anggota dipilih. Sekarang scan barcode buku', 'success');
+                    showLoading(false);
+                }
+                // Handle book scan
+                else if (scanMode === 'book') {
+                    if (!currentMember) {
+                        showStatus('❌ Silakan scan NISN anggota terlebih dahulu!', 'error');
+                        switchScanMode('member');
+                        showLoading(false);
+                        return;
+                    }
+                    if (data.data.type !== 'book') {
+                        showStatus('❌ Barcode ini adalah anggota, bukan buku. Scan ISBN buku!', 'error');
+                        showLoading(false);
+                        return;
+                    }
+                    addBorrowRecord(currentMember, data.data);
+                    showStatus('✓ Buku berhasil ditambahkan. Scan buku lain atau selesai', 'success');
+                    showLoading(false);
+                }
 
             } catch (error) {
                 console.error('[ERROR]', error);
                 showStatus('❌ Error: ' + error.message, 'error');
+                showLoading(false);
             }
-
-            showLoading(false);
         }
 
         // ============================================================================
-        // Scanned Items Management
+        // Scan Mode Management
+        // ============================================================================
+
+        function switchScanMode(mode) {
+            scanMode = mode;
+            console.log('[MODE] Switched to:', mode);
+
+            const btnMember = document.getElementById('btnModeMember');
+            const btnBook = document.getElementById('btnModeBook');
+
+            if (mode === 'member') {
+                btnMember.style.background = '#0284c7';
+                btnMember.style.color = 'white';
+                btnBook.style.background = '#cbd5e1';
+                btnBook.style.color = '#1e293b';
+            } else {
+                btnMember.style.background = '#cbd5e1';
+                btnMember.style.color = '#1e293b';
+                btnBook.style.background = '#0284c7';
+                btnBook.style.color = 'white';
+            }
+        }
+
+        function displayMemberInfo() {
+            const memberDisplay = document.getElementById('memberDisplay');
+            document.getElementById('memberName').textContent = currentMember.name;
+            document.getElementById('memberNisn').textContent = currentMember.barcode;
+            memberDisplay.style.display = 'block';
+        }
+
+        // ============================================================================
+        // Borrow Record Management
+        // ============================================================================
+
+        function addBorrowRecord(member, book) {
+            borrowRecords.push({
+                member_id: member.id,
+                member_name: member.name,
+                member_nisn: member.barcode,
+                book_id: book.id,
+                book_title: book.name,
+                book_isbn: book.barcode
+            });
+            updateBorrowList();
+            console.log('[BORROW] Record added:', borrowRecords.length);
+        }
+
+        function updateBorrowList() {
+            const scannedList = document.getElementById('scannedList');
+
+            if (borrowRecords.length === 0) {
+                scannedList.innerHTML = '<p class="empty-message">Belum ada data peminjaman</p>';
+                return;
+            }
+
+            scannedList.innerHTML = borrowRecords.map((record, index) => `
+                <div class="scanned-item">
+                    <div style="flex: 1;">
+                        <div class="item-name">📖 ${escapeHtml(record.book_title)}</div>
+                        <div class="item-code">ISBN: ${escapeHtml(record.book_isbn)}</div>
+                        <div class="item-code">👤 ${escapeHtml(record.member_name)} (${record.member_nisn})</div>
+                    </div>
+                    <button class="btn-remove" onclick="removeRecord(${index})">Hapus</button>
+                </div>
+            `).join('');
+        }
+
+        function removeRecord(index) {
+            borrowRecords.splice(index, 1);
+            updateBorrowList();
+            if (borrowRecords.length === 0) {
+                currentMember = null;
+                document.getElementById('memberDisplay').style.display = 'none';
+                switchScanMode('member');
+            }
+            console.log('[BORROW] Record removed');
+        }
+
+        // ============================================================================
+        // Scanned Items Management (untuk compatibility)
         // ============================================================================
 
         function addScannedItem(item) {
@@ -542,10 +679,13 @@
         }
 
         function clearAll() {
-            if (!confirm('Hapus semua item yang dipindai?')) return;
-            scannedItems = [];
-            updateScannedList();
-            showStatus('✓ Semua item telah dihapus', 'success');
+            if (!confirm('Hapus semua data peminjaman?')) return;
+            borrowRecords = [];
+            currentMember = null;
+            updateBorrowList();
+            document.getElementById('memberDisplay').style.display = 'none';
+            switchScanMode('member');
+            showStatus('✓ Semua data telah dihapus', 'success');
         }
 
         // ============================================================================
@@ -553,12 +693,12 @@
         // ============================================================================
 
         async function submitData() {
-            if (scannedItems.length === 0) {
-                alert('Belum ada item yang dipindai. Silakan pindai minimal 1 barcode.');
+            if (borrowRecords.length === 0) {
+                alert('Belum ada data peminjaman. Silakan scan anggota dan buku.');
                 return;
             }
 
-            if (!confirm(`Submit ${scannedItems.length} item yang telah dipindai?`)) {
+            if (!confirm(`Submit ${borrowRecords.length} peminjaman buku?`)) {
                 return;
             }
 
@@ -566,13 +706,13 @@
             showStatus('Mengirim data...', 'info');
 
             try {
-                const response = await fetch('./api/submit-scan-data.php', {
+                const response = await fetch('./api/submit-borrow.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        items: scannedItems
+                        borrows: borrowRecords
                     })
                 });
 
@@ -586,7 +726,7 @@
                 }
 
                 showStatus('✓ Data berhasil dikirim!', 'success');
-                alert('Pemindaian berhasil! Total ' + scannedItems.length + ' item telah diproses.');
+                alert('Peminjaman berhasil dicatat! Total ' + borrowRecords.length + ' transaksi telah diproses.');
 
                 // Reset
                 setTimeout(() => {
@@ -615,12 +755,18 @@
 
         function showStatus(message, type = 'info') {
             const statusDiv = document.getElementById('statusMessage');
+
+            // Clear previous timeout
+            if (statusTimeoutId) {
+                clearTimeout(statusTimeoutId);
+            }
+
             statusDiv.textContent = message;
             statusDiv.className = 'status-message ' + type;
             statusDiv.style.display = 'block';
 
             if (type === 'success') {
-                setTimeout(() => {
+                statusTimeoutId = setTimeout(() => {
                     statusDiv.style.display = 'none';
                 }, 4000);
             }
@@ -628,7 +774,11 @@
 
         function showLoading(show) {
             const overlay = document.getElementById('loadingOverlay');
-            overlay.classList.toggle('show', show);
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
         }
 
         function escapeHtml(text) {
@@ -660,6 +810,13 @@
         document.getElementById('btnClear').addEventListener('click', clearAll);
         document.getElementById('btnSubmit').addEventListener('click', submitData);
         document.getElementById('btnLogout').addEventListener('click', handleLogout);
+
+        // Mode buttons
+        document.getElementById('btnModeMember').addEventListener('click', () => switchScanMode('member'));
+        document.getElementById('btnModeBook').addEventListener('click', () => {
+            if (currentMember) switchScanMode('book');
+            else showStatus('❌ Scan NISN anggota terlebih dahulu!', 'error');
+        });
 
         // ============================================================================
         // Page Initialization
