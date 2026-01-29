@@ -611,7 +611,10 @@ CREATE TABLE `barcode_sessions` (
   `due_date` datetime DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `expires_at` timestamp NOT NULL DEFAULT (current_timestamp() + interval 30 minute)
+  `expires_at` timestamp NOT NULL DEFAULT (current_timestamp() + interval 30 minute),
+  PRIMARY KEY (`id`),
+  KEY `school_id` (`school_id`),
+  KEY `member_id` (`member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -621,17 +624,6 @@ CREATE TABLE `barcode_sessions` (
 --
 ALTER TABLE `members`
   ADD CONSTRAINT `members_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `barcode_sessions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `school_id` (`school_id`),
-  ADD KEY `member_id` (`member_id`);
-
---
--- AUTO_INCREMENT for table `barcode_sessions`
---
-ALTER TABLE `barcode_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for table `barcode_sessions`
