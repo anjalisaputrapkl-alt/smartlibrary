@@ -1,13 +1,9 @@
-1. Open http://localhost/perpustakaan-online/public/index.php
-2. Press F12 (buka DevTools)
-3. Go to Console tab
-4. Klik card "Total Buku"
-5. Lihat modal muncul dengan data?-- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 27, 2026 at 08:50 AM
+-- Generation Time: Jan 30, 2026 at 08:47 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `perpustakaan_online`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `barcode_sessions`
+--
+
+CREATE TABLE `barcode_sessions` (
+  `id` int(11) NOT NULL,
+  `school_id` int(11) NOT NULL,
+  `session_token` varchar(32) NOT NULL,
+  `status` enum('active','completed','expired') DEFAULT 'active',
+  `member_barcode` varchar(255) DEFAULT NULL,
+  `member_id` int(11) DEFAULT NULL,
+  `books_scanned` longtext DEFAULT NULL COMMENT 'JSON array of scanned book data',
+  `due_date` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `expires_at` timestamp NOT NULL DEFAULT (current_timestamp() + interval 30 minute)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -54,9 +70,10 @@ INSERT INTO `books` (`id`, `school_id`, `title`, `author`, `isbn`, `category`, `
 (2, 4, 'Bu, aku ingin pelukmu', 'Reza Mustopa', '4522343', 'Fiksi', 5, '2026-01-26 02:49:48', '1A', 1, 'book_1769399253_6976e3d564a9a.png'),
 (3, 4, 'Madilog', 'Tan Malaka', '533454', 'Referensi', 3, '2026-01-26 02:52:47', '1B', 1, 'book_1769399247_6976e3cfbddeb.jpeg'),
 (4, 4, 'Sebuah Seni Untuk Bersikap Bodoamat', 'Mark Manson', '345645', 'Non-Fiksi', 5, '2026-01-26 02:55:04', '1B', 2, 'book_1769399240_6976e3c8d253c.png'),
-(5, 4, 'The Psychology of Money', 'Morgan Housel', '9786238371044', 'Lainnya', 14, '2026-01-26 04:02:19', '1B', 5, 'book_1769400139_6976e74ba9d73.jpg'),
+(5, 4, 'The Psychology of Money', 'Morgan Housel', '9786238371044', 'Lainnya', 15, '2026-01-26 04:02:19', '1B', 5, 'book_1769400139_6976e74ba9d73.jpg'),
 (6, 4, 'Sang Alkemis', 'Paulo Coelho', '9786020656069', 'Lainnya', 2, '2026-01-26 04:03:53', '1B', 4, 'book_1769400245_6976e7b53bd5e.jpg'),
-(7, 4, 'B.J. Habibie : Sebuah Biografi', 'Fatimah Fayrus', '9786231643094', 'Biografi', 1, '2026-01-26 04:07:07', '1C', 2, 'book_1769400427_6976e86b698e3.jpg');
+(7, 4, 'B.J. Habibie : Sebuah Biografi', 'Fatimah Fayrus', '9786231643094', 'Biografi', 1, '2026-01-26 04:07:07', '1C', 2, 'book_1769400427_6976e86b698e3.jpg'),
+(8, 10, 'dfgdfg', 'dfgdfg', '232343', 'Referensi', 12, '2026-01-29 04:24:26', '1A', 3, 'book_1769660674_697ae1029671b.jpg');
 
 -- --------------------------------------------------------
 
@@ -77,13 +94,6 @@ CREATE TABLE `book_damage_fines` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `book_damage_fines`
---
-
-INSERT INTO `book_damage_fines` (`id`, `school_id`, `borrow_id`, `member_id`, `book_id`, `damage_type`, `damage_description`, `fine_amount`, `status`, `created_at`, `updated_at`) VALUES
-(1, 4, 1, 1, 1, 'minor_tear', 'Robekan di pinggir bawah halaman 10', 25000.00, 'pending', '2026-01-27 03:40:23', '2026-01-27 03:40:23');
 
 -- --------------------------------------------------------
 
@@ -120,7 +130,7 @@ CREATE TABLE `borrows` (
   `borrowed_at` datetime DEFAULT current_timestamp(),
   `due_at` datetime DEFAULT NULL,
   `returned_at` datetime DEFAULT NULL,
-  `status` enum('borrowed','returned','overdue','pending_return') DEFAULT 'borrowed'
+  `status` enum('borrowed','returned','overdue','pending_return','pending_confirmation') DEFAULT 'borrowed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -128,10 +138,16 @@ CREATE TABLE `borrows` (
 --
 
 INSERT INTO `borrows` (`id`, `school_id`, `book_id`, `member_id`, `borrowed_at`, `due_at`, `returned_at`, `status`) VALUES
-(1, 4, 1, 1, '2026-01-26 10:08:29', '2026-02-02 10:08:29', NULL, 'borrowed'),
-(2, 4, 7, 1, '2026-01-27 08:40:22', '2026-02-03 08:40:22', '2026-01-27 09:11:15', 'returned'),
-(3, 4, 5, 1, '2026-01-27 09:17:32', '2026-02-03 09:17:32', NULL, 'pending_return'),
-(4, 4, 4, 1, '2026-01-27 09:17:43', '2026-02-03 09:17:43', NULL, 'borrowed');
+(21, 4, 1, 1, '2026-01-29 07:46:04', '2026-02-05 07:46:04', '2026-01-29 13:48:05', 'returned'),
+(22, 4, 2, 1, '2026-01-29 07:46:04', '2026-02-05 07:46:04', '2026-01-29 13:48:07', 'returned'),
+(23, 4, 3, 1, '2026-01-29 07:46:04', '2026-02-05 07:46:04', '2026-01-29 13:48:08', 'returned'),
+(24, 4, 4, 1, '2026-01-29 07:46:04', '2026-02-05 07:46:04', '2026-01-29 13:48:03', 'returned'),
+(25, 4, 7, 1, '2026-01-29 13:48:47', '2026-02-05 07:48:47', '2026-01-29 14:16:25', 'returned'),
+(26, 4, 7, 1, '2026-01-29 13:53:01', '2026-01-31 14:27:12', '2026-01-29 14:27:17', 'returned'),
+(27, 4, 1, 2, '2026-01-29 14:16:56', '2026-02-05 14:27:04', '2026-01-29 14:27:15', 'returned'),
+(28, 4, 7, 1, '2026-01-29 15:16:55', '2026-02-01 15:18:28', '2026-01-30 08:28:21', 'returned'),
+(30, 4, 1, 1, '2026-01-30 08:30:41', '2026-02-14 08:37:25', NULL, 'borrowed'),
+(31, 10, 8, 3, '2026-01-30 08:32:40', '2026-02-06 02:32:40', NULL, 'pending_confirmation');
 
 -- --------------------------------------------------------
 
@@ -179,7 +195,8 @@ CREATE TABLE `members` (
 
 INSERT INTO `members` (`id`, `school_id`, `name`, `email`, `nisn`, `status`, `created_at`) VALUES
 (1, 4, 'Anjali Saputra', 'anjalisaputra@gmail.com', '0094234', 'active', '2026-01-26 03:06:14'),
-(2, 4, 'Surya', 'surz@gmail.com', '000000', 'active', '2026-01-27 03:56:53');
+(2, 4, 'Surya', 'surz@gmail.com', '000000', 'active', '2026-01-27 03:56:53'),
+(3, 10, 'fafas', 'asdas@gmail.com', '1211211', 'active', '2026-01-29 04:25:45');
 
 -- --------------------------------------------------------
 
@@ -273,7 +290,8 @@ INSERT INTO `schools` (`id`, `name`, `slug`, `status`, `activation_code`, `creat
 (5, 'sdfsdf', 'sdfsdf', 'pending', NULL, '2026-01-26 04:37:04', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (7, 'sdfsdfasdasd', 'sdfsdfasdasd', 'pending', NULL, '2026-01-26 04:39:59', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (8, 'sdfbhsd', 'sdfbhsd', 'pending', NULL, '2026-01-26 04:42:48', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(9, 'hdgdfg', 'hdgdfg', 'pending', NULL, '2026-01-26 04:44:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(9, 'hdgdfg', 'hdgdfg', 'pending', NULL, '2026-01-26 04:44:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 'smamaju', 'smamaju', 'pending', NULL, '2026-01-29 02:37:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -297,7 +315,7 @@ CREATE TABLE `school_themes` (
 
 INSERT INTO `school_themes` (`id`, `school_id`, `theme_name`, `custom_colors`, `typography`, `created_at`, `updated_at`) VALUES
 (1, 3, 'light', NULL, NULL, '2026-01-26 02:41:21', '2026-01-26 02:41:21'),
-(2, 4, 'dark', NULL, NULL, '2026-01-26 02:43:32', '2026-01-27 03:56:30');
+(2, 4, 'light', NULL, NULL, '2026-01-26 02:43:32', '2026-01-30 06:49:48');
 
 -- --------------------------------------------------------
 
@@ -354,18 +372,29 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `school_id`, `name`, `email`, `nisn`, `password`, `verification_code`, `code_expires_at`, `is_verified`, `verified_at`, `role`, `created_at`) VALUES
-(2, 3, 'Gani', 'gani@sch.id', NULL, '$2y$10$hs.V41Tqx9p1A67h9wW4zeF6eXGIAIibCds1ELo.P8KoOcwmlWWXm', NULL, '2026-01-25 20:55:51', 1, '2026-01-26 02:41:02', 'admin', '2026-01-26 02:40:51'),
+(2, 3, 'Gani', 'gani@sch.id', NULL, '', NULL, '2026-01-25 20:55:51', 1, '2026-01-26 02:41:02', 'admin', '2026-01-26 02:40:51'),
 (3, 4, 'Budi', 'australiaindependentsschool@sch.id', NULL, '$2y$10$YYkXfCuDmZWDCEymXPClM.viULRMLWKBxk70BmOxepED0GMNeOWiS', NULL, '2026-01-25 20:57:13', 1, '2026-01-26 02:42:24', 'admin', '2026-01-26 02:42:14'),
 (4, 4, 'Anjali Saputra', 'anjalisaputra@gmail.com', '0094234', '$2y$10$0yfyoUtwXaZKiUjRe/VWd.e9Cv/8N5NiqhJcnlSsDm/aaay7p/0DC', NULL, NULL, 0, NULL, 'student', '2026-01-26 03:06:14'),
 (5, 5, 'Gani', 'sdfdf@sch.id', NULL, '$2y$10$y5RgsJjO.nbQ3XXqFeQ4X.5zkiCKKAXEZnH.EhVXPdyvOPc/.MRDm', NULL, '2026-01-25 22:52:04', 1, '2026-01-26 04:37:14', 'admin', '2026-01-26 04:37:04'),
 (6, 7, 'sdfsdfasdasd', 'sdfsdfsf@sch.id', NULL, '$2y$10$qTK44/muE8jMTShecEdkZuPoFN3Kh9dDnc80qmzQo1bLNL6zgQ3ua', NULL, '2026-01-25 22:54:59', 1, '2026-01-26 04:40:09', 'admin', '2026-01-26 04:39:59'),
 (7, 8, 'sghdfgdf', 'sdsdfsfdf@sch.id', NULL, '$2y$10$E3CEHA.8I4ICe1cYR7hdve6bfeEtSuhXHjrf4q.D.Ux9h.QyZpaQG', NULL, '2026-01-25 22:57:48', 1, '2026-01-26 04:42:57', 'admin', '2026-01-26 04:42:48'),
 (8, 9, 'ertert', 'hgdfgdfg@sch.id', NULL, '$2y$10$kIJvRguAWIEKu6XrYqSjLOM8SRIDa0Tgz5PxDcTD1Lkdx7D0QpIpW', NULL, NULL, 1, '2026-01-26 04:44:53', 'admin', '2026-01-26 04:44:45'),
-(9, 4, 'Surya', 'surz@gmail.com', '000000', '$2y$10$pCjvGGyhUHrozsbvjWHwAebllSThpZ1VCIGvhwf7l9YbOq.Kchbwq', NULL, NULL, 0, NULL, 'student', '2026-01-27 03:56:53');
+(9, 4, 'Surya', 'surz@gmail.com', '000000', '$2y$10$pCjvGGyhUHrozsbvjWHwAebllSThpZ1VCIGvhwf7l9YbOq.Kchbwq', NULL, NULL, 0, NULL, 'student', '2026-01-27 03:56:53'),
+(10, 10, 'maju', 'maju@sch.id', NULL, '$2y$10$P0Dvl957VriyhB2Ss5ZQv.VvPhlJS0iRKgbFyeYnT58YQ9bCBsTS6', NULL, NULL, 1, '2026-01-29 02:37:56', 'admin', '2026-01-29 02:37:45'),
+(11, 10, 'fafas', 'asdas@gmail.com', '1211211', '$2y$10$kxRqC.NMu.l1Gt/nT6ITQ.8gRFdrhBww3Bc1AeUxU5qCQq5kbzJey', NULL, NULL, 0, NULL, 'student', '2026-01-29 04:25:45');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `barcode_sessions`
+--
+ALTER TABLE `barcode_sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `session_token` (`session_token`),
+  ADD KEY `school_id` (`school_id`),
+  ADD KEY `member_id` (`member_id`);
 
 --
 -- Indexes for table `books`
@@ -487,10 +516,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `barcode_sessions`
+--
+ALTER TABLE `barcode_sessions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `book_damage_fines`
@@ -508,7 +543,7 @@ ALTER TABLE `book_maintenance`
 -- AUTO_INCREMENT for table `borrows`
 --
 ALTER TABLE `borrows`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `favorites`
@@ -520,13 +555,13 @@ ALTER TABLE `favorites`
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `notifikasi`
@@ -538,7 +573,7 @@ ALTER TABLE `notifikasi`
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `school_themes`
@@ -556,11 +591,18 @@ ALTER TABLE `siswa`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `barcode_sessions`
+--
+ALTER TABLE `barcode_sessions`
+  ADD CONSTRAINT `barcode_sessions_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `barcode_sessions_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `books`
@@ -598,31 +640,6 @@ ALTER TABLE `favorites`
   ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `barcode_sessions`
---
-
-CREATE TABLE `barcode_sessions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `school_id` int(11) NOT NULL,
-  `session_token` varchar(32) NOT NULL UNIQUE,
-  `status` enum('active','completed','expired') DEFAULT 'active',
-  `member_barcode` varchar(255) DEFAULT NULL,
-  `member_id` int(11) DEFAULT NULL,
-  `books_scanned` longtext DEFAULT NULL COMMENT 'JSON array of scanned book data',
-  `due_date` datetime DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `expires_at` timestamp NOT NULL DEFAULT (current_timestamp() + interval 30 minute),
-  PRIMARY KEY (`id`),
-  KEY `school_id` (`school_id`),
-  KEY `member_id` (`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
 --
 -- Constraints for table `members`
 --
@@ -630,12 +647,7 @@ ALTER TABLE `members`
   ADD CONSTRAINT `members_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `barcode_sessions`
---
-ALTER TABLE `barcode_sessions`
-  ADD CONSTRAINT `barcode_sessions_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `barcode_sessions_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE SET NULL;
-
+-- Constraints for table `notifications`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
