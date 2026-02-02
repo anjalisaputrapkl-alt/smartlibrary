@@ -263,6 +263,16 @@ $pageTitle = 'Dashboard Siswa';
             flex-wrap: wrap;
             margin-bottom: 24px;
         }
+        /* ---- Simple KPI cards (student) ---- */
+        .kpi-grid { display:grid; grid-template-columns: repeat(4,1fr); gap:14px; margin: 18px 0 20px; }
+        .kpi-card { display:flex; align-items:center; justify-content:space-between; background:#fff; padding:14px 16px; border-radius:12px; text-decoration:none; color:#1E1E1E; box-shadow: 0 6px 18px rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.04); transition:transform .12s ease, box-shadow .12s ease }
+        .kpi-card:hover { transform:translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.08) }
+        .kpi-left { display:flex; flex-direction:column }
+        .kpi-title { font-size:12px; color:#6b6b6b; font-weight:600; text-transform:uppercase; letter-spacing:0.6px }
+        .kpi-value { font-size:20px; font-weight:700; margin-top:6px; color:#1E1E1E }
+        .kpi-icon { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(58,122,254,0.06); color:#3A7AFE; flex-shrink:0 }
+        @media (max-width:900px){ .kpi-grid{ grid-template-columns: repeat(2,1fr) } }
+        @media (max-width:480px){ .kpi-grid{ grid-template-columns: 1fr } .kpi-card{ padding:12px } }
 
         .search-bar-wrapper {
             flex: 1;
@@ -353,6 +363,41 @@ $pageTitle = 'Dashboard Siswa';
             <!-- Main Content -->
             <div class="main-content">
                 <!-- Modern Search Bar with Category Dropdown -->
+                <!-- KPI Cards -->
+                <div class="kpi-grid" role="list">
+                    <a class="kpi-card" href="books.php" role="listitem">
+                        <div class="kpi-left">
+                            <div class="kpi-title">Total Buku</div>
+                            <div class="kpi-value"><?php echo $totalBooks; ?></div>
+                        </div>
+                        <div class="kpi-icon"><iconify-icon icon="mdi:book-open-variant" width="20" height="20"></iconify-icon></div>
+                    </a>
+
+                    <a class="kpi-card" href="student-borrowing-history.php" role="listitem">
+                        <div class="kpi-left">
+                            <div class="kpi-title">Sedang Dipinjam</div>
+                            <div class="kpi-value"><?php echo $borrowCount; ?></div>
+                        </div>
+                        <div class="kpi-icon"><iconify-icon icon="mdi:clock-outline" width="20" height="20"></iconify-icon></div>
+                    </a>
+
+                    <a class="kpi-card" href="student-borrowing-history.php" role="listitem">
+                        <div class="kpi-left">
+                            <div class="kpi-title">Aktif Dipinjam</div>
+                            <div class="kpi-value"><?php echo $active_borrows; ?></div>
+                        </div>
+                        <div class="kpi-icon"><iconify-icon icon="mdi:swap-vertical" width="20" height="20"></iconify-icon></div>
+                    </a>
+
+                    <a class="kpi-card" href="student-borrowing-history.php?filter=overdue" role="listitem">
+                        <div class="kpi-left">
+                            <div class="kpi-title">Terlambat / Overdue</div>
+                            <div class="kpi-value"><?php echo $overdueCount ?? $overdue_count ?? 0; ?></div>
+                        </div>
+                        <div class="kpi-icon"><iconify-icon icon="mdi:alert-circle-outline" width="20" height="20"></iconify-icon></div>
+                    </a>
+                </div>
+
                 <form method="get" class="modern-search-bar-form" onsubmit="return false;">
                     <!-- Search Bar (Dominant) -->
                     <div class="search-bar-wrapper">

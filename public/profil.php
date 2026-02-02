@@ -1,13 +1,29 @@
 <?php
-session_start();
+// No output before session
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
+// Start session safely
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Check if user is logged in
 if (!isset($_SESSION['user']) || !isset($_SESSION['user']['school_id'])) {
-    header('Location: login.php');
+    header('Location: index.php', true, 302);
     exit;
 }
 
-$pdo = require __DIR__ . '/../src/db.php';
+// Load dependencies
+require_once __DIR__ . '/../src/auth.php';
+
+try {
+    $pdo = require __DIR__ . '/../src/db.php';
+} catch (Exception $e) {
+    http_response_code(500);
+    die('Database connection failed');
+}
+
 require_once __DIR__ . '/../src/MemberHelper.php';
 require_once __DIR__ . '/../src/maintenance/DamageController.php';
 
@@ -1093,6 +1109,10 @@ $pageTitle = 'Profil Saya';
                     <p><?php echo htmlspecialchars($siswa['nisn'] ?? 'NISN: -'); ?> -
                         <?php echo htmlspecialchars($siswa['status'] ?? 'active'); ?>
                     </p>
+                    <a href="student-card.php" class="btn-view-card" style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">
+                        <iconify-icon icon="mdi:card-account" width="16" height="16"></iconify-icon>
+                        Lihat Kartu Pelajar
+                    </a>
                 </div>
             </div>
 

@@ -1,8 +1,10 @@
 <?php
-
 /**
+ * Authentication Helper Functions
  * Mulai session dan cek autentikasi
  */
+
+// Mulai session jika belum
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -12,7 +14,7 @@ if (session_status() === PHP_SESSION_NONE) {
  */
 function isAuthenticated()
 {
-    return !empty($_SESSION['user']);
+    return !empty($_SESSION['user']) && !empty($_SESSION['user']['id']);
 }
 
 /**
@@ -25,11 +27,14 @@ function getAuthUser()
 
 /**
  * Redirect ke login jika belum autentikasi
+ * Safe header redirect
  */
 function requireAuth()
 {
     if (!isAuthenticated()) {
-        header('Location: /perpustakaan-online/?login_required=1');
+        // Redirect ke halaman login
+        $loginUrl = '/perpustakaan-online/?login_required=1';
+        header('Location: ' . $loginUrl, true, 302);
         exit;
     }
 }
@@ -40,8 +45,24 @@ function requireAuth()
 function logout()
 {
     session_destroy();
-    header('Location: /perpustakaan-online/public/login.php');
+    // Redirect ke halaman index/home
+    header('Location: /perpustakaan-online/index.php', true, 302);
     exit;
 }
 
+/**
+ * Get the current user ID from session
+ */
+function getCurrentUserId()
+{
+    return $_SESSION['user']['id'] ?? null;
+}
+
+/**
+ * Get the current school ID from session
+ */
+function getCurrentSchoolId()
+{
+    return $_SESSION['user']['school_id'] ?? null;
+}
 ?>
