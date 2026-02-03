@@ -40,8 +40,8 @@ try {
         exit;
     }
 
-    // Generate barcode data - Format: MEMBERID-NISN-SCHOOLID
-    $barcode_data = $member['id'] . '-' . $member['nisn'] . '-' . $member['school_id'];
+    // Generate barcode data - Use NISN only for scanning
+    $barcode_data = $member['nisn'] ?? $member['id'];
 
     // Generate Code128 barcode using library
     $barcode_svg = generateCode128($barcode_data);
@@ -92,14 +92,14 @@ function generateCode128($data) {
     // Stop code
     $barcode .= '1100011101011'; // STOP
 
-    // Convert to SVG
-    $barWidth = 2;
+    // Convert to SVG - Use small bar width for long data like NISN
+    $barWidth = 1; // Reduced to 1px for maximum compatibility
     $barHeight = 50;
     $width = strlen($barcode) * $barWidth;
     $height = $barHeight + 40; // Extra space untuk text
 
     $svg = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-    $svg .= '<svg width="' . ($width + 20) . '" height="' . $height . '" xmlns="http://www.w3.org/2000/svg">' . "\n";
+    $svg .= '<svg width="' . ($width + 20) . '" height="' . $height . '" viewBox="0 0 ' . ($width + 20) . ' ' . $height . '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">' . "\n";
     $svg .= '<rect width="100%" height="100%" fill="white"/>' . "\n";
 
     $x = 10;

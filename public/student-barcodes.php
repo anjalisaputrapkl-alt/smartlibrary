@@ -893,10 +893,16 @@ $school = $stmt->fetch();
 
                                 <div class="barcode-section">
                                     <div class="barcode-wrapper">
-                                        <object data="api/generate-student-barcode.php?member_id=<?= $member['id'] ?>"
-                                            type="image/svg+xml" class="barcode-display"></object>
+                                        <svg class="barcode-display barcode-render"
+                                            jsbarcode-format="CODE128"
+                                            jsbarcode-value="<?= htmlspecialchars($member['nisn'] ?? $member['id']) ?>"
+                                            jsbarcode-displayValue="true"
+                                            jsbarcode-fontSize="12"
+                                            jsbarcode-width="1.5"
+                                            jsbarcode-height="50"
+                                            jsbarcode-margin="5"></svg>
                                     </div>
-                                    <div class="barcode-id">ID: <?= str_pad($member['id'], 6, '0', STR_PAD_LEFT) ?></div>
+                                    <div class="barcode-id">NISN: <?= htmlspecialchars($member['nisn'] ?? '-') ?></div>
                                 </div>
 
                                 <div class="student-details">
@@ -992,6 +998,19 @@ $school = $stmt->fetch();
                     searchInput.select();
                 }
             });
+        });
+    </script>
+
+    <!-- JsBarcode CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script>
+        // Initialize all barcodes after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                JsBarcode(".barcode-render").init();
+            } catch (e) {
+                console.error("Barcode rendering failed", e);
+            }
         });
     </script>
 </body>

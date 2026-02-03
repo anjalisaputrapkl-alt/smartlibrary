@@ -10,7 +10,14 @@ try {
     require_once __DIR__ . '/../../src/db.php';
 
     $action = $_GET['action'] ?? $_POST['action'] ?? null;
-    $school_id = 4;
+    $school_id = $_SESSION['user']['school_id'] ?? null;
+    
+    if (!$school_id) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'error' => 'Unauthorized: School ID not found']);
+        exit;
+    }
+    
     $query = trim($_GET['q'] ?? '');
 
     if ($action === 'search') {

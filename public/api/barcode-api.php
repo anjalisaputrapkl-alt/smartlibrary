@@ -21,8 +21,15 @@ try {
     }
 
     $action = $_GET['action'] ?? $_POST['action'] ?? null;
-    $school_id = $_SESSION['user']['school_id'] ?? 4; // TEMPORARY: default to 4 for testing
+    $school_id = $_SESSION['user']['school_id'] ?? null;
     $user_id = $_SESSION['user']['id'] ?? null;
+
+    if (!$school_id) {
+        ob_end_clean();
+        http_response_code(401);
+        echo json_encode(['success' => false, 'error' => 'Unauthorized: School ID not found']);
+        exit;
+    }
 
     if ($action === 'search') {
         $query = trim($_GET['q'] ?? '');

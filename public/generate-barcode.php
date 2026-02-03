@@ -301,12 +301,6 @@ if (!$school_id) {
                     </div>
                 </div>
 
-                <!-- QR Code -->
-                <div class="barcode-section">
-                    <div class="barcode-label">QR Code</div>
-                    <img id="qrCodeImage" class="barcode-image" src="" alt="QR Code">
-                </div>
-
                 <!-- Barcode -->
                 <div class="barcode-section">
                     <div class="barcode-label">Barcode Code128</div>
@@ -445,7 +439,6 @@ if (!$school_id) {
             document.getElementById('modalAuthor').textContent = book.penulis || '-';
             document.getElementById('modalStock').textContent = book.stok || '-';
             
-            document.getElementById('qrCodeImage').src = 'data:image/png;base64,' + data.qr_code;
             document.getElementById('barcodeImage').src = 'data:image/png;base64,' + data.barcode;
             
             document.getElementById('barcodeModal').classList.add('active');
@@ -463,9 +456,9 @@ if (!$school_id) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // Set canvas size
+            // Set canvas size for barcode only
             canvas.width = 600;
-            canvas.height = 800;
+            canvas.height = 400;
             
             // White background
             ctx.fillStyle = '#FFFFFF';
@@ -482,30 +475,23 @@ if (!$school_id) {
             ctx.fillText(`${book.judul}`, canvas.width / 2, 80);
             ctx.fillText(`Kode: ${book.kode_buku}`, canvas.width / 2, 110);
             
-            // Draw QR Code
-            const qrImg = new Image();
-            qrImg.src = document.getElementById('qrCodeImage').src;
-            qrImg.onload = function () {
-                ctx.drawImage(qrImg, 150, 140, 300, 300);
+            // Draw Barcode
+            const barcodeImg = new Image();
+            barcodeImg.src = document.getElementById('barcodeImage').src;
+            barcodeImg.onload = function () {
+                ctx.drawImage(barcodeImg, 50, 150, 500, 200);
                 
-                // Draw Barcode
-                const barcodeImg = new Image();
-                barcodeImg.src = document.getElementById('barcodeImage').src;
-                barcodeImg.onload = function () {
-                    ctx.drawImage(barcodeImg, 50, 480, 500, 150);
-                    
-                    // Download
-                    canvas.toBlob(blob => {
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `barcode-${book.kode_buku}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                    });
-                };
+                // Download
+                canvas.toBlob(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `barcode-${book.kode_buku}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                });
             };
         }
 
