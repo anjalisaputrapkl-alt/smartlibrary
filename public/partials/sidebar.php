@@ -365,6 +365,15 @@ function _is_active_sidebar($path, $current)
             </a>
         </li>
         <li>
+            <a href="<?php echo $base; ?>/generate-barcode.php"
+                class="nav-link<?php echo _is_active_sidebar($base . '/generate-barcode.php', $current); ?>">
+                <span class="nav-sidebar-menu-icon">
+                    <iconify-icon icon="mdi:barcode-scan"></iconify-icon>
+                </span>
+                <span>Barcode Buku</span>
+            </a>
+        </li>
+        <li>
             <a href="<?php echo $base; ?>/borrows.php"
                 class="nav-link<?php echo _is_active_sidebar($base . '/borrows.php', $current); ?>">
                 <span class="nav-sidebar-menu-icon">
