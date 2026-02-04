@@ -107,6 +107,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/index.css">
   <link rel="stylesheet" href="../assets/css/book-maintenance.css">
 </head>
 
@@ -129,7 +130,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
 
       <!-- KPI Cards -->
       <div class="kpi-grid">
-        <div class="kpi-card">
+        <div class="kpi-card" data-stat-type="reports" style="cursor: pointer;" title="Klik untuk melihat detail">
           <div class="kpi-icon"><iconify-icon icon="mdi:alert"></iconify-icon></div>
           <div>
             <div class="kpi-title">Total Laporan</div>
@@ -137,7 +138,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
           </div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card" data-stat-type="fines" style="cursor: pointer;" title="Klik untuk melihat detail">
           <div class="kpi-icon"><iconify-icon icon="mdi:cash-multiple"></iconify-icon></div>
           <div>
             <div class="kpi-title">Total Denda</div>
@@ -145,7 +146,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
           </div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card" data-stat-type="pending" style="cursor: pointer;" title="Klik untuk melihat detail">
           <div class="kpi-icon"><iconify-icon icon="mdi:clock-alert"></iconify-icon></div>
           <div>
             <div class="kpi-title">Denda Tertunda</div>
@@ -308,12 +309,26 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
       </div>
     </div>
 
+    <!-- Stats Modal -->
+    <div class="modal-overlay" id="statsModal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Detail Data</h2>
+          <button class="modal-close" type="button">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-loading">Memuat data...</div>
+        </div>
+      </div>
+    </div>
+
     <script>
       // Data untuk digunakan di book-maintenance.js
       window.recordsData = <?php echo json_encode($records); ?>;
       window.damageTypesData = <?php echo json_encode($damageTypes); ?>;
     </script>
     <script src="../assets/js/book-maintenance.js"></script>
+    <script src="../assets/js/maintenance-stats.js"></script>
 
   </div>
 

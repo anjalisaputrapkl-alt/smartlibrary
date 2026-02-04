@@ -16,14 +16,11 @@ $isPreviewMode = isset($_GET['preview']) && $_GET['preview'] === '1' && $isLocal
 $member = null;
 $user = $_SESSION['user'] ?? null;
 
-// Route 1: Normal authenticated user - get from session
+// Route 1: Normal authenticated user - fetch ONLY from database
 if ($user && !empty($user['id'])) {
-    $member = $user; // Use session data directly
-    
-    // Enrich with database data if available
     if (isset($pdo)) {
         try {
-            // Fetch school info and siswa-specific fields from database
+            // Fetch ALL data directly from database - this is the single source of truth
             $stmt = $pdo->prepare(
                 'SELECT u.id, u.name, u.nisn, u.school_id,
                         s.student_uuid AS student_uuid, s.foto AS foto, s.kelas, s.jurusan,
@@ -36,13 +33,24 @@ if ($user && !empty($user['id'])) {
             );
             $stmt->execute(['id' => (int)$user['id']]);
             $dbData = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Use database data as the single source of truth
             if ($dbData) {
-                // Merge database data with session data
-                $member = array_merge($member, $dbData);
+                $member = $dbData;
+            } else {
+                // Database returned no rows - use session as fallback (user exists but no siswa record yet)
+                error_log("No siswa record found for user ID: " . $user['id']);
+                $member = $user;
             }
         } catch (Exception $e) {
             error_log("Database query error in student-card: " . $e->getMessage());
+            // Fallback to session data if database fails
+            $member = $user;
         }
+    } else {
+        // Database not available - use session data as fallback
+        error_log("Database not available in student-card.php");
+        $member = $user;
     }
 }
 
@@ -76,18 +84,71 @@ if (!$member) {
     exit;
 }
 
-// Get photo URL safely
-$photoSrc = '../assets/images/default-avatar.svg'; // Corrected path
+// Get photo URL safely - always from database
+$photoSrc = '../assets/images/default-avatar.svg';
+
 if (!empty($member['foto'])) {
-    $photoPath = $member['foto'];
-    // Handle relative or absolute paths
+    $photoPath = trim($member['foto']);
+    
+    // Handle various path formats stored in database
     if (strpos($photoPath, 'http') === 0) {
+        // Already an absolute URL (http/https) - use as-is
+        $photoSrc = htmlspecialchars($photoPath);
+    } elseif (strpos($photoPath, '/perpustakaan-online/public/uploads/') === 0) {
+        // Path: /perpustakaan-online/public/uploads/siswa/... → ./uploads/siswa/...
+        $relativePath = str_replace('/perpustakaan-online/public/', './', $photoPath);
+        $photoSrc = htmlspecialchars($relativePath);
+    } elseif (strpos($photoPath, '/public/uploads/') === 0) {
+        // Path: /public/uploads/siswa/... → ./uploads/siswa/...
+        $relativePath = str_replace('/public/', './', $photoPath);
+        $photoSrc = htmlspecialchars($relativePath);
+    } elseif (strpos($photoPath, '/uploads/') === 0) {
+        // Path: /uploads/siswa/... → ./uploads/siswa/...
+        $photoSrc = htmlspecialchars('.' . $photoPath);
+    } elseif (strpos($photoPath, 'uploads/') === 0) {
+        // Path: uploads/siswa/... → ./uploads/siswa/...
+        $photoSrc = htmlspecialchars('./' . $photoPath);
+    } elseif (strpos($photoPath, '../') === 0) {
+        // Already has ../ prefix
         $photoSrc = htmlspecialchars($photoPath);
     } else {
-        // Assume upload path relative to public root
-        $photoSrc = htmlspecialchars($photoPath);
+        // Any other relative path - prepend ../
+        $photoSrc = htmlspecialchars('../' . $photoPath);
+    }
+    
+    // Verify file exists, otherwise use default
+    // Only check if it's NOT a remote URL and NOT a newly uploaded file (to avoid path check issues)
+    // We trust the DB for uploads/ paths to ensure they display even if php file check is strict/flaky
+    $useDefault = false;
+    
+    if (strpos($photoSrc, 'http') !== 0) {
+         // Clean path for checking
+        $cleanPath = str_replace(['./', '../'], '', $photoSrc);
+        
+        // If it looks like an asset (default), check in public/assets
+        if (strpos($cleanPath, 'assets/') !== false) {
+             $checkPath = __DIR__ . '/' . $cleanPath;
+             if (!file_exists($checkPath)) {
+                 $useDefault = true;
+             }
+        } 
+        // For uploads, we try to check, but if check fails we DON'T revert to default immediately
+        // because the browser might still find it (e.g. permission or path weirdness in PHP)
+        elseif (strpos($cleanPath, 'uploads/') !== false) {
+             $checkPath = __DIR__ . '/' . $cleanPath;
+             // Debug note: file_exists might fail on some windows setups with mixed slashes or permissions
+             // We won't force default here.
+        }
+    }
+
+    if ($useDefault) {
+        $photoSrc = '../assets/images/default-avatar.svg';
     }
 }
+
+// Add cache buster to force fresh load
+$separator = (strpos($photoSrc, '?') !== false) ? '&' : '?';
+$photoSrc .= $separator . 'v=' . bin2hex(random_bytes(4));
 
 // Ensure barcode value is clean (Prioritize NISN)
 $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id'] ?? '');
@@ -105,17 +166,23 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
     <!-- JsBarcode for client-side barcode generation -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <!-- Load theme from database (runs first) -->
+    <script src="../assets/js/db-theme-loader.js"></script>
     <style>
         :root {
+            /* Default fallback colors - overridden by db-theme-loader.js */
             --primary: #3A7FF2;
             --primary-2: #7AB8F5;
             --primary-dark: #0A1A4F;
             --bg: #F6F9FF;
+            --muted-surface: #F7FAFF;
             --card: #FFFFFF;
             --border: #E6EEF8;
             --text: #0F172A;
-            --text-muted: #50607A;
+            --text-muted: #475569;
             --accent: #3A7FF2;
+            --danger: #EF4444;
+            --success: #10B981;
         }
 
         * {
@@ -133,6 +200,7 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
             align-items: center;
             min-height: 100vh;
             padding: 24px;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -145,11 +213,15 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
             display: flex;
             align-items: center;
             gap: 8px;
-            color: var(--primary);
+            color: var(--accent);
             text-decoration: none;
             font-weight: 600;
             margin-bottom: 24px;
             font-size: 14px;
+            transition: color 0.2s ease;
+        }
+        .nav-back:hover {
+            color: var(--primary);
         }
 
         .page-header {
@@ -171,15 +243,16 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
 
         /* --- THE CARD --- */
         .library-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+            background: var(--card);
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(58, 127, 242, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.8);
+            border: 1px solid var(--border);
             position: relative;
             transform-style: preserve-3d;
             perspective: 1000px;
             margin-bottom: 32px;
+            transition: box-shadow 0.3s ease;
         }
         
         .library-card::before {
@@ -189,7 +262,8 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
             right: -50px;
             width: 200px;
             height: 200px;
-            background: radial-gradient(circle, rgba(58, 127, 242, 0.1) 0%, rgba(255,255,255,0) 70%);
+            background: radial-gradient(circle, var(--primary-2) 0%, rgba(0,0,0,0) 70%);
+            opacity: 0.08;
             border-radius: 50%;
             z-index: 0;
         }
@@ -214,7 +288,7 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         .school-logo-frame img {
@@ -284,17 +358,18 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
         .student-id {
             font-size: 14px;
             font-weight: 600;
-            color: var(--primary);
+            color: white;
             font-family: monospace;
-            background: rgba(58, 127, 242, 0.1);
-            padding: 2px 8px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            padding: 4px 10px;
+            border-radius: 6px;
             display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
 
         .barcode-section {
             text-align: center;
-            background: white;
+            background: var(--muted-surface);
             padding: 20px;
             border-radius: 12px;
             border: 1px solid var(--border);
@@ -311,7 +386,7 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
         }
 
         .card-footer-strip {
-            background: #f1f5f9;
+            background: var(--muted-surface);
             padding: 10px;
             text-align: center;
             font-size: 10px;
@@ -344,18 +419,21 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
         .btn-primary {
             background: var(--primary);
             color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .btn-primary:hover {
             background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
         }
 
         .btn-secondary {
-            background: white;
+            background: var(--card);
             color: var(--text);
             border: 1px solid var(--border);
         }
         .btn-secondary:hover {
-            background: #f8fafc;
+            background: var(--muted-surface);
         }
 
         @media print {

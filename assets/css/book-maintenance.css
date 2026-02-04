@@ -139,6 +139,13 @@ body {
   display: flex;
   gap: 12px;
   align-items: center;
+  transition: all 0.2s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--accent);
 }
 
 .kpi-icon {
@@ -276,15 +283,41 @@ tbody tr:hover {
   background: #f9fafb;
 }
 
-col.id { width: 5%; }
-col.title { width: 20%; }
-col.author { width: 15%; }
-col.status { width: 10%; }
-col.priority { width: 10%; }
-col.notes { width: 15%; }
-col.followup { width: 10%; }
-col.date { width: 10%; }
-col.action { width: 15%; }
+col.id {
+  width: 5%;
+}
+
+col.title {
+  width: 20%;
+}
+
+col.author {
+  width: 15%;
+}
+
+col.status {
+  width: 10%;
+}
+
+col.priority {
+  width: 10%;
+}
+
+col.notes {
+  width: 15%;
+}
+
+col.followup {
+  width: 10%;
+}
+
+col.date {
+  width: 10%;
+}
+
+col.action {
+  width: 15%;
+}
 
 .text-center {
   text-align: center;
@@ -473,7 +506,8 @@ col.action { width: 15%; }
     font-size: 11px;
   }
 
-  th, td {
+  th,
+  td {
     padding: 8px !important;
   }
 
@@ -487,8 +521,9 @@ col.action { width: 15%; }
     font-size: 10px;
   }
 }
-  border-radius: 8px;
-  text-align: center;
+
+border-radius: 8px;
+text-align: center;
 }
 
 .stat-label {

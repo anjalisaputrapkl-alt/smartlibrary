@@ -7,7 +7,7 @@ if (!isset($_SESSION['user']) || !isset($_SESSION['user']['school_id'])) {
 }
 
 $pdo = require __DIR__ . '/../src/db.php';
-$siswaId = (int) $_SESSION['user']['school_id'];
+$siswaId = (int) $_SESSION['user']['id'];  // Use user ID, not school_id
 
 // Get current photo
 $stmt = $pdo->prepare("SELECT foto FROM siswa WHERE id_siswa = ?");
@@ -48,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto'])) {
 
         // Upload file
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-            // Construct public URL
-            $photoUrl = '/perpustakaan-online/public/uploads/siswa/' . $newFilename;
+            // Construct public URL (Relative path)
+            $photoUrl = 'uploads/siswa/' . $newFilename;
 
             // Delete old photo if exists
             if (!empty($currentFoto)) {
@@ -64,6 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto'])) {
                 $updateStmt = $pdo->prepare("UPDATE siswa SET foto=?, updated_at=NOW() WHERE id_siswa=?");
                 $updateStmt->execute([$photoUrl, $siswaId]);
                 $message = "Foto berhasil diperbarui!";
+                
+                // Update session to keep it in sync with database
+                if (isset($_SESSION['user'])) {
+                    $_SESSION['user']['foto'] = $photoUrl;
+                }
 
                 // Refresh current foto
                 $stmt->execute([$siswaId]);
@@ -84,9 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto'])) {
 }
 
 // Photo display
-$photoUrl = !empty($currentFoto) && file_exists(__DIR__ . str_replace('/perpustakaan-online/public', '', $currentFoto))
-    ? $currentFoto
-    : '/perpustakaan-online/assets/img/default-avatar.png';
+$photoUrl = !empty($currentFoto) 
+    ? (strpos($currentFoto, 'uploads/') === 0 ? './'.$currentFoto : $currentFoto)
+    : '../assets/images/default-avatar.svg';
 ?>
 <!doctype html>
 <html lang="id">

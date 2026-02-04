@@ -130,11 +130,119 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
       padding: 20px;
       text-align: center;
       transition: all 0.3s ease;
+      position: relative;
     }
 
-    .stat-card:hover {
+    .stat-card.clickable {
+      cursor: pointer;
+    }
+
+    .stat-card.clickable:hover {
       border-color: var(--accent);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-4px);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-container {
+      background: var(--surface);
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height:1;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .modal-loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    .student-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-active { background: #d1fae5; color: #065f46; }
+    .badge-inactive { background: #fee2e2; color: #991b1b; }
+
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .modal-table th {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .modal-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .modal-table tr:last-child td { border-bottom: none; }
+    
+    @media (max-width: 600px) {
+        .col-hide-mobile { display: none; }
     }
 
     .stat-label {
@@ -770,26 +878,89 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
                 document.getElementById('scannerLoading').style.display = 'none';
             }
           </script>
+    <script>
+        function filterStudents() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.search-item');
+            let visibleCount = 0;
 
+            items.forEach(item => {
+                const searchText = item.getAttribute('data-search');
+                if (searchText.includes(input)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Optional: Show a message if no results found
+            // You can add this functionality if needed
+        }
+
+        function printBarcode(memberId, memberName) {
+            const win = window.open(`api/generate-student-barcode.php?member_id=${memberId}`, '_blank');
+            if (win) {
+                win.addEventListener('load', function () {
+                    setTimeout(() => {
+                        win.print();
+                    }, 250);
+                });
+            }
+        }
+
+        // Add keyboard shortcut for search
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('searchInput').addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    this.value = '';
+                    filterStudents();
+                }
+            });
+
+            // Focus search on Ctrl/Cmd + K
+            document.addEventListener('keydown', function (e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
+            });
+        });
+    </script>
+    
+    <!-- Stats Modal -->
+    <div class="modal-overlay" id="statsModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Detail Data</h2>
+                <button class="modal-close" type="button">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-loading">Memuat data...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/borrows-stats.js"></script>
           <!-- Statistics Section -->
           <div class="stats-section">
-            <div class="stat-card">
+            <div class="stat-card clickable" data-stat-type="total" title="Klik untuk melihat detail">
               <div class="stat-label">Total Peminjaman</div>
               <div class="stat-value"><?= $totalBorrows ?></div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card clickable" data-stat-type="active" title="Klik untuk melihat detail">
               <div class="stat-label">Sedang Dipinjam</div>
               <div class="stat-value"><?= $activeBorrows ?></div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card clickable" data-stat-type="overdue" title="Klik untuk melihat detail">
               <div class="stat-label">Terlambat</div>
               <div class="stat-value"><?= $overdueBorrows ?></div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card clickable" data-stat-type="pending_confirmation" title="Klik untuk melihat detail">
               <div class="stat-label">Form Menunggu Konfirmasi</div>
               <div class="stat-value"><?= $pendingConfirmation ?></div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card clickable" data-stat-type="pending_return" title="Klik untuk melihat detail">
               <div class="stat-label">Pengembalian Menunggu Konfirmasi</div>
               <div class="stat-value"><?= $pendingReturns ?></div>
             </div>

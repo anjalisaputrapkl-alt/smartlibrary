@@ -395,6 +395,7 @@ function _is_active_sidebar($path, $current)
             <li>
                 <div class="nav-sidebar-divider"></div>
             </li>
+            <?php if ($user['role'] === 'admin'): ?>
             <li>
                 <a href="<?php echo $base; ?>/settings.php"
                     class="nav-link<?php echo _is_active_sidebar($base . '/settings.php', $current); ?>">
@@ -404,6 +405,7 @@ function _is_active_sidebar($path, $current)
                     <span>Pengaturan</span>
                 </a>
             </li>
+            <?php endif; ?>
             <li>
                 <a href="<?php echo $base; ?>/logout.php" class="nav-link">
                     <span class="nav-sidebar-menu-icon">

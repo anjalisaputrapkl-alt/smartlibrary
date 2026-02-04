@@ -5,8 +5,8 @@ $pdo = require __DIR__ . '/../src/db.php';
 require __DIR__ . '/../src/SchoolProfileModel.php';
 require __DIR__ . '/../src/ThemeModel.php';
 
-// Ensure user is admin
-if ($_SESSION['user']['role'] !== 'admin') {
+// Ensure user is not a student
+if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'student') {
     header('Location: student-dashboard.php');
     exit;
 }
