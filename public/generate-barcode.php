@@ -44,6 +44,11 @@ if (!$school_id) {
             font-family: 'Poppins', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
         }
 
+        .topbar strong {
+            margin-left: 20px;
+            font-size: 16px;
+        }
+
         .search-container {
             margin-bottom: 20px;
         }
