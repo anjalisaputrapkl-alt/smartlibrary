@@ -117,9 +117,18 @@ function getLabel($type)
 
     <!-- Main Container -->
     <div class="container-main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="topbar-title">
+                <iconify-icon icon="mdi:bell-outline" width="28" height="28" style="color: var(--accent);"></iconify-icon>
+                <h1>Notifikasi</h1>
+            </div>
+            <p>Pantau semua notifikasi penting dari sistem perpustakaan</p>
+        </div>
+
         <!-- Error Alert -->
         <?php if (!empty($errorMessage)): ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" style="background: var(--danger-soft); color: var(--danger); border-color: var(--danger-soft);">
                 <iconify-icon icon="mdi:alert-circle" width="18" height="18"></iconify-icon>
                 <?php echo $errorMessage; ?>
             </div>
@@ -127,20 +136,11 @@ function getLabel($type)
 
         <!-- Success Alert -->
         <?php if (!empty($successMessage)): ?>
-            <div class="alert alert-success">
+            <div class="alert alert-success" style="background: var(--success-soft); color: var(--success); border-color: var(--success-soft);">
                 <iconify-icon icon="mdi:check-circle" width="18" height="18"></iconify-icon>
                 <?php echo $successMessage; ?>
             </div>
         <?php endif; ?>
-
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1>
-                <iconify-icon icon="mdi:bell" width="28" height="28"></iconify-icon>
-                Notifikasi
-            </h1>
-            <p>Pantau semua notifikasi penting dari sistem perpustakaan</p>
-        </div>
 
         <!-- Stats Grid -->
         <?php if (!empty($stats)): ?>
@@ -166,7 +166,7 @@ function getLabel($type)
                 <div class="stat-card-link" onclick="showNotificationModal('Peringatan', 'peringatan')">
                     <div class="stat-card warning">
                         <div class="stat-card-label">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M13 14h-2V9h2m0 9h-2v-2h2M1 21h22L12 2z" />
                             </svg>
                             Peringatan
@@ -225,8 +225,7 @@ function getLabel($type)
                 </div>
                 <h3>Belum Ada Notifikasi</h3>
                 <p>Semua peminjaman Anda dalam kondisi baik. Tidak ada notifikasi penting saat ini.</p>
-                <a href="student-dashboard.php"
-                    style="display: inline-block; padding: 10px 20px; background: var(--accent); color: white; text-decoration: none; border-radius: 6px; font-weight: 600; transition: all 0.2s ease;">
+                <a href="student-dashboard.php" class="btn-dashboard">
                     <iconify-icon icon="mdi:arrow-left" width="16" height="16"></iconify-icon>
                     Kembali ke Dashboard
                 </a>
@@ -304,6 +303,8 @@ function getLabel($type)
             // Create modal overlay
             const modal = document.createElement('div');
             modal.className = 'notification-modal-overlay';
+            modal.style.background = 'var(--overlay)';
+            modal.style.backdropFilter = 'blur(4px)';
             modal.onclick = (e) => {
                 if (e.target === modal) closeNotificationModal(modal);
             };
@@ -311,15 +312,19 @@ function getLabel($type)
             // Modal content
             const modalContent = document.createElement('div');
             modalContent.className = 'notification-modal-content';
+            modalContent.style.background = 'var(--surface)';
+            modalContent.style.color = 'var(--text)';
+            modalContent.style.boxShadow = 'var(--shadow-lg)';
+            
             modalContent.innerHTML = `
-                <div class="notification-modal-header">
-                    <h2>${title}</h2>
-                    <button onclick="closeNotificationModal()" class="notification-modal-close">
+                <div class="notification-modal-header" style="border-bottom: 1px solid var(--border);">
+                    <h2 style="color: var(--text);">${title}</h2>
+                    <button onclick="closeNotificationModal()" class="notification-modal-close" style="background: var(--bg); color: var(--text); border: 1px solid var(--border);">
                         <iconify-icon icon="mdi:close" width="20" height="20"></iconify-icon>
                     </button>
                 </div>
                 <div class="notification-modal-body">
-                    ${data && data.length > 0 ? renderNotificationTableHtml(data) : '<div class="empty-state" style="text-align: center; padding: 40px 20px;">\n<p>Data tidak ditemukan</p>\n</div>'}
+                    ${data && data.length > 0 ? renderNotificationTableHtml(data) : '<div class="empty-state" style="text-align: center; padding: 40px 20px;">\n<p style="color: var(--text-muted);">Data tidak ditemukan</p>\n</div>'}
                 </div>
             `;
 

@@ -1,20 +1,37 @@
 :root {
-    --primary: #3A7FF2;
-    --primary-2: #7AB8F5;
-    --primary-dark: #0A1A4F;
+    /* Core Theme Colors - Overridden by db-theme-loader.js */
     --bg: #F6F9FF;
-    --muted: #F3F7FB;
-    --card: #FFFFFF;
     --surface: #FFFFFF;
-    --muted-surface: #F7FAFF;
-    --border: #E6EEF8;
+    --card: #FFFFFF;
     --text: #0F172A;
-    --text-muted: #50607A;
+    --muted: #F3F7FB;
+    --border: #E6EEF8;
     --accent: #3A7FF2;
-    --accent-light: #e0f2fe;
+    --primary: var(--accent);
     --success: #10B981;
     --warning: #f59e0b;
     --danger: #EF4444;
+    --info: #0EA5E9;
+    --purple: #8b5cf6;
+
+    /* Derived Theme Variables */
+    --primary-soft: color-mix(in srgb, var(--primary), transparent 92%);
+    --success-soft: color-mix(in srgb, var(--success), transparent 92%);
+    --danger-soft: color-mix(in srgb, var(--danger), transparent 92%);
+    --warning-soft: color-mix(in srgb, var(--warning), transparent 92%);
+    --info-soft: color-mix(in srgb, var(--info), transparent 92%);
+    --purple-soft: color-mix(in srgb, var(--purple), transparent 92%);
+
+    --accent-light: var(--primary-soft);
+    --text-muted: color-mix(in srgb, var(--text), transparent 40%);
+    --overlay: rgba(0, 0, 0, 0.4);
+}
+
+/* Adjustments for dark themes */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --overlay: rgba(0, 0, 0, 0.7);
+    }
 }
 
 * {
@@ -99,14 +116,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg);
     border-radius: 8px;
 }
 
 .nav-sidebar-header-icon iconify-icon {
     width: 32px;
     height: 32px;
-    color: white;
+    color: var(--accent);
 }
 
 .nav-sidebar-header h2 {
@@ -139,14 +156,14 @@ body {
 }
 
 .nav-sidebar-menu a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--primary-soft);
+    color: var(--accent);
 }
 
 .nav-sidebar-menu a.active {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border-left-color: white;
+    background: var(--primary-soft);
+    color: var(--accent);
+    border-left-color: var(--accent);
     font-weight: 600;
 }
 
@@ -211,7 +228,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-sm);
     animation: slideDown 0.6s ease-out;
     margin-left: 240px;
 }
@@ -315,8 +332,8 @@ body {
 }
 
 .header-logout:hover {
-    background: #f0f0f0;
-    border-color: var(--text);
+    background: var(--primary-soft);
+    border-color: var(--accent);
 }
 
 /* Main Container */
@@ -334,23 +351,43 @@ body {
     animation: fadeInUp 0.6s ease-out;
 }
 
-.page-header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--section-header-text, var(--text));
-    margin: 0 0 8px 0;
+.topbar-title {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: var(--section-header, transparent);
-    padding: 16px 20px;
-    border-radius: 12px;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.topbar-title h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
 }
 
 .page-header p {
     color: var(--text-muted);
     font-size: 14px;
     margin: 0;
+}
+
+.btn-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-dashboard:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 /* Stats Grid */
@@ -502,38 +539,43 @@ body {
 }
 
 .notification-card.unread {
-    background: var(--accent-light);
+    background: var(--primary-soft);
     border-left-color: var(--accent);
 }
 
-.notification-card.telat {
+.notification-card[class*="keterlambatan"],
+.notification-card.overdue {
     border-left-color: var(--danger);
 }
 
-.notification-card.peringatan {
+.notification-card[class*="peringatan"],
+.notification-card.warning {
     border-left-color: var(--warning);
 }
 
-.notification-card.pengembalian {
+.notification-card[class*="pengembalian"],
+.notification-card.return {
     border-left-color: var(--accent);
 }
 
 .notification-card.info {
-    border-left-color: #0891b2;
+    border-left-color: var(--info);
 }
 
 .notification-card.sukses {
     border-left-color: var(--success);
 }
 
-.notification-card.buku {
-    border-left-color: #10b981;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+.notification-card[class*="buku_baru"],
+.notification-card.newbooks {
+    border-left-color: var(--success);
+    background: var(--success-soft);
 }
 
-.notification-card.buku .notification-card-icon {
-    background: #d1fae5;
-    color: #10b981;
+.notification-card[class*="buku_baru"] .notification-card-icon,
+.notification-card.newbooks .notification-card-icon {
+    background: var(--success-soft);
+    color: var(--success);
 }
 
 .notification-card-content {
@@ -556,28 +598,31 @@ body {
 }
 
 .notification-card.unread .notification-card-icon {
-    background: var(--accent-light);
+    background: var(--primary-soft);
     color: var(--accent);
 }
 
-.notification-card.telat .notification-card-icon {
-    background: #fee2e2;
+.notification-card[class*="keterlambatan"] .notification-card-icon,
+.notification-card.overdue .notification-card-icon {
+    background: var(--danger-soft);
     color: var(--danger);
 }
 
-.notification-card.peringatan .notification-card-icon {
-    background: #fef3c7;
+.notification-card[class*="peringatan"] .notification-card-icon,
+.notification-card.warning .notification-card-icon {
+    background: var(--warning-soft);
     color: var(--warning);
 }
 
-.notification-card.pengembalian .notification-card-icon,
+.notification-card[class*="pengembalian"] .notification-card-icon,
+.notification-card.return .notification-card-icon,
 .notification-card.info .notification-card-icon {
-    background: #cffafe;
-    color: #0891b2;
+    background: var(--info-soft);
+    color: var(--info);
 }
 
 .notification-card.sukses .notification-card-icon {
-    background: #d1fae5;
+    background: var(--success-soft);
     color: var(--success);
 }
 
@@ -603,56 +648,56 @@ body {
 
 .notification-card-title {
     font-size: 15px;
-    font-weight: 600;
-    color: #000000;
+    font-weight: 700;
+    color: var(--text);
     margin: 0;
-    word-wrap: break-word;
-    word-break: break-word;
-    overflow-wrap: break-word;
     line-height: 1.4;
-    flex-shrink: 1;
-    min-width: 0;
 }
 
 .notification-card-badge {
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
-    flex-shrink: 0;
 }
 
-.notification-badge-overdue {
-    background: #fee2e2;
-    color: #991b1b;
+.notification-badge-overdue,
+.badge-delay {
+    background: var(--danger-soft);
+    color: var(--danger);
 }
 
-.notification-badge-warning {
-    background: #fef3c7;
-    color: #92400e;
+.notification-badge-warning,
+.badge-warning {
+    background: var(--warning-soft);
+    color: var(--warning);
 }
 
-.notification-badge-return {
-    background: #cffafe;
-    color: #164e63;
+.notification-badge-return,
+.badge-return {
+    background: var(--info-soft);
+    color: var(--info);
 }
 
-.notification-badge-info {
-    background: #e0f2fe;
-    color: #0c4a6e;
+.notification-badge-info,
+.badge-info {
+    background: var(--primary-soft);
+    color: var(--accent);
 }
 
-.notification-badge-success {
-    background: #d1fae5;
-    color: #065f46;
+.notification-badge-success,
+.badge-success {
+    background: var(--success-soft);
+    color: var(--success);
 }
 
-.notification-badge-book {
-    background: #d1fae5;
-    color: #065f46;
+.notification-badge-book,
+.badge-newbooks {
+    background: var(--success-soft);
+    color: var(--success);
 }
 
 .notification-badge-default {
@@ -662,12 +707,9 @@ body {
 
 .notification-card-message {
     font-size: 14px;
-    color: #000000;
+    color: var(--text);
     margin: 0 0 8px 0;
     line-height: 1.5;
-    word-wrap: break-word;
-    word-break: break-word;
-    overflow-wrap: break-word;
 }
 
 .notification-card-footer {
@@ -675,7 +717,7 @@ body {
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
-    color: #000000;
+    color: var(--text-muted);
 }
 
 .notification-card-date {
