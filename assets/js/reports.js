@@ -24,24 +24,92 @@ function initDashboard() {
   const memLabels = window.chartData.memLabels;
   const memData = window.chartData.memData;
 
-  // Init charts
+  // Init charts with index.php styling
   console.log('Rendering trend chart...');
   const ctxTrend = document.getElementById('chart-trend');
-  const trendChart = new Chart(ctxTrend.getContext('2d'), {
-    type: 'line',
-    data: { labels: trendLabels, datasets: [{ label: 'Peminjaman', data: trendData, borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.12)', tension: 0.25, fill: true }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-  });
-  window.trendChartGlobal = trendChart;
+  if (ctxTrend) {
+    const ctx = ctxTrend.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+    const trendChart = new Chart(ctxTrend, {
+      type: 'line',
+      data: {
+        labels: trendLabels,
+        datasets: [{
+          label: 'Peminjaman',
+          data: trendData,
+          borderColor: '#3b82f6',
+          backgroundColor: gradient,
+          fill: true,
+          borderWidth: 3,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#3b82f6',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+            ticks: { color: '#64748b', font: { family: 'Inter', size: 11 } }
+          },
+          x: {
+            grid: { display: false, drawBorder: false },
+            ticks: { color: '#64748b', font: { family: 'Inter', size: 11 } }
+          }
+        }
+      }
+    });
+    window.trendChartGlobal = trendChart;
+  }
 
   if (categoryLabels.length > 0) {
     console.log('Rendering category chart...');
     const ctxCat = document.getElementById('chart-category');
     if (ctxCat) {
-      const catChart = new Chart(ctxCat.getContext('2d'), {
-        type: 'pie',
-        data: { labels: categoryLabels, datasets: [{ data: categoryData, backgroundColor: ['#60a5fa', '#34d399', '#f59e0b', '#f97316', '#a78bfa', '#fb7185', '#94a3b8'] }] },
-        options: { responsive: true, maintainAspectRatio: false }
+      const catChart = new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+          labels: categoryLabels,
+          datasets: [{
+            data: categoryData,
+            backgroundColor: ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899'],
+            borderWidth: 0,
+            hoverOffset: 15
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                usePointStyle: true,
+                padding: 20,
+                font: { family: 'Inter', size: 12, weight: 500 },
+                color: '#64748b'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              padding: 12,
+              cornerRadius: 8
+            }
+          }
+        }
       });
       window.globalCategoryChart = catChart;
     }
@@ -49,12 +117,40 @@ function initDashboard() {
 
   console.log('Rendering members chart...');
   const ctxMem = document.getElementById('chart-members');
-  const memChart = new Chart(ctxMem.getContext('2d'), {
-    type: 'bar',
-    data: { labels: memLabels, datasets: [{ label: 'Anggota Baru', data: memData, backgroundColor: '#8b5cf6' }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-  });
-  window.memChartGlobal = memChart;
+  if (ctxMem) {
+    const memChart = new Chart(ctxMem, {
+      type: 'bar',
+      data: {
+        labels: memLabels,
+        datasets: [{
+          label: 'Anggota Baru',
+          data: memData,
+          backgroundColor: 'rgba(139, 92, 246, 0.8)',
+          borderRadius: 8,
+          hoverBackgroundColor: '#8b5cf6'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+            ticks: { color: '#64748b', font: { family: 'Inter', size: 11 } }
+          },
+          x: {
+            grid: { display: false, drawBorder: false },
+            ticks: { color: '#64748b', font: { family: 'Inter', size: 11 } }
+          }
+        }
+      }
+    });
+    window.memChartGlobal = memChart;
+  }
 
   // Init DataTables
   console.log('Initializing DataTables...');

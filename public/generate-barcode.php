@@ -39,7 +39,7 @@ if (!$school_id) {
             justify-content: space-between;
             position: fixed;
             top: 0;
-            left: 220px;
+            left: 240px;
             right: 0;
             z-index: 999;
         }

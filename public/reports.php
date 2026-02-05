@@ -7,10 +7,15 @@ requireAuth();
 $schoolId = (int) $_SESSION['user']['school_id'];
 
 // Summary stats
+// Summary stats
 $tot_books = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = $schoolId")->fetchColumn();
+$tot_copies = (int) $pdo->query("SELECT SUM(copies) FROM books WHERE school_id = $schoolId")->fetchColumn();
 $tot_borrows_month = (int) $pdo->query("SELECT COUNT(*) FROM borrows br JOIN books b ON br.book_id = b.id WHERE b.school_id = $schoolId AND MONTH(br.borrowed_at) = MONTH(CURRENT_DATE()) AND YEAR(br.borrowed_at)=YEAR(CURRENT_DATE())")->fetchColumn();
 $tot_returns_month = (int) $pdo->query("SELECT COUNT(*) FROM borrows br JOIN books b ON br.book_id = b.id WHERE b.school_id = $schoolId AND br.returned_at IS NOT NULL AND MONTH(br.returned_at)=MONTH(CURRENT_DATE()) AND YEAR(br.returned_at)=YEAR(CURRENT_DATE())")->fetchColumn();
+$tot_borrows_today = (int) $pdo->query("SELECT COUNT(*) FROM borrows br JOIN books b ON br.book_id = b.id WHERE b.school_id = $schoolId AND DATE(br.borrowed_at) = CURRENT_DATE()")->fetchColumn();
+$tot_returns_today = (int) $pdo->query("SELECT COUNT(*) FROM borrows br JOIN books b ON br.book_id = b.id WHERE b.school_id = $schoolId AND br.returned_at IS NOT NULL AND DATE(br.returned_at) = CURRENT_DATE()")->fetchColumn();
 $active_members = (int) $pdo->query("SELECT COUNT(DISTINCT br.member_id) FROM borrows br JOIN books b ON br.book_id = b.id WHERE b.school_id = $schoolId AND br.borrowed_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)")->fetchColumn();
+$tot_categories = (int) $pdo->query("SELECT COUNT(DISTINCT category) FROM books WHERE school_id = $schoolId")->fetchColumn();
 
 // Total fines (late return fines)
 $per_day = 1000;
@@ -117,8 +122,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
 
   <div class="app">
     <div class="topbar">
-      <strong><iconify-icon icon="mdi:chart-box-outline"
-          style="vertical-align: middle; margin-right: 8px;"></iconify-icon>Laporan Perpustakaan</strong>
+      <strong>Laporan Perpustakaan</strong>
     </div>
 
     <div class="content">
@@ -161,9 +165,17 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
         <div class="kpi-card clickable" data-stat-type="total_books" title="Klik untuk melihat detail">
           <div class="kpi-icon"><iconify-icon icon="mdi:library"></iconify-icon></div>
           <div>
-            <div class="kpi-title">Total Buku</div>
+            <div class="kpi-title">Total Judul Buku</div>
             <div class="kpi-value"><?php echo number_format($tot_books); ?></div>
           </div>
+        </div>
+
+        <div class="kpi-card clickable" data-stat-type="total_books" style="border-left-color: var(--cyan);">
+           <div class="kpi-icon" style="background: var(--cyan-light); color: var(--cyan);"><iconify-icon icon="mdi:book-multiple"></iconify-icon></div>
+           <div>
+             <div class="kpi-title">Total Eksemplar</div>
+             <div class="kpi-value"><?php echo number_format($tot_copies); ?></div>
+           </div>
         </div>
 
         <div class="kpi-card clickable" data-stat-type="borrows_month" title="Klik untuk melihat detail">
@@ -174,12 +186,28 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           </div>
         </div>
 
+        <div class="kpi-card clickable" data-stat-type="borrows_month">
+           <div class="kpi-icon" style="background: var(--warning-light); color: var(--warning);"><iconify-icon icon="mdi:calendar-today"></iconify-icon></div>
+           <div>
+             <div class="kpi-title">Peminjaman Hari Ini</div>
+             <div class="kpi-value"><?php echo number_format($tot_borrows_today); ?></div>
+           </div>
+        </div>
+
         <div class="kpi-card clickable" data-stat-type="returns_month" title="Klik untuk melihat detail">
           <div class="kpi-icon"><iconify-icon icon="mdi:inbox"></iconify-icon></div>
           <div>
             <div class="kpi-title">Pengembalian Bulan Ini</div>
             <div class="kpi-value"><?php echo number_format($tot_returns_month); ?></div>
           </div>
+        </div>
+        
+        <div class="kpi-card clickable" data-stat-type="returns_month">
+            <div class="kpi-icon" style="background: var(--success-light); color: var(--success);"><iconify-icon icon="mdi:check-circle"></iconify-icon></div>
+            <div>
+              <div class="kpi-title">Pengembalian Hari Ini</div>
+              <div class="kpi-value"><?php echo number_format($tot_returns_today); ?></div>
+            </div>
         </div>
 
         <div class="kpi-card clickable" data-stat-type="active_members" title="Klik untuk melihat detail">
@@ -188,6 +216,14 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
             <div class="kpi-title">Anggota Aktif (90 hari)</div>
             <div class="kpi-value"><?php echo number_format($active_members); ?></div>
           </div>
+        </div>
+        
+        <div class="kpi-card clickable" data-stat-type="active_members">
+           <div class="kpi-icon" style="background: var(--purple-light); color: var(--purple);"><iconify-icon icon="mdi:bookmark-multiple"></iconify-icon></div>
+           <div>
+             <div class="kpi-title">Total Kategori</div>
+             <div class="kpi-value"><?php echo number_format($tot_categories); ?></div>
+           </div>
         </div>
 
         <div class="kpi-card clickable" data-stat-type="late_fines" title="Klik untuk melihat detail">
@@ -209,16 +245,16 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
 
       <!-- Charts -->
       <div class="chart-grid">
-        <div class="chart-card">
-          <h3>Tren Peminjaman (30 hari)</h3>
-          <div class="chart-body">
+        <div class="chart-box">
+          <h2>Tren Peminjaman (30 hari)</h2>
+          <div class="chart-container">
             <canvas id="chart-trend"></canvas>
           </div>
         </div>
 
-        <div class="chart-card">
-          <h3>Kategori Paling Sering Dipinjam</h3>
-          <div class="chart-body">
+        <div class="chart-box">
+          <h2>Kategori Populer</h2>
+          <div class="chart-container">
             <?php if ($hasCategory): ?>
               <canvas id="chart-category"></canvas>
             <?php else: ?>
@@ -227,9 +263,9 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           </div>
         </div>
 
-        <div class="chart-card">
-          <h3>Anggota Baru per Bulan</h3>
-          <div class="chart-body">
+        <div class="chart-box">
+          <h2>Pertumbuhan Anggota</h2>
+          <div class="chart-container">
             <canvas id="chart-members"></canvas>
           </div>
         </div>
