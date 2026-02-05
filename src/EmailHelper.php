@@ -110,3 +110,28 @@ function isVerificationCodeExpired($created_at, $expiry_minutes = 15)
     $expiry = $created + ($expiry_minutes * 60);
     return time() > $expiry;
 }
+
+/**
+ * Kirim email notifikasi umum ke siswa
+ */
+function sendNotificationEmail($recipient_email, $subject, $title, $message) {
+    // Log the notification to a file for debugging
+    $log_dir = __DIR__ . '/../logs';
+    if (!is_dir($log_dir)) {
+        mkdir($log_dir, 0755, true);
+    }
+
+    $log_file = $log_dir . '/notifications.log';
+    $timestamp = date('Y-m-d H:i:s');
+    $log_entry = "\n[{$timestamp}] Notification to: {$recipient_email}\nSubject: {$subject}\nTitle: {$title}\nMessage: {$message}\n" . str_repeat('=', 80);
+    file_put_contents($log_file, $log_entry, FILE_APPEND);
+
+    // Try to send email
+    $headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
+    $headers .= "From: noreply@perpustakaan.edu" . "\r\n";
+
+    // In production, use: return mail($recipient_email, $subject, $message, $headers);
+    return @mail($recipient_email, $subject, $message, $headers);
+}
+

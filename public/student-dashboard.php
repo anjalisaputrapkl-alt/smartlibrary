@@ -68,6 +68,15 @@ try {
 } catch (Exception $e) {
     $overdueCount = 0;
 }
+
+// 4. Get student's loan limit (max_pinjam)
+try {
+    $maxPinjamStmt = $pdo->prepare('SELECT max_pinjam FROM members WHERE id = :member_id');
+    $maxPinjamStmt->execute(['member_id' => $member_id]);
+    $maxPinjam = (int) ($maxPinjamStmt->fetch(PDO::FETCH_ASSOC)['max_pinjam'] ?? 2);
+} catch (Exception $e) {
+    $maxPinjam = 2;
+}
 // ===================== END STATISTIK DASHBOARD =====================
 
 // ===================== QUERY PEMINJAMAN SISWA =====================
@@ -276,6 +285,7 @@ $pageTitle = 'Dashboard Siswa';
             flex-wrap: wrap;
             margin-bottom: 24px;
         }
+
         /* ---- Simple KPI cards (student) ---- */
         .kpi-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin: 18px 0 24px; }
         .kpi-card { 
@@ -317,7 +327,6 @@ $pageTitle = 'Dashboard Siswa';
         }
         @media (max-width:900px){ .kpi-grid{ grid-template-columns: repeat(2,1fr) } }
         @media (max-width:480px){ .kpi-grid{ grid-template-columns: 1fr } .kpi-card{ padding:16px } }
-
         .search-bar-wrapper {
             flex: 1;
             min-width: 250px;
@@ -392,33 +401,76 @@ $pageTitle = 'Dashboard Siswa';
                 <?php if (!empty($categories)): ?>
                 <?php endif; ?>
 
-                <!-- Quick Stats -->
-                <div class="sidebar-section">
-                    <h3><iconify-icon icon="mdi:chart-box" width="16" height="16"></iconify-icon> Statistik</h3>
+                <!-- Library News -->
+                <div class="sidebar-section" style="animation: fadeInSlideUp 0.5s ease-out 0.1s both;">
+                    <h3><iconify-icon icon="mdi:bullhorn-variant" width="16" height="16"></iconify-icon> Info Perpus</h3>
                     <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Total Buku Card -->
-                        <div style="padding: 14px; background: color-mix(in srgb, var(--primary) 8%, transparent); border-radius: 8px; border-left: 4px solid var(--primary); cursor: pointer; transition: all 0.2s ease;">
-                            <p style="font-size: 10px; color: var(--text-muted); margin: 0 0 6px 0; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Total Buku</p>
-                            <div style="display: flex; align-items: baseline; gap: 8px;">
-                                <p style="font-size: 28px; font-weight: 700; color: var(--primary); margin: 0;">
-                                    <?php echo $totalBooks; ?>
-                                </p>
-                                <iconify-icon icon="mdi:book-multiple" width="20" height="20" style="color: var(--primary); opacity: 0.6;"></iconify-icon>
-                            </div>
+                        <div style="padding: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px;">
+                            <div style="font-size: 10px; color: var(--primary); font-weight: 700; margin-bottom: 2px;">BARU DATANG</div>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text);">5 Koleksi buku fiksi baru bulan Februari!</div>
                         </div>
-
-                        <!-- Sedang Dipinjam Card -->
-                        <div style="padding: 14px; background: color-mix(in srgb, var(--danger) 8%, transparent); border-radius: 8px; border-left: 4px solid var(--danger); cursor: pointer; transition: all 0.2s ease;">
-                            <p style="font-size: 10px; color: var(--text-muted); margin: 0 0 6px 0; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Sedang Dipinjam</p>
-                            <div style="display: flex; align-items: baseline; gap: 8px;">
-                                <p style="font-size: 28px; font-weight: 700; color: var(--danger); margin: 0;">
-                                    <?php echo $borrowCount; ?>
-                                </p>
-                                <iconify-icon icon="mdi:clock-outline" width="20" height="20" style="color: var(--danger); opacity: 0.6;"></iconify-icon>
-                            </div>
+                        <div style="padding: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px;">
+                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 2px;">PENGUMUMAN</div>
+                            <div style="font-size: 12px; font-weight: 500; color: var(--text-muted);">Kembalikan buku tepat waktu untuk menghindari denda.</div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Trending Books -->
+                <?php if (!empty($top_viewed_books)): ?>
+                <div class="sidebar-section" style="animation: fadeInSlideUp 0.5s ease-out 0.2s both;">
+                    <h3><iconify-icon icon="mdi:trending-up" width="16" height="16"></iconify-icon> Buku Terpopuler</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <?php foreach (array_slice($top_viewed_books, 0, 3) as $pop_book): ?>
+                            <div style="display: flex; gap: 12px; align-items: center; cursor: pointer;" onclick="openBookModal(<?php echo htmlspecialchars(json_encode($pop_book)); ?>)">
+                                <div style="width: 45px; height: 60px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background: var(--bg); border: 1px solid var(--border);">
+                                    <?php if (!empty($pop_book['cover_image'])): ?>
+                                        <img src="../img/covers/<?php echo htmlspecialchars($pop_book['cover_image']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <?php else: ?>
+                                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><iconify-icon icon="mdi:book" width="20"></iconify-icon></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div style="flex: 1; min-width: 0;">
+                                    <div style="font-size: 13px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo htmlspecialchars($pop_book['title']); ?></div>
+                                    <div style="font-size: 11px; color: var(--text-muted);"><?php echo (int)$pop_book['view_count']; ?> pembaca</div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- Quick Access -->
+                <div class="sidebar-section" style="animation: fadeInSlideUp 0.5s ease-out 0.3s both;">
+                    <h3><iconify-icon icon="mdi:link-variant" width="16" height="16"></iconify-icon> Akses Cepat</h3>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <a href="favorites.php" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='var(--bg)'; this.style.color='var(--primary)';" onmouseout="this.style.background='transparent'; this.style.color='var(--text)';">
+                            <iconify-icon icon="mdi:heart-outline" width="18"></iconify-icon> Buku Favorit Saya
+                        </a>
+                        <a href="student-borrowing-history.php" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='var(--bg)'; this.style.color='var(--primary)';" onmouseout="this.style.background='transparent'; this.style.color='var(--text)';">
+                            <iconify-icon icon="mdi:history" width="18"></iconify-icon> Riwayat Pinjam
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Jam Operasional -->
+                <div class="sidebar-section" style="animation: fadeInSlideUp 0.5s ease-out 0.4s both;">
+                    <div style="padding: 15px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%); border-radius: 15px; color: white;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <iconify-icon icon="mdi:clock-time-four-outline" width="20"></iconify-icon>
+                            <span style="font-size: 13px; font-weight: 700;">Jam Operasional</span>
+                        </div>
+                        <div style="font-size: 12px; opacity: 0.9; line-height: 1.6;">
+                            Senin - Jumat: 07:30 - 15:30<br>
+                            Sabtu & Libur: Tutup
+                        </div>
+                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; gap: 5px;">
+                            <div style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%;"></div>
+                            <span style="font-size: 11px; font-weight: 600;">Sedang Buka</span>
+                        </div>
+                    </div>
+                </div>
+
             </aside>
 
             <!-- Main Content -->
@@ -583,6 +635,7 @@ $pageTitle = 'Dashboard Siswa';
     <script>
         let currentBookData = null;
         let favorites = new Set();
+        let currentBorrowCount = <?php echo (int)$borrowCount; ?>;
 
         // ====== CATEGORY FILTER FUNCTIONALITY ======
         let allBooks = <?php echo json_encode($books); ?>;
@@ -1321,46 +1374,7 @@ $pageTitle = 'Dashboard Siswa';
             alert('Fitur melihat semua kategori akan ditampilkan di sini');
         }
 
-        (function attachStatsHandlers(){
-            const sections = Array.from(document.querySelectorAll('.sidebar-section'));
-            const statSection = sections.find(s => (s.textContent||'').trim().startsWith('Statistik')) || sections[0];
-            if (!statSection) return;
 
-            const container = statSection.querySelector('div[style*="flex-direction: column"]') || statSection.querySelector('div');
-            if (!container) return;
-
-            const statBoxes = Array.from(container.children).filter(n => n.nodeType === 1);
-            if (statBoxes.length < 1) return;
-
-            // Hover -> subtle background only. Click -> show overlay with data.
-            statBoxes.forEach((box, idx) => {
-                box.classList.add('stat-box');
-                box.style.cursor = 'pointer';
-
-                box.addEventListener('mouseenter', () => {
-                    box.classList.add('stat-hover');
-                });
-
-                box.addEventListener('mouseleave', () => {
-                    box.classList.remove('stat-hover');
-                });
-
-                box.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // debug: print arrays to console to verify data
-                    try {
-                        console.debug('BOOKS_AVAILABLE length:', Array.isArray(BOOKS_AVAILABLE) ? BOOKS_AVAILABLE.length : typeof BOOKS_AVAILABLE, BOOKS_AVAILABLE);
-                        console.debug('STUDENT_CURRENT_BORROWS length:', Array.isArray(STUDENT_CURRENT_BORROWS) ? STUDENT_CURRENT_BORROWS.length : typeof STUDENT_CURRENT_BORROWS, STUDENT_CURRENT_BORROWS);
-                        console.debug('TOP_VIEWED_BOOKS length:', Array.isArray(TOP_VIEWED_BOOKS) ? TOP_VIEWED_BOOKS.length : typeof TOP_VIEWED_BOOKS, TOP_VIEWED_BOOKS);
-                    } catch (err) {
-                        console.error('Debug log error:', err);
-                    }
-                    if (idx === 0) createListOverlay('Semua Buku', renderBooksListHtml(BOOKS_AVAILABLE));
-                    else if (idx === 1) createListOverlay('Buku yang Sedang Anda Pinjam', renderBorrowsListHtml(STUDENT_CURRENT_BORROWS));
-                    else createListOverlay('Daftar', renderBooksListHtml(TOP_VIEWED_BOOKS));
-                });
-            });
-        })();
     </script>
     <script src="../assets/js/sidebar.js"></script>
 </body>

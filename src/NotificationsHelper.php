@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/EmailHelper.php';
 /**
  * NotificationsHelper - Helper class untuk manajemen notifikasi
  * 
@@ -29,22 +30,51 @@ class NotificationsHelper {
      */
     public function createNotification($schoolId, $studentId, $type, $title, $message) {
         try {
+            // 1. Simpan ke database
             $stmt = $this->pdo->prepare(
                 'INSERT INTO notifications (school_id, student_id, type, title, message, is_read, created_at)
                  VALUES (:school_id, :student_id, :type, :title, :message, 0, NOW())'
             );
 
-            return $stmt->execute([
+            $saved = $stmt->execute([
                 ':school_id' => $schoolId,
                 ':student_id' => $studentId,
                 ':type' => $type,
                 ':title' => $title,
                 ':message' => $message
             ]);
+
+            if ($saved) {
+                // 2. Kirim Notifikasi ke Email (Simple)
+                $this->sendEmailToStudent($studentId, $title, $message);
+            }
+
+            return $saved;
         } catch (Exception $e) {
             error_log('Error creating notification: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Helper internal untuk kirim email ke siswa berdasarkan member_id
+     */
+    private function sendEmailToStudent($studentId, $title, $message) {
+        try {
+            // Ambil email siswa dari tabel members
+            $stmt = $this->pdo->prepare('SELECT email FROM members WHERE id = :id LIMIT 1');
+            $stmt->execute([':id' => $studentId]);
+            $student = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($student && !empty($student['email'])) {
+                $subject = "Notifikasi Baru: " . $title;
+                // Panggil fungsi dari EmailHelper.php
+                return sendNotificationEmail($student['email'], $subject, $title, $message);
+            }
+        } catch (Exception $e) {
+            error_log('Error sending email notification: ' . $e->getMessage());
+        }
+        return false;
     }
 
     /**

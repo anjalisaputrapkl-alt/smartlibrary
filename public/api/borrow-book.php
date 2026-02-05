@@ -93,6 +93,35 @@ try {
         exit;
     }
 
+    // 2.5 Check total active loans (Dynamic Limit from DB)
+    // Fetch max_pinjam from members first
+    $memberMetaStmt = $pdo->prepare('SELECT max_pinjam FROM members WHERE id = :member_id');
+    $memberMetaStmt->execute(['member_id' => $member_id]);
+    $memberMeta = $memberMetaStmt->fetch();
+    $max_pinjam = (int) ($memberMeta['max_pinjam'] ?? 2);
+
+    $countStmt = $pdo->prepare(
+        'SELECT COUNT(*) as total FROM borrows 
+         WHERE school_id = :school_id 
+         AND member_id = :member_id 
+         AND (status = "borrowed" OR status = "overdue")'
+    );
+    $countStmt->execute([
+        'school_id' => $school_id,
+        'member_id' => $member_id
+    ]);
+    $loanCount = (int) ($countStmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0);
+
+    if ($loanCount >= $max_pinjam) {
+        $pdo->rollBack();
+        http_response_code(400);
+        echo json_encode([
+            'success' => false, 
+            'message' => "Anda telah mencapai batas maksimal peminjaman ($max_pinjam buku)."
+        ]);
+        exit;
+    }
+
     // 3. Insert into borrows table
     // due_at = NOW() + 7 DAYS
     $insertStmt = $pdo->prepare(

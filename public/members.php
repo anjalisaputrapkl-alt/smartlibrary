@@ -12,14 +12,15 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
     // Insert into members table
     $stmt = $pdo->prepare(
-      'INSERT INTO members (school_id,name,email,nisn)
-       VALUES (:sid,:name,:email,:nisn)'
+      'INSERT INTO members (school_id,name,email,nisn,max_pinjam)
+       VALUES (:sid,:name,:email,:nisn,:max_pinjam)'
     );
     $stmt->execute([
       'sid' => $sid,
       'name' => $_POST['name'],
       'email' => $_POST['email'],
-      'nisn' => $_POST['nisn']
+      'nisn' => $_POST['nisn'],
+      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? 2)
     ]);
 
     // Get the inserted NISN for password generation
@@ -57,13 +58,14 @@ if ($action === 'edit' && isset($_GET['id'])) {
   $id = (int) $_GET['id'];
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare(
-      'UPDATE members SET name=:name,email=:email,nisn=:nisn
+      'UPDATE members SET name=:name,email=:email,nisn=:nisn,max_pinjam=:max_pinjam
        WHERE id=:id AND school_id=:sid'
     );
     $stmt->execute([
       'name' => $_POST['name'],
       'email' => $_POST['email'],
       'nisn' => $_POST['nisn'],
+      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? 2),
       'id' => $id,
       'sid' => $sid
     ]);
@@ -674,6 +676,11 @@ $members = $stmt->fetchAll();
               <label>NISN Siswa</label>
               <input type="text" name="nisn" required placeholder="Nomor Induk Siswa Nasional" autocomplete="off"
                 value="<?= $action === 'edit' && isset($member['nisn']) ? htmlspecialchars($member['nisn']) : '' ?>">
+            </div>
+            <div class="form-group">
+              <label>Batas Pinjam Buku (Maksimal)</label>
+              <input type="number" name="max_pinjam" min="1" required placeholder="Default: 2" autocomplete="off"
+                value="<?= $action === 'edit' && isset($member['max_pinjam']) ? (int)$member['max_pinjam'] : '2' ?>">
             </div>
             <div class="form-group">
               <label>Password</label>
