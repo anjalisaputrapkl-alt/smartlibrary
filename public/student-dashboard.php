@@ -775,20 +775,39 @@ $pageTitle = 'Dashboard Siswa';
             }
         }
 
-        // Toggle favorite
+        const favoriteLock = new Set();
+
+        // Toggle favorite with Optimistic UI Update
         async function toggleFavorite(e, bookId, bookTitle) {
             e.preventDefault();
             e.stopPropagation();
 
+            if (favoriteLock.has(bookId)) return;
+
             const btn = e.currentTarget;
             const icon = btn.querySelector('iconify-icon');
-            const isLoved = btn.classList.contains('loved');
+            const isCurrentlyLoved = btn.classList.contains('loved');
+            
+            // --- OPTIMISTIC UPDATE START ---
+            favoriteLock.add(bookId);
+            
+            // Toggle UI state immediately
+            if (isCurrentlyLoved) {
+                btn.classList.remove('loved');
+                if (icon) icon.setAttribute('icon', 'mdi:heart-outline');
+                favorites.delete(bookId);
+            } else {
+                btn.classList.add('loved');
+                if (icon) icon.setAttribute('icon', 'mdi:heart');
+                favorites.add(bookId);
+            }
+            // --- OPTIMISTIC UPDATE END ---
 
             try {
                 const formData = new FormData();
                 formData.append('id_buku', bookId);
 
-                const action = isLoved ? 'remove' : 'add';
+                const action = isCurrentlyLoved ? 'remove' : 'add';
                 const response = await fetch(`/perpustakaan-online/public/api/favorites.php?action=${action}`, {
                     method: 'POST',
                     body: formData
@@ -796,22 +815,27 @@ $pageTitle = 'Dashboard Siswa';
 
                 const data = await response.json();
 
-                if (data.success) {
-                    if (isLoved) {
-                        btn.classList.remove('loved');
-                        icon.setAttribute('icon', 'mdi:heart-outline');
-                        favorites.delete(bookId);
-                    } else {
-                        btn.classList.add('loved');
-                        icon.setAttribute('icon', 'mdi:heart');
-                        favorites.add(bookId);
-                    }
-                } else {
-                    alert('Error: ' + data.message);
+                if (!data.success) {
+                    throw new Error(data.message || 'Gagal mengubah status favorit');
                 }
+                // Success - keep the optimistic state
             } catch (error) {
                 console.error('Error:', error);
-                alert('Gagal mengubah favorite');
+                
+                // --- REVERT UI STATE ON FAILURE ---
+                if (isCurrentlyLoved) {
+                    btn.classList.add('loved');
+                    if (icon) icon.setAttribute('icon', 'mdi:heart');
+                    favorites.add(bookId);
+                } else {
+                    btn.classList.remove('loved');
+                    if (icon) icon.setAttribute('icon', 'mdi:heart-outline');
+                    favorites.delete(bookId);
+                }
+                
+                alert('Gagal: ' + error.message);
+            } finally {
+                favoriteLock.delete(bookId);
             }
         }
 
