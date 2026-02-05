@@ -61,407 +61,6 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/borrows.css">
-  <link rel="stylesheet" href="../assets/css/borrows.css">
-  <style>
-    :root {
-      --primary: #3A7FF2;
-      --primary-2: #7AB8F5;
-      --primary-dark: #0A1A4F;
-      --bg: #F6F9FF;
-      --muted: #F3F7FB;
-      --card: #FFFFFF;
-      --surface: #FFFFFF;
-      --muted-surface: #F7FAFF;
-      --border: #E6EEF8;
-      --text: #0F172A;
-      --text-muted: #50607A;
-      --accent: #3A7FF2;
-      --accent-light: #e0f2fe;
-      --success: #10B981;
-      --warning: #f59e0b;
-      --danger: #EF4444;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --primary: #3A7FF2;
-        --primary-2: #7AB8F5;
-        --primary-dark: #0A1A4F;
-        --bg: #0f172a;
-        --muted: #1e293b;
-        --card: #1e293b;
-        --surface: #1e293b;
-        --muted-surface: #334155;
-        --border: #334155;
-        --text: #f1f5f9;
-        --text-muted: #94a3b8;
-        --accent: #3A7FF2;
-        --accent-light: #e0f2fe;
-        --success: #10B981;
-        --warning: #f59e0b;
-        --danger: #EF4444;
-      }
-    }
-
-    .content {
-      grid-template-columns: 1fr;
-    }
-
-    .main {
-      grid-template-columns: 1fr;
-    }
-
-    .main>div {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .stats-section {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    .stat-card.clickable {
-      cursor: pointer;
-    }
-
-    .stat-card.clickable:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transform: translateY(-4px);
-    }
-
-    /* Modal Styles */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      backdrop-filter: blur(4px);
-    }
-
-    .modal-container {
-      background: var(--surface);
-      width: 90%;
-      max-width: 800px;
-      max-height: 80vh;
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .modal-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .modal-header h2 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 24px;
-      color: var(--text-muted);
-      cursor: pointer;
-      line-height:1;
-    }
-
-    .modal-body {
-      padding: 24px;
-      overflow-y: auto;
-    }
-
-    .modal-loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--text-muted);
-    }
-
-    .student-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .badge-active { background: #d1fae5; color: #065f46; }
-    .badge-inactive { background: #fee2e2; color: #991b1b; }
-
-    .modal-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    .modal-table th {
-      text-align: left;
-      padding: 12px;
-      border-bottom: 2px solid var(--border);
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-    }
-
-    .modal-table td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .modal-table tr:last-child td { border-bottom: none; }
-    
-    @media (max-width: 600px) {
-        .col-hide-mobile { display: none; }
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .borrows-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .borrows-table thead {
-      background: #f9fafb;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .borrows-table th {
-      padding: 16px 12px;
-      text-align: left;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .borrows-table td {
-      padding: 16px 12px;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    .borrows-table tbody tr:hover {
-      background: #fafbfc;
-    }
-
-    .borrows-table tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    .table-no {
-      color: var(--muted);
-      font-weight: 500;
-      width: 40px;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      width: fit-content;
-      margin-left: -10px;
-    }
-
-    .status-borrowed {
-      background: #dbeafe;
-      color: #1e40af;
-      margin-left: -10px;
-    }
-
-    .status-overdue {
-      background: #fee2e2;
-      color: #991b1b;
-      margin-left: -10px;
-    }
-
-    .status-returned {
-      background: #dcfce7;
-      color: #166534;
-      margin-left: -10px;
-    }
-
-    .status-pending {
-      background: #fef3c7;
-      color: #92400e;
-      margin-left: -10px;
-    }
-
-    .btn-return {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 8px 12px;
-      background: var(--success);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-      margin-left: 0;
-    }
-
-    .btn-return:hover {
-      background: #15803d;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(22, 163, 74, 0.2);
-    }
-
-    .btn-return:active {
-      transform: translateY(0);
-    }
-
-    .btn-confirm-return {
-      display: inline-block;
-      padding: 8px 16px;
-      background: #06b6d4;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-      margin-left: -12px;
-    }
-
-    .btn-confirm-return:hover {
-      background: #0891b2;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(6, 182, 212, 0.2);
-    }
-
-    .btn-confirm-return:active {
-      transform: translateY(0);
-    }
-
-    .btn-extend-due {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 8px 12px;
-      background: #f59e0b;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .btn-extend-due:hover {
-      background: #d97706;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(217, 119, 6, 0.2);
-    }
-
-    .btn-extend-due:active {
-      transform: translateY(0);
-    }
-
-    .btn-disabled {
-      background: #d1d5db;
-      color: #6b7280;
-      cursor: not-allowed;
-    }
-
-    .btn-disabled:hover {
-      background: #d1d5db;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--muted);
-    }
-
-    .empty-state iconify-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .empty-state p {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .stats-section {
-        grid-template-columns: 1fr;
-      }
-
-      .borrows-table {
-        font-size: 12px;
-      }
-
-      .borrows-table th,
-      .borrows-table td {
-        padding: 12px 8px;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -470,30 +69,35 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
   <div class="app">
 
     <div class="topbar">
-      <strong>Manajemen Peminjaman</strong>
+      <div class="topbar-title">
+        <iconify-icon icon="mdi:book-clock-outline" style="font-size: 24px; color: var(--primary);"></iconify-icon>
+        <strong>Manajemen Peminjaman</strong>
+      </div>
+      <div class="topbar-actions">
+        <!-- Future notification/user icons can go here -->
+      </div>
     </div>
 
     <div class="content">
       <div class="main">
         <div>
           <!-- Scanner Toggle Button -->
-          <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-            <button onclick="toggleScanner()" class="btn-barcode-start"
-              style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 14px; text-decoration: none;">
+          <div class="scanner-toggle-wrap">
+            <button onclick="toggleScanner()" class="btn-barcode-start">
               <iconify-icon icon="mdi:barcode-scan"></iconify-icon>
               <span id="scannerToggleText">Mulai Peminjaman Baru</span>
             </button>
           </div>
 
           <!-- Embedded Scanner Section -->
-          <div id="scannerSection" class="card" style="display: none; border: 2px solid #667eea; background: #f8fbfe;">
-              <div style="display: grid; grid-template-columns: 350px 1fr; gap: 24px;">
+          <div id="scannerSection" class="card scanner-section">
+              <div class="scanner-grid">
                   <!-- Left: Camera -->
                   <div>
-                      <div id="reader" style="width: 100%; border-radius: 8px; overflow: hidden; background: #000;"></div>
-                      <div id="scanStatus" style="margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 13px; text-align: center; display: none;"></div>
+                      <div id="reader"></div>
+                      <div id="scanStatus"></div>
                       
-                      <div style="margin-top: 15px; display: flex; gap: 8px;">
+                      <div class="scanner-controls">
                           <button id="btnModeBook" class="scanner-mode-btn active" onclick="setScanMode('book')">Mode Buku</button>
                           <button id="btnModeMember" class="scanner-mode-btn" onclick="setScanMode('member')">Mode Anggota</button>
                       </div>
@@ -501,53 +105,53 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
 
                   <!-- Right: Transaction Details -->
                   <div>
-                      <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                          <iconify-icon icon="mdi:basket-outline"></iconify-icon>
+                      <h2 class="flex-center gap-2">
+                          <iconify-icon icon="mdi:basket-outline" style="font-size: 20px;"></iconify-icon>
                           Keranjang Peminjaman
-                      </h3>
+                      </h2>
 
                       <!-- Member Info -->
-                      <div id="scannedMemberInfo" style="display: none; background: #ecf9f3; padding: 12px; border-radius: 6px; border-left: 4px solid #10B981; margin-bottom: 15px;">
-                          <div style="font-size: 11px; color: #10B981; font-weight: 700; text-transform: uppercase;">Peminjam</div>
-                          <div style="font-size: 15px; font-weight: 700; color: #333;">
+                      <div id="scannedMemberInfo" class="scanned-info-card">
+                          <div class="scanned-info-label">Peminjam</div>
+                          <div class="scanned-info-value">
                               <span id="scannedMemberName"></span>
                           </div>
-                          <div style="font-size: 12px; color: #666;">NISN: <span id="scannedMemberNisn"></span></div>
+                          <div class="scanned-info-meta">NISN: <span id="scannedMemberNisn"></span></div>
                       </div>
 
                       <!-- Empty State -->
-                      <div id="scanEmptyState" style="text-align: center; padding: 30px; color: #999; border: 2px dashed #ddd; border-radius: 8px;">
-                          <iconify-icon icon="mdi:barcode" style="font-size: 32px; opacity: 0.5;"></iconify-icon>
-                          <p style="margin: 10px 0 0; font-size: 13px;">Scan buku terlebih dahulu</p>
+                      <div id="scanEmptyState" class="scanner-empty-state">
+                          <iconify-icon icon="mdi:barcode"></iconify-icon>
+                          <p>Scan buku atau anggota untuk memulai</p>
                       </div>
 
                       <!-- Book List -->
                       <div id="scannedBooksContainer" style="display: none;">
-                          <table class="borrows-table" style="margin-bottom: 20px;">
-                              <thead>
-                                  <tr>
-                                      <th style="width: 50px;">Cover</th>
-                                      <th>Buku</th>
-                                      <th style="width: 40px;"></th>
-                                  </tr>
-                              </thead>
-                              <tbody id="scannedBooksList"></tbody>
-                          </table>
+                          <div class="borrows-table-wrap mb-4">
+                              <table class="borrows-table">
+                                  <thead>
+                                      <tr>
+                                          <th style="width: 60px;">Cover</th>
+                                          <th>Buku</th>
+                                          <th style="width: 40px;"></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody id="scannedBooksList"></tbody>
+                              </table>
+                          </div>
 
                           <!-- Due Date -->
-                          <div style="margin-bottom: 20px;">
-                              <label style="display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 6px;">
-                                  Tanggal Pengembalian
-                              </label>
-                              <input type="date" id="borrowDueDate" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                          <div class="form-group">
+                              <label>Tanggal Pengembalian</label>
+                              <input type="date" id="borrowDueDate">
                           </div>
 
                           <!-- Actions -->
-                          <div style="display: flex; gap: 10px;">
-                              <button onclick="submitBorrow()" id="btnSubmitBorrow" style="flex: 1; padding: 12px; background: #10B981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                          <div class="action-grid">
+                              <button onclick="submitBorrow()" id="btnSubmitBorrow" class="btn primary" style="flex: 1; justify-content: center;">
                                   Konfirmasi Peminjaman
                               </button>
-                             <button onclick="resetScannerSession()" style="padding: 12px; background: #fee2e2; color: #ef4444; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                             <button onclick="resetScannerSession()" class="btn" style="color: var(--danger); border-color: color-mix(in srgb, var(--danger), transparent 70%);">
                                   Batal
                               </button>
                           </div>
@@ -557,39 +161,10 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
           </div>
 
           <!-- Loading Overlay (Local) -->
-          <div id="scannerLoading" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; color: white;">
+          <div id="scannerLoading" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--overlay); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; color: white; backdrop-filter: blur(4px);">
               <div class="spinner" style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px;"></div>
               <p>Memproses...</p>
           </div>
-
-          <!-- Html5Qrcode Library -->
-          <script src="https://unpkg.com/html5-qrcode"></script>
-
-          <style>
-              .scanner-mode-btn {
-                  flex: 1;
-                  padding: 8px;
-                  border: 1px solid #ddd;
-                  background: white;
-                  border-radius: 4px;
-                  cursor: pointer;
-                  font-size: 12px;
-                  font-weight: 600;
-                  color: #666;
-              }
-              .scanner-mode-btn.active {
-                  background: #3A7FF2;
-                  color: white;
-                  border-color: #3A7FF2;
-              }
-              .status-success { background: #ecf9f3; color: #10B981; }
-              .status-error { background: #fee2e2; color: #ca2d2d; }
-              .status-info { background: #e0f2fe; color: #0284c7; }
-              
-              @media (max-width: 768px) {
-                  #scannerSection > div { grid-template-columns: 1fr; }
-              }
-          </style>
 
           <script>
             let html5QrcodeScanner = null;
@@ -943,26 +518,55 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
 
     <script src="../assets/js/borrows-stats.js"></script>
           <!-- Statistics Section -->
-          <div class="stats-section">
+          <div class="stats-grid">
             <div class="stat-card clickable" data-stat-type="total" title="Klik untuk melihat detail">
-              <div class="stat-label">Total Peminjaman</div>
-              <div class="stat-value"><?= $totalBorrows ?></div>
+              <div class="stat-icon blue">
+                <iconify-icon icon="mdi:book-open-page-variant"></iconify-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Total Peminjaman</div>
+                <div class="stat-value"><?= number_format($totalBorrows) ?></div>
+              </div>
             </div>
+
             <div class="stat-card clickable" data-stat-type="active" title="Klik untuk melihat detail">
-              <div class="stat-label">Sedang Dipinjam</div>
-              <div class="stat-value"><?= $activeBorrows ?></div>
+              <div class="stat-icon blue">
+                <iconify-icon icon="mdi:clock-outline"></iconify-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Sedang Dipinjam</div>
+                <div class="stat-value"><?= number_format($activeBorrows) ?></div>
+              </div>
             </div>
+
             <div class="stat-card clickable" data-stat-type="overdue" title="Klik untuk melihat detail">
-              <div class="stat-label">Terlambat</div>
-              <div class="stat-value"><?= $overdueBorrows ?></div>
+              <div class="stat-icon red">
+                <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Terlambat</div>
+                <div class="stat-value"><?= number_format($overdueBorrows) ?></div>
+              </div>
             </div>
+
             <div class="stat-card clickable" data-stat-type="pending_confirmation" title="Klik untuk melihat detail">
-              <div class="stat-label">Form Menunggu Konfirmasi</div>
-              <div class="stat-value"><?= $pendingConfirmation ?></div>
+              <div class="stat-icon orange">
+                <iconify-icon icon="mdi:clipboard-text-outline"></iconify-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Menunggu Konfirmasi</div>
+                <div class="stat-value"><?= number_format($pendingConfirmation) ?></div>
+              </div>
             </div>
+
             <div class="stat-card clickable" data-stat-type="pending_return" title="Klik untuk melihat detail">
-              <div class="stat-label">Pengembalian Menunggu Konfirmasi</div>
-              <div class="stat-value"><?= $pendingReturns ?></div>
+              <div class="stat-icon orange">
+                <iconify-icon icon="mdi:keyboard-return"></iconify-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">Menunggu Balik</div>
+                <div class="stat-value"><?= number_format($pendingReturns) ?></div>
+              </div>
             </div>
           </div>
 
@@ -998,45 +602,35 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
               ?>
 
               <?php foreach ($groupedByMember as $studentId => $studentData): ?>
-                <div
-                  style="background: white; border: 2px solid #E0EFF9; border-radius: 12px; padding: 0; margin-bottom: 24px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);">
-
-                  <!-- Header dengan Warna Biru Langit -->
-                  <div style="background: #3A7FF2; padding: 20px 24px; color: white;">
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+                <div class="pending-borrow-card">
+                  <!-- Header -->
+                  <div class="pending-borrow-header">
+                    <div class="pending-borrow-header-grid">
                       <div>
-                        <div
-                          style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.95; margin-bottom: 10px;">
-                          <iconify-icon icon="mdi:account"
-                            style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Nama Siswa
+                        <div class="pending-label">
+                          <iconify-icon icon="mdi:account" style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Nama Siswa
                         </div>
-                        <div style="font-size: 17px; font-weight: 700; word-break: break-word;">
+                        <div class="pending-value">
                           <?= htmlspecialchars($studentData['member_name']) ?>
                         </div>
                       </div>
                       <div>
-                        <div
-                          style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.95; margin-bottom: 10px;">
-                          <iconify-icon icon="mdi:card-account-details"
-                            style="vertical-align: middle; margin-right: 6px;"></iconify-icon> NISN
+                        <div class="pending-label">
+                          <iconify-icon icon="mdi:card-account-details" style="vertical-align: middle; margin-right: 6px;"></iconify-icon> NISN
                         </div>
-                        <div style="font-size: 17px; font-weight: 700;"><?= htmlspecialchars($studentData['nisn']) ?></div>
+                        <div class="pending-value"><?= htmlspecialchars($studentData['nisn']) ?></div>
                       </div>
                       <div>
-                        <div
-                          style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.95; margin-bottom: 10px;">
-                          <iconify-icon icon="mdi:book-multiple"
-                            style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Total Buku
+                        <div class="pending-label">
+                          <iconify-icon icon="mdi:book-multiple" style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Total Buku
                         </div>
-                        <div style="font-size: 17px; font-weight: 700;"><?= count($studentData['books']) ?> Buku</div>
+                        <div class="pending-value"><?= count($studentData['books']) ?> Buku</div>
                       </div>
                       <div>
-                        <div
-                          style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.95; margin-bottom: 10px;">
-                          <iconify-icon icon="mdi:calendar-clock"
-                            style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Waktu Scan
+                        <div class="pending-label">
+                          <iconify-icon icon="mdi:calendar-clock" style="vertical-align: middle; margin-right: 6px;"></iconify-icon> Waktu Scan
                         </div>
-                        <div style="font-size: 17px; font-weight: 700;">
+                        <div class="pending-value">
                           <?= date('d/m H:i', strtotime($studentData['books'][0]['borrowed_at'])) ?>
                         </div>
                       </div>
@@ -1045,80 +639,78 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
 
                   <!-- Books List Section -->
                   <div style="padding: 24px;">
-                    <h3
-                      style="font-size: 13px; font-weight: 700; color: #333; margin: 0 0 20px 0; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
-                      <div style="display: flex; align-items: center;">
-                        <input type="checkbox" id="selectAll_<?= $studentId ?>" onchange="toggleSelectAll('<?= $studentId ?>', this)" style="margin-right: 8px; width: 16px; height: 16px; cursor: pointer;" checked>
-                        <iconify-icon icon="mdi:book-open" style="margin-right: 8px; color: #5BA3F5;"></iconify-icon>
-                        Daftar Buku yang Dipinjam
-                      </div>
+                    <h3 class="flex-center gap-2 mb-4" style="font-size: 13px; font-weight: 700; color: var(--text); text-transform: uppercase;">
+                        <input type="checkbox" id="selectAll_<?= $studentId ?>" onchange="toggleSelectAll('<?= $studentId ?>', this)" style="width: 18px; height: 18px; cursor: pointer;" checked>
+                        <iconify-icon icon="mdi:book-open-variant" style="color: var(--primary);"></iconify-icon>
+                        Daftar Buku
                     </h3>
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 14px;">
-                      <?php foreach ($studentData['books'] as $idx => $book): ?>
-                        <div
-                          style="background: white; border: 1px solid #E0EFF9; border-left: 4px solid #5BA3F5; border-radius: 8px; padding: 16px; display: grid; grid-template-columns: 1fr 140px 100px; gap: 16px; align-items: center;">
-                          <div style="display: flex; align-items: center; gap: 12px;">
-                            <input type="checkbox" class="book-checkbox-<?= $studentId ?>" value="<?= $book['id'] ?>" style="width: 18px; height: 18px; cursor: pointer;" checked>
-                            <div>
-                                <div
-                                style="font-size: 11px; color: #5BA3F5; font-weight: 700; margin-bottom: 8px; text-transform: uppercase;">
-                                Buku #<?= $idx + 1 ?></div>
-                                <div style="font-size: 14px; font-weight: 600; color: #333;">
-                                <?= htmlspecialchars($book['title']) ?>
+                    
+                    <div class="borrows-table-wrap">
+                      <table class="borrows-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 40px;"></th>
+                            <th>Info Buku</th>
+                            <th>ISBN</th>
+                            <th style="width: 120px;">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach ($studentData['books'] as $idx => $book): ?>
+                            <tr>
+                              <td>
+                                <input type="checkbox" class="book-checkbox-<?= $studentId ?>" value="<?= $book['id'] ?>" style="width: 18px; height: 18px; cursor: pointer;" checked>
+                              </td>
+                              <td>
+                                <div class="flex-center gap-2">
+                                  <?php if (!empty($book['cover_image'])): ?>
+                                      <img src="../img/covers/<?= htmlspecialchars($book['cover_image']) ?>" style="width: 32px; height: 48px; object-fit: cover; border-radius: 4px;">
+                                  <?php else: ?>
+                                      <div style="width: 32px; height: 48px; background: var(--bg); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--muted);">No Img</div>
+                                  <?php endif; ?>
+                                  <div>
+                                    <div style="font-weight: 700; color: var(--text);"><?= htmlspecialchars($book['title']) ?></div>
+                                    <div style="font-size: 11px; color: var(--muted);">Buku #<?= $idx + 1 ?></div>
+                                  </div>
                                 </div>
-                            </div>
-                          </div>
-                          <div style="text-align: center;">
-                            <div
-                              style="font-size: 11px; color: #999; margin-bottom: 6px; text-transform: uppercase; font-weight: 600;">
-                              ISBN</div>
-                            <div style="font-size: 14px; font-weight: 700; color: #333;">
-                              <?= htmlspecialchars($book['isbn']) ?>
-                            </div>
-                          </div>
-                          <div style="text-align: center;">
-                            <?php if (!empty($book['cover_image'])): ?>
-                                <img src="../img/covers/<?= htmlspecialchars($book['cover_image']) ?>" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px; display: inline-block;">
-                            <?php else: ?>
-                                <span style="display: inline-block; width: 40px; height: 60px; background: #eee; border-radius: 4px; text-align: center; line-height: 60px; font-size: 10px; color: #999;">No Img</span>
-                            <?php endif; ?>
-                            <div style="margin-top: 5px;">
-                                <span
-                                style="display: inline-block; background: #FFF3E0; color: #F57C00; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 700;">Menunggu</span>
-                            </div>
-                          </div>
-                        </div>
-                      <?php endforeach; ?>
+                              </td>
+                              <td style="font-weight: 600; color: var(--text);"><?= htmlspecialchars($book['isbn']) ?></td>
+                              <td>
+                                <span class="status-badge pending">Menunggu</span>
+                              </td>
+                            </tr>
+                          <?php endforeach; ?>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
 
                   <!-- Action Buttons -->
-                  <div
-                    style="padding: 20px 24px; background: #F8FBFF; border-top: 1px solid #E0EFF9; display: grid; grid-template-columns: 200px 1fr auto auto; gap: 16px; align-items: end;">
-                    <div>
-                      <label
-                        style="display: block; font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-                        <iconify-icon icon="mdi:calendar" style="vertical-align: middle; margin-right: 4px;"></iconify-icon>
-                        Tenggat (Hari)
+                  <div class="pending-actions-bar">
+                    <div class="due-date-control">
+                      <label>
+                        <iconify-icon icon="mdi:calendar-clock"></iconify-icon>
+                        Tenggat Pengembalian
                       </label>
-                      <input type="number" id="dueDays_<?= $studentId ?>" value="7" min="1" max="365"
-                        style="width: 100%; padding: 10px 12px; border: 2px solid #5BA3F5; border-radius: 6px; font-size: 14px; font-weight: 600; color: #5BA3F5; box-sizing: border-box;">
+                      <div class="due-input-wrapper">
+                        <iconify-icon icon="mdi:plus-minus-variant"></iconify-icon>
+                        <input type="number" id="dueDays_<?= $studentId ?>" value="7" min="1" max="365">
+                      </div>
                     </div>
-                    <div></div>
-                    <?php
-                    $bookIds = array_map(fn($b) => $b['id'], $studentData['books']);
-                    $bookIdsJson = json_encode($bookIds);
-                    $bookIdsHtml = htmlspecialchars($bookIdsJson);
-                    ?>
-                    <button type="button"
-                      onclick="approveSelectedBorrows('<?= $studentId ?>')"
-                      style="background: #5BA3F5; padding: 12px 20px; border: none; border-radius: 6px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; font-size: 14px;">
-                      <iconify-icon icon="mdi:check-circle"></iconify-icon> Terima
-                    </button>
-                    <button type="button" onclick="rejectAllBorrow('<?= $bookIdsHtml ?>')"
-                      style="background: #FF6B6B; padding: 12px 20px; border: none; border-radius: 6px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; font-size: 14px;">
-                      <iconify-icon icon="mdi:close-circle"></iconify-icon> Tolak
-                    </button>
+
+                    <div class="pending-action-btns">
+                      <?php
+                      $bookIds = array_map(fn($b) => $b['id'], $studentData['books']);
+                      $bookIdsJson = json_encode($bookIds);
+                      $bookIdsHtml = htmlspecialchars($bookIdsJson);
+                      ?>
+                      <button type="button" onclick="rejectAllBorrow('<?= $bookIdsHtml ?>')" class="btn-premium reject">
+                        <iconify-icon icon="mdi:close-circle-outline"></iconify-icon> Tolak
+                      </button>
+                      <button type="button" onclick="approveSelectedBorrows('<?= $studentId ?>')" class="btn-premium approve">
+                        <iconify-icon icon="mdi:check-circle-outline"></iconify-icon> Terima
+                      </button>
+                    </div>
                   </div>
                 </div>
               <?php endforeach; ?>
@@ -1134,44 +726,46 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
                 <p>Tidak ada permintaan pengembalian</p>
               </div>
             <?php else: ?>
-              <table class="borrows-table">
-                <thead>
-                  <tr>
-                    <th class="table-no">No</th>
-                    <th>Nama Buku</th>
-                    <th>Nama Siswa</th>
-                    <th>Tanggal Pinjam</th>
-                    <th>Jatuh Tempo</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $no = 1;
-                  foreach ($borrows as $br):
-                    if ($br['status'] !== 'pending_return')
-                      continue;
-                    ?>
+              <div class="borrows-table-wrap">
+                <table class="borrows-table">
+                  <thead>
                     <tr>
-                      <td class="table-no"><?= $no++ ?></td>
-                      <td><strong><?= htmlspecialchars($br['title']) ?></strong></td>
-                      <td><?= htmlspecialchars($br['member_name']) ?></td>
-                      <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
-                      <td><?= $br['due_at'] ? date('d/m/Y', strtotime($br['due_at'])) : '-' ?></td>
-                      <td>
-                        <span class="status-badge status-pending">Menunggu Konfirmasi</span>
-                      </td>
-                      <td>
-                        <button class="btn-confirm-return" onclick="confirmReturn(<?= $br['id'] ?>)">
-                          <iconify-icon icon="mdi:check" style="vertical-align: middle; margin-right: 4px;"></iconify-icon>
-                          Konfirmasi Pengembalian
-                        </button>
-                      </td>
+                      <th class="table-no">No</th>
+                      <th>Nama Buku</th>
+                      <th>Nama Siswa</th>
+                      <th>Tanggal Pinjam</th>
+                      <th>Jatuh Tempo</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $no = 1;
+                    foreach ($borrows as $br):
+                      if ($br['status'] !== 'pending_return')
+                        continue;
+                      ?>
+                      <tr>
+                        <td class="table-no"><?= $no++ ?></td>
+                        <td style="font-weight: 700; color: var(--text);"><?= htmlspecialchars($br['title']) ?></td>
+                        <td><?= htmlspecialchars($br['member_name']) ?></td>
+                        <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
+                        <td><?= $br['due_at'] ? date('d/m/Y', strtotime($br['due_at'])) : '-' ?></td>
+                        <td>
+                          <span class="status-badge pending">Konfirmasi Balik</span>
+                        </td>
+                        <td>
+                          <button class="btn-sm btn-sm-info" onclick="confirmReturn(<?= $br['id'] ?>)">
+                            <iconify-icon icon="mdi:check"></iconify-icon>
+                            Terima Balik
+                          </button>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
             <?php endif; ?>
           </div>
 
@@ -1184,69 +778,70 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
                 <p>Tidak ada peminjaman aktif saat ini</p>
               </div>
             <?php else: ?>
-              <table class="borrows-table">
-                <thead>
-                  <tr>
-                    <th class="table-no">No</th>
-                    <th>Nama Buku</th>
-                    <th>Nama Siswa</th>
-                    <th>Tanggal Pinjam</th>
-                    <th>Jatuh Tempo</th>
-                    <th>Status</th>
-                    <th>Denda</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $no = 1;
-                  foreach ($borrows as $br):
-                    if ($br['status'] === 'returned' || $br['status'] === 'pending_return' || $br['status'] === 'pending_confirmation')
-                      continue;
-                    ?>
+              <div class="borrows-table-wrap">
+                <table class="borrows-table">
+                  <thead>
                     <tr>
-                      <td class="table-no"><?= $no++ ?></td>
-                      <td><strong><?= htmlspecialchars($br['title']) ?></strong></td>
-                      <td><?= htmlspecialchars($br['member_name']) ?></td>
-                      <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
-                      <td><?= $br['due_at'] ? date('d/m/Y', strtotime($br['due_at'])) : '-' ?></td>
-                      <td>
-                        <?php if ($br['status'] === 'overdue'): ?>
-                          <span class="status-badge status-overdue">Terlambat</span>
-                        <?php else: ?>
-                          <span class="status-badge status-borrowed">Dipinjam</span>
-                        <?php endif; ?>
-                      </td>
-                      <td style="text-align: center;">
-                        <?php if (!empty($br['fine_amount'])): ?>
-                          <span
-                            style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
-                            💳 Rp <?= number_format($br['fine_amount'], 0, ',', '.') ?>
-                            (<?= $br['fine_status'] === 'paid' ? '✅ Paid' : '⏳ Unpaid' ?>)
-                          </span>
-                        <?php else: ?>
-                          <span style="color: #6b7280;">-</span>
-                        <?php endif; ?>
-                      </td>
-                      <td>
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                          <button type="button"
-                            onclick="extendDueDate(<?= $br['id'] ?>, '<?= htmlspecialchars($br['title']) ?>')"
-                            class="btn-extend-due"
-                            style="display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; background: #f59e0b; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
-                            <iconify-icon icon="mdi:calendar-plus" style="vertical-align: middle;"></iconify-icon>
-                            Perpanjang
-                          </button>
-                          <a href="borrows.php?action=return&id=<?= $br['id'] ?>" class="btn-return" style="display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; background: var(--success); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s ease; white-space: nowrap; margin-left: 0;">
-                            <iconify-icon icon="mdi:check" style="vertical-align: middle;"></iconify-icon>
-                            Kembali
-                          </a>
-                        </div>
-                      </td>
+                      <th class="table-no">No</th>
+                      <th>Nama Buku</th>
+                      <th>Nama Siswa</th>
+                      <th>Tanggal Pinjam</th>
+                      <th>Jatuh Tempo</th>
+                      <th>Status</th>
+                      <th>Denda</th>
+                      <th>Aksi</th>
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $no = 1;
+                    foreach ($borrows as $br):
+                      if ($br['status'] === 'returned' || $br['status'] === 'pending_return' || $br['status'] === 'pending_confirmation')
+                        continue;
+                      ?>
+                      <tr>
+                        <td class="table-no"><?= $no++ ?></td>
+                        <td style="font-weight: 700; color: var(--text);"><?= htmlspecialchars($br['title']) ?></td>
+                        <td><?= htmlspecialchars($br['member_name']) ?></td>
+                        <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
+                        <td><?= $br['due_at'] ? date('d/m/Y', strtotime($br['due_at'])) : '-' ?></td>
+                        <td>
+                          <?php if ($br['status'] === 'overdue'): ?>
+                            <span class="status-badge overdue">Terlambat</span>
+                          <?php else: ?>
+                            <span class="status-badge borrowed">Dipinjam</span>
+                          <?php endif; ?>
+                        </td>
+                        <td>
+                          <?php if (!empty($br['fine_amount'])): ?>
+                            <div class="flex-center gap-2" style="font-weight: 700; color: var(--danger);">
+                              <iconify-icon icon="mdi:credit-card-outline"></iconify-icon>
+                              Rp <?= number_format($br['fine_amount'], 0, ',', '.') ?>
+                              <span style="font-size: 10px; opacity: 0.8;">(<?= $br['fine_status'] === 'paid' ? 'Paid' : 'Unpaid' ?>)</span>
+                            </div>
+                          <?php else: ?>
+                            <span style="color: var(--muted);">-</span>
+                          <?php endif; ?>
+                        </td>
+                        <td>
+                          <div class="action-grid">
+                            <button type="button"
+                              onclick="extendDueDate(<?= $br['id'] ?>, '<?= htmlspecialchars($br['title']) ?>')"
+                              class="btn-sm btn-sm-warning">
+                              <iconify-icon icon="mdi:calendar-plus"></iconify-icon>
+                              Perpanjang
+                            </button>
+                            <a href="borrows.php?action=return&id=<?= $br['id'] ?>" class="btn-sm btn-sm-success" style="text-decoration: none;">
+                              <iconify-icon icon="mdi:check"></iconify-icon>
+                              Kembali
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
             <?php endif; ?>
           </div>
 
@@ -1259,48 +854,49 @@ $withFines = count(array_filter($borrows, fn($b) => !empty($b['fine_amount'])));
                 <p>Belum ada riwayat pengembalian</p>
               </div>
             <?php else: ?>
-              <table class="borrows-table">
-                <thead>
-                  <tr>
-                    <th class="table-no">No</th>
-                    <th>Nama Buku</th>
-                    <th>Nama Siswa</th>
-                    <th>Tanggal Pinjam</th>
-                    <th>Tanggal Kembali</th>
-                    <th>Denda</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $no = 1;
-                  foreach ($borrows as $br):
-                    if ($br['status'] !== 'returned')
-                      continue;
-                    ?>
+              <div class="borrows-table-wrap">
+                <table class="borrows-table">
+                  <thead>
                     <tr>
-                      <td class="table-no"><?= $no++ ?></td>
-                      <td><strong><?= htmlspecialchars($br['title']) ?></strong></td>
-                      <td><?= htmlspecialchars($br['member_name']) ?></td>
-                      <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
-                      <td><?= $br['returned_at'] ? date('d/m/Y', strtotime($br['returned_at'])) : '-' ?></td>
-                      <td style="text-align: center;">
-                        <?php if (!empty($br['fine_amount'])): ?>
-                          <span
-                            style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
-                            💳 Rp <?= number_format($br['fine_amount'], 0, ',', '.') ?>
-                          </span>
-                        <?php else: ?>
-                          <span style="color: #6b7280;">-</span>
-                        <?php endif; ?>
-                      </td>
-                      <td>
-                        <span class="status-badge status-returned">Dikembalikan</span>
-                      </td>
+                      <th class="table-no">No</th>
+                      <th>Nama Buku</th>
+                      <th>Nama Siswa</th>
+                      <th>Tanggal Pinjam</th>
+                      <th>Tanggal Kembali</th>
+                      <th>Denda</th>
+                      <th>Status</th>
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $no = 1;
+                    foreach ($borrows as $br):
+                      if ($br['status'] !== 'returned')
+                        continue;
+                      ?>
+                      <tr>
+                        <td class="table-no"><?= $no++ ?></td>
+                        <td style="font-weight: 700; color: var(--text);"><?= htmlspecialchars($br['title']) ?></td>
+                        <td><?= htmlspecialchars($br['member_name']) ?></td>
+                        <td><?= date('d/m/Y', strtotime($br['borrowed_at'])) ?></td>
+                        <td><?= $br['returned_at'] ? date('d/m/Y', strtotime($br['returned_at'])) : '-' ?></td>
+                        <td>
+                          <?php if (!empty($br['fine_amount'])): ?>
+                            <div class="flex-center gap-2" style="font-weight: 700; color: var(--danger);">
+                              Rp <?= number_format($br['fine_amount'], 0, ',', '.') ?>
+                            </div>
+                          <?php else: ?>
+                            <span style="color: var(--muted);">-</span>
+                          <?php endif; ?>
+                        </td>
+                        <td>
+                          <span class="status-badge returned">Dikembalikan</span>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
             <?php endif; ?>
           </div>
         </div>

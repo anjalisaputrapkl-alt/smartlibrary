@@ -1,0 +1,6 @@
+<?php
+$pdo = require __DIR__ . '/src/db.php';
+$stmt = $pdo->query("DESCRIBE schools");
+while ($row = $stmt->fetch()) {
+    echo "{$row['Field']} ({$row['Type']})\n";
+}

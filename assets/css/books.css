@@ -10,14 +10,20 @@
   --success: #10B981;
   --radius: 12px;
 
-  /* Retain specific vars for books but map them */
-  --bg-color: var(--bg);
-  --card-bg: var(--surface);
-  --card-border: var(--border);
-  --text-primary: var(--text);
-  --text-secondary: var(--muted);
-  --primary: #334155;
-  --input-border: #D1D5DB;
+  /* Theme-aware extensions */
+  --accent-soft: color-mix(in srgb, var(--accent), transparent 92%);
+  --accent-hover: color-mix(in srgb, var(--accent), black 10%);
+  --input-bg: var(--surface);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='dark'],
+[data-theme='blue'],
+[data-theme='monochrome'],
+[data-theme='sunset'],
+[data-theme='bookish'],
+[data-theme='ocean'] {
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 body {
@@ -77,8 +83,7 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 24px;
-  box-shadow: none;
-  /* Reset shadow to match theme */
+  box-shadow: var(--card-shadow);
 }
 
 /* Add hover effect only if needed or specific class */
@@ -127,9 +132,11 @@ label {
 input,
 select {
   padding: 10px 14px;
-  border: 1px solid var(--input-border);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
+  background: var(--input-bg);
+  color: var(--text);
   transition: all 0.2s;
   width: 100%;
   box-sizing: border-box;
@@ -138,8 +145,8 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #3B82F6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .form-actions {
@@ -151,28 +158,29 @@ select:focus {
 
 .btn {
   padding: 10px 20px;
-  background: #2563EB;
-  /* Bright blue for primary actions */
+  background: var(--accent);
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
+  transition: all 0.2s;
 }
 
 .btn:hover {
-  background: #1D4ED8;
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: transparent;
-  color: #4B5563;
-  border: 1px solid #D1D5DB;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
-  background: #F3F4F6;
+  background: var(--bg);
 }
 
 
@@ -185,24 +193,21 @@ select:focus {
 }
 
 .book-card-vertical {
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  /* Smooth rounded corners */
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-  /* Subtle shadow */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .book-card-vertical:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-  /* Soft lift shadow */
-  border-color: #D1D5DB;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
 }
 
 /* Image container with whitespace padding (like reference) */
@@ -216,7 +221,7 @@ select:focus {
   align-items: flex-end;
   /* Align bottom to look grounded */
   justify-content: center;
-  background: #FFFFFF;
+  background: var(--surface);
   position: relative;
   box-sizing: border-box;
 }
@@ -234,10 +239,34 @@ select:focus {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.book-location-input {
+  display: flex;
+  gap: 10px;
+}
+
+.book-location-input input:last-child {
+  max-width: 100px;
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+}
+
+.card-header-flex h2 {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
 .no-image-placeholder {
   width: 60%;
   height: 80%;
-  background: #d4defa;
+  background: var(--accent-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,14 +278,15 @@ select:focus {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   padding: 4px 8px;
   border-radius: 20px;
   font-size: 11px;
   font-weight: 600;
-  color: #059669;
+  color: var(--success);
   backdrop-filter: blur(2px);
+  opacity: 0.9;
 }
 
 .book-card-body {
@@ -269,7 +299,7 @@ select:focus {
 /* Category: Small above title */
 .book-category {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -280,11 +310,12 @@ select:focus {
 .book-title {
   font-size: 15px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text);
   line-height: 1.35;
   margin-bottom: 4px;
   /* Clamp to 2 lines */
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -295,13 +326,13 @@ select:focus {
 /* Author: Muted */
 .book-author {
   font-size: 13px;
-  color: #6B7280;
+  color: var(--muted);
   margin-bottom: 12px;
 }
 
 /* Footer: Divider and actions */
 .book-card-footer {
-  border-top: 1px solid #F3F4F6;
+  border-top: 1px solid var(--border);
   margin-top: auto;
   /* Push to bottom */
   padding-top: 12px;
@@ -312,7 +343,7 @@ select:focus {
 
 .shelf-info {
   font-size: 11px;
-  color: #94A3B8;
+  color: var(--muted);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -332,9 +363,9 @@ select:focus {
   justify-content: center;
   border-radius: 50%;
   /* Circle buttons are neat */
-  border: 1px solid transparent;
-  background: #F9FAFB;
-  color: #64748B;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--muted);
   cursor: pointer;
   font-size: 16px;
   transition: all 0.2s;
@@ -342,13 +373,15 @@ select:focus {
 }
 
 .btn-icon-sm:hover {
-  background: #E0F2FE;
-  color: #0284C7;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .btn-icon-danger:hover {
-  background: #FEF2F2;
-  color: #DC2626;
+  background: color-mix(in srgb, var(--danger), transparent 90%);
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 /* --- FAQ & Stats --- */
@@ -360,7 +393,7 @@ select:focus {
 
 /* FAQ Accordion */
 .faq-item {
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 12px;
   overflow: hidden;
@@ -380,11 +413,11 @@ select:focus {
 
 .faq-answer {
   padding: 16px;
-  background: #F9FAFB;
+  background: var(--accent-soft);
   font-size: 13px;
-  color: #4B5563;
+  color: var(--muted);
   display: none;
-  border-top: 1px solid #F3F4F6;
+  border-top: 1px solid var(--border);
 }
 
 .faq-item.active .faq-answer {
@@ -403,8 +436,8 @@ select:focus {
 }
 
 .stat-box {
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
   text-align: center;
@@ -413,13 +446,13 @@ select:focus {
 .stat-num {
   font-size: 28px;
   font-weight: 700;
-  color: #3B82F6;
+  color: var(--accent);
 }
 
 .stat-desc {
   font-size: 11px;
   font-weight: 600;
-  color: #94A3B8;
+  color: var(--muted);
   text-transform: uppercase;
 }
 
@@ -438,19 +471,20 @@ select:focus {
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--surface);
   margin: 5% auto;
   width: 90%;
   max-width: 600px;
   border-radius: 12px;
   overflow: hidden;
   animation: slideUp 0.3s;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
 }
 
 .modal-header {
   padding: 16px 24px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -461,7 +495,7 @@ select:focus {
   border: none;
   font-size: 24px;
   line-height: 1;
-  color: #6B7280;
+  color: var(--muted);
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -473,8 +507,8 @@ select:focus {
 }
 
 .modal-close:hover {
-  background: #F3F4F6;
-  color: #111827;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .modal-body {
@@ -501,15 +535,14 @@ select:focus {
 }
 
 .stat-card-modern {
-  background: #FFFFFF;
+  background: var(--surface);
   border-radius: 16px;
   padding: 24px;
   display: flex;
   align-items: center;
   gap: 20px;
-  border: 1px solid #EFF6FF;
-  /* Very light blue border */
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.05), 0 2px 4px -1px rgba(59, 130, 246, 0.03);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
@@ -518,8 +551,8 @@ select:focus {
 
 .stat-card-modern:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
-  border-color: #BFDBFE;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  border-color: var(--accent);
 }
 
 /* Decoration line */
@@ -530,7 +563,7 @@ select:focus {
   left: 0;
   height: 3px;
   width: 0%;
-  background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+  background: var(--accent);
   transition: width 0.3s ease;
 }
 
@@ -551,17 +584,17 @@ select:focus {
 
 /* Variasi Warna Icon */
 .stat-icon.blue {
-  background: #EFF6FF;
+  background: color-mix(in srgb, #3B82F6, transparent 92%);
   color: #3B82F6;
 }
 
 .stat-icon.purple {
-  background: #F5F3FF;
+  background: color-mix(in srgb, #8B5CF6, transparent 92%);
   color: #8B5CF6;
 }
 
 .stat-icon.teal {
-  background: #F0FDFA;
+  background: color-mix(in srgb, #14B8A6, transparent 92%);
   color: #14B8A6;
 }
 
@@ -573,14 +606,14 @@ select:focus {
 .stat-value {
   font-size: 28px;
   font-weight: 800;
-  color: #1E293B;
+  color: var(--text);
   line-height: 1.2;
   font-feature-settings: "tnum";
 }
 
 .stat-label {
   font-size: 13px;
-  color: #64748B;
+  color: var(--muted);
   font-weight: 600;
   margin-top: 4px;
   letter-spacing: 0.02em;
@@ -588,30 +621,36 @@ select:focus {
 
 .stat-arrow {
   margin-left: auto;
-  color: #CBD5E1;
+  color: var(--border);
   transition: transform 0.2s;
 }
 
 .stat-card-modern:hover .stat-arrow {
-  color: #3B82F6;
+  color: var(--accent);
   transform: translateX(4px);
 }
 
 /* Modal Content for Stats */
 .modal-stat-list {
   margin-top: 16px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
 }
 
+.empty-state {
+  padding: 15px;
+  text-align: center;
+  color: var(--muted);
+}
+
 .modal-stat-item {
   padding: 12px 16px;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .modal-stat-item:last-child {
@@ -619,17 +658,17 @@ select:focus {
 }
 
 .modal-stat-item:nth-child(even) {
-  background: #F8FAFC;
+  background: var(--bg);
 }
 
 .stat-item-label {
-  color: #334155;
+  color: var(--text);
   font-weight: 500;
 }
 
 .stat-item-val {
   font-weight: 700;
-  color: #3B82F6;
+  color: var(--accent);
 }
 
 /* Responsive */
@@ -682,7 +721,7 @@ select:focus {
 }
 
 .detail-field {
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 8px;
 }
 
@@ -693,12 +732,12 @@ select:focus {
 .detail-field label {
   display: block;
   margin-bottom: 4px;
-  color: #64748B;
+  color: var(--muted);
   font-size: 11px;
 }
 
 .detail-field div {
   font-size: 15px;
   font-weight: 600;
-  color: #1E293B;
+  color: var(--text);
 }

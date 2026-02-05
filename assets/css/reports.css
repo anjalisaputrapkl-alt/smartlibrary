@@ -1,25 +1,43 @@
 :root {
+  /* Core Theme Colors - Overridden by theme-loader.js */
   --bg: #f1f4f8;
   --surface: #ffffff;
   --text: #1f2937;
   --muted: #6b7280;
   --border: #e5e7eb;
   --accent: #2563eb;
-  --danger: #dc2626;
-  --success: #16a34a;
-
-  /* Additional modern tokens for content enhancement */
-  --primary-light: #eff6ff;
-  --success-light: #ecfdf5;
-  --danger-light: #fef2f2;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
   --purple: #8b5cf6;
-  --purple-light: #f5f3ff;
   --cyan: #06b6d4;
-  --cyan-light: #ecfeff;
 
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* Derived Theme Variables */
+  --primary: var(--accent);
+
+  --primary-soft: color-mix(in srgb, var(--primary), transparent 92%);
+  --success-soft: color-mix(in srgb, var(--success), transparent 92%);
+  --danger-soft: color-mix(in srgb, var(--danger), transparent 92%);
+  --warning-soft: color-mix(in srgb, var(--warning), transparent 92%);
+  --info-soft: color-mix(in srgb, var(--info), transparent 92%);
+  --purple-soft: color-mix(in srgb, var(--purple), transparent 92%);
+  --cyan-soft: color-mix(in srgb, var(--cyan), transparent 92%);
+
+  --overlay: rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Adjustments for dark themes */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --overlay: rgba(0, 0, 0, 0.7);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
+  }
 }
 
 * {
@@ -65,8 +83,16 @@ a {
   z-index: 999;
 }
 
+.topbar-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .topbar strong {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
 }
 
 /* Content - MODERNIZED */
@@ -146,14 +172,15 @@ select {
   font-size: 14px;
   font-family: inherit;
   transition: border-color 0.2s, box-shadow 0.2s;
-  background: #fff;
+  background: var(--surface);
+  color: var(--text);
 }
 
 input:focus,
 select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--primary-light);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 small {
@@ -166,7 +193,8 @@ small {
   padding: 10px 18px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: white;
+  background: var(--surface);
+  color: var(--text);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -177,7 +205,7 @@ small {
 }
 
 .btn:hover {
-  background: #f9fafb;
+  background: var(--bg);
   transform: translateY(-1px);
 }
 
@@ -261,7 +289,7 @@ small {
 
 /* KPI Color Coding */
 .kpi-card[data-stat-type="total_books"] .kpi-icon {
-  background: var(--primary-light);
+  background: var(--primary-soft);
   color: var(--accent);
 }
 
@@ -269,36 +297,72 @@ small {
   border-bottom: 4px solid var(--accent);
 }
 
-.kpi-card[data-stat-type="borrows_month"] .kpi-icon {
-  background: var(--success-light);
-  color: var(--success);
-}
-
-.kpi-card[data-stat-type="borrows_month"]:hover {
-  border-bottom: 4px solid var(--success);
-}
-
-.kpi-card[data-stat-type="returns_month"] .kpi-icon {
-  background: var(--purple-light);
-  color: var(--purple);
-}
-
-.kpi-card[data-stat-type="returns_month"]:hover {
-  border-bottom: 4px solid var(--purple);
-}
-
-.kpi-card[data-stat-type="active_members"] .kpi-icon {
-  background: var(--cyan-light);
+.kpi-card[data-stat-type="total_copies"] .kpi-icon {
+  background: var(--cyan-soft);
   color: var(--cyan);
 }
 
-.kpi-card[data-stat-type="active_members"]:hover {
+.kpi-card[data-stat-type="total_copies"]:hover {
   border-bottom: 4px solid var(--cyan);
+}
+
+.kpi-card[data-stat-type="borrows_month"] .kpi-icon {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.kpi-card[data-stat-type="borrows_month"]:hover {
+  border-bottom: 4px solid var(--info);
+}
+
+.kpi-card[data-stat-type="borrows_today"] .kpi-icon {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.kpi-card[data-stat-type="borrows_today"]:hover {
+  border-bottom: 4px solid var(--warning);
+}
+
+.kpi-card[data-stat-type="returns_month"] .kpi-icon {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.kpi-card[data-stat-type="returns_month"]:hover {
+  border-bottom: 4px solid var(--success);
+}
+
+.kpi-card[data-stat-type="returns_today"] .kpi-icon {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.kpi-card[data-stat-type="returns_today"]:hover {
+  border-bottom: 4px solid var(--success);
+}
+
+.kpi-card[data-stat-type="active_members"] .kpi-icon {
+  background: var(--primary-soft);
+  color: var(--accent);
+}
+
+.kpi-card[data-stat-type="active_members"]:hover {
+  border-bottom: 4px solid var(--accent);
+}
+
+.kpi-card[data-stat-type="total_categories"] .kpi-icon {
+  background: var(--purple-soft);
+  color: var(--purple);
+}
+
+.kpi-card[data-stat-type="total_categories"]:hover {
+  border-bottom: 4px solid var(--purple);
 }
 
 .kpi-card[data-stat-type="late_fines"] .kpi-icon,
 .kpi-card[data-stat-type="damage_fines"] .kpi-icon {
-  background: var(--danger-light);
+  background: var(--danger-soft);
   color: var(--danger);
 }
 
@@ -403,7 +467,7 @@ small {
 }
 
 .datatable thead tr th {
-  background: #f8fafc;
+  background: var(--bg);
   border-bottom: 2px solid var(--border);
   padding: 16px 20px;
   text-align: left;
@@ -419,7 +483,7 @@ small {
   border-bottom: 1px solid var(--border);
   font-size: 14px;
   color: var(--text);
-  background: white;
+  background: var(--surface);
 }
 
 .datatable tbody tr:last-child td {
@@ -427,7 +491,7 @@ small {
 }
 
 .datatable tbody tr:hover td {
-  background: #f9fafb;
+  background: var(--primary-soft);
 }
 
 .datatable td,
@@ -526,8 +590,7 @@ small {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 23, 42, 0.5);
-  /* Modern blue-black overlay */
+  background: var(--overlay);
   display: none;
   align-items: center;
   justify-content: center;
@@ -638,14 +701,98 @@ small {
   font-size: 12px;
   font-weight: 600;
   text-transform: capitalize;
+  background: var(--bg);
 }
 
 .badge-active {
-  background: var(--success-light);
+  background: var(--success-soft);
   color: var(--success);
 }
 
 .badge-inactive {
-  background: var(--danger-light);
+  background: var(--danger-soft);
   color: var(--danger);
+}
+
+/* --- New Action & Status Utilities --- */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.status-pill.paid {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.status-pill.pending {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.status-pill.info {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.fine-card {
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+
+.fine-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.fine-card.danger {
+  border-left-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.fine-card.success {
+  border-left-color: var(--success);
+  background: var(--success-soft);
+}
+
+.fine-card.info {
+  border-left-color: var(--info);
+  background: var(--info-soft);
+}
+
+.fine-card-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.fine-card-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.fine-card-value.danger {
+  color: var(--danger);
+}
+
+.fine-card-value.success {
+  color: var(--success);
+}
+
+.fine-card-value.info {
+  color: var(--info);
 }

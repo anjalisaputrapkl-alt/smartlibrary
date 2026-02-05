@@ -224,7 +224,7 @@ $categories = [
                 </div>
                  <div class="form-col">
                     <div class="form-group"><label>Lokasi (Rak / Baris)</label>
-                        <div style="display: flex; gap: 10px;">
+                        <div class="book-location-input">
                             <input name="shelf" value="<?= $book['shelf'] ?? '' ?>" placeholder="Rak A1">
                             <input type="number" min="1" name="row_number" value="<?= $book['row_number'] ?? '' ?>" placeholder="Baris 1">
                         </div>
@@ -258,7 +258,7 @@ $categories = [
             <div class="form-actions">
                 <button class="btn" type="submit"><?= $action === 'edit' ? 'Simpan Perubahan' : 'Tambah Buku Baru' ?></button>
                 <?php if($action === 'edit'): ?>
-                    <a href="books.php" class="btn btn-secondary" style="text-align: center;">Batal</a>
+                    <a href="books.php" class="btn btn-secondary">Batal</a>
                 <?php endif; ?>
             </div>
           </form>
@@ -266,8 +266,8 @@ $categories = [
 
         <!-- SECTION 2: BOOK LIST (Full Width) -->
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #F1F5F9; padding-bottom: 16px;">
-             <h2 style="margin: 0; border: none; padding: 0;">Daftar Buku (<?= count($books) ?>)</h2>
+          <div class="card-header-flex">
+             <h2>Daftar Buku (<?= count($books) ?>)</h2>
              <div class="view-controls">
                  <!-- Optional search -->
              </div>
@@ -282,7 +282,7 @@ $categories = [
                       alt="<?= htmlspecialchars($b['title']) ?>" loading="lazy">
                   <?php else: ?>
                     <div class="no-image-placeholder">
-                        <iconify-icon icon="mdi:book-open-variant" style="font-size: 32px; color: #CBD5E1;"></iconify-icon>
+                        <iconify-icon icon="mdi:book-open-variant" style="font-size: 32px;"></iconify-icon>
                     </div>
                   <?php endif; ?>
                   
@@ -565,7 +565,7 @@ $categories = [
             // Get 10 newest
             const recent = books.slice(0, 10);
             if (recent.length === 0) {
-                content += `<div style="padding:15px; text-align:center;">Belum ada buku.</div>`;
+                content += `<div class="empty-state">Belum ada buku.</div>`;
             } else {
                 recent.forEach(b => {
                     content += `

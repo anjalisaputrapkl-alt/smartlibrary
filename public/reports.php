@@ -122,7 +122,12 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
 
   <div class="app">
     <div class="topbar">
-      <strong>Laporan Perpustakaan</strong>
+      <div class="topbar-title">
+        <iconify-icon icon="mdi:chart-box-outline" style="font-size: 24px; color: var(--primary);"></iconify-icon>
+        <strong>Laporan Perpustakaan</strong>
+      </div>
+      <div class="topbar-actions">
+      </div>
     </div>
 
     <div class="content">
@@ -154,7 +159,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           <div>
             <button id="btn-apply" class="btn"><iconify-icon icon="mdi:filter"
                 style="vertical-align: middle;"></iconify-icon> Filter</button>
-            <button id="btn-export-excel" class="btn btn-secondary" style="margin-left: 8px;"><iconify-icon
+            <button id="btn-export-excel" class="btn btn-secondary"><iconify-icon
                 icon="mdi:file-excel" style="vertical-align: middle;"></iconify-icon> Export Excel</button>
           </div>
         </div>
@@ -170,8 +175,8 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           </div>
         </div>
 
-        <div class="kpi-card clickable" data-stat-type="total_books" style="border-left-color: var(--cyan);">
-           <div class="kpi-icon" style="background: var(--cyan-light); color: var(--cyan);"><iconify-icon icon="mdi:book-multiple"></iconify-icon></div>
+        <div class="kpi-card clickable" data-stat-type="total_copies">
+           <div class="kpi-icon"><iconify-icon icon="mdi:book-multiple"></iconify-icon></div>
            <div>
              <div class="kpi-title">Total Eksemplar</div>
              <div class="kpi-value"><?php echo number_format($tot_copies); ?></div>
@@ -186,8 +191,8 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           </div>
         </div>
 
-        <div class="kpi-card clickable" data-stat-type="borrows_month">
-           <div class="kpi-icon" style="background: var(--warning-light); color: var(--warning);"><iconify-icon icon="mdi:calendar-today"></iconify-icon></div>
+        <div class="kpi-card clickable" data-stat-type="borrows_today">
+           <div class="kpi-icon"><iconify-icon icon="mdi:calendar-today"></iconify-icon></div>
            <div>
              <div class="kpi-title">Peminjaman Hari Ini</div>
              <div class="kpi-value"><?php echo number_format($tot_borrows_today); ?></div>
@@ -202,8 +207,8 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           </div>
         </div>
         
-        <div class="kpi-card clickable" data-stat-type="returns_month">
-            <div class="kpi-icon" style="background: var(--success-light); color: var(--success);"><iconify-icon icon="mdi:check-circle"></iconify-icon></div>
+        <div class="kpi-card clickable" data-stat-type="returns_today">
+            <div class="kpi-icon"><iconify-icon icon="mdi:check-circle"></iconify-icon></div>
             <div>
               <div class="kpi-title">Pengembalian Hari Ini</div>
               <div class="kpi-value"><?php echo number_format($tot_returns_today); ?></div>
@@ -218,8 +223,8 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           </div>
         </div>
         
-        <div class="kpi-card clickable" data-stat-type="active_members">
-           <div class="kpi-icon" style="background: var(--purple-light); color: var(--purple);"><iconify-icon icon="mdi:bookmark-multiple"></iconify-icon></div>
+        <div class="kpi-card clickable" data-stat-type="total_categories">
+           <div class="kpi-icon"><iconify-icon icon="mdi:bookmark-multiple"></iconify-icon></div>
            <div>
              <div class="kpi-title">Total Kategori</div>
              <div class="kpi-value"><?php echo number_format($tot_categories); ?></div>
@@ -290,7 +295,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
           <?php for ($h = 0; $h < 24; $h++): ?>
             <?php $v = $hours[$h];
             $intensity = min(1, $v / max(1, max($hours))); ?>
-            <div class="heatmap-cell" style="background:rgba(14,165,233,<?php echo 0.12 + $intensity * 0.6; ?>);">
+            <div class="heatmap-cell" style="background: color-mix(in srgb, var(--info), transparent <?php echo (1 - (0.12 + $intensity * 0.6)) * 100; ?>%);">
               <div style="font-size:12px; color:var(--muted);"><?php echo sprintf('%02d:00', $h); ?></div>
             </div>
           <?php endfor; ?>
@@ -377,20 +382,17 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
         <!-- Fine Reports -->
         <h4 style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px;">Laporan Denda Kerusakan Buku</h4>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-          <div class="clickable" data-stat-type="damage_fines" 
-            style="padding: 16px; background: rgba(59,130,246,0.05); border-radius: 8px; border-left: 4px solid #3b82f6;">
-            <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">Total Denda</div>
-            <div style="font-size: 20px; font-weight: 600; color: #dc2626;">Rp <?php echo number_format($totalDamageFines); ?></div>
+          <div class="fine-card info clickable" data-stat-type="damage_fines">
+            <div class="fine-card-label">Total Denda</div>
+            <div class="fine-card-value info">Rp <?php echo number_format($totalDamageFines); ?></div>
           </div>
-          <div class="clickable" data-stat-type="damage_fines" data-status="pending"
-            style="padding: 16px; background: rgba(239,68,68,0.05); border-radius: 8px; border-left: 4px solid #ef4444;">
-            <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">Denda Tertunda</div>
-            <div style="font-size: 20px; font-weight: 600; color: #ef4444;">Rp <?php echo number_format($pendingDamageFines); ?></div>
+          <div class="fine-card danger clickable" data-stat-type="damage_fines" data-status="pending">
+            <div class="fine-card-label">Denda Tertunda</div>
+            <div class="fine-card-value danger">Rp <?php echo number_format($pendingDamageFines); ?></div>
           </div>
-          <div class="clickable" data-stat-type="damage_fines" data-status="paid"
-            style="padding: 16px; background: rgba(16,185,129,0.05); border-radius: 8px; border-left: 4px solid #10b981;">
-            <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">Denda Terbayar</div>
-            <div style="font-size: 20px; font-weight: 600; color: #10b981;">Rp <?php echo number_format($paidDamageFines); ?></div>
+          <div class="fine-card success clickable" data-stat-type="damage_fines" data-status="paid">
+            <div class="fine-card-label">Denda Terbayar</div>
+            <div class="fine-card-value success">Rp <?php echo number_format($paidDamageFines); ?></div>
           </div>
         </div>
 
@@ -411,9 +413,9 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
                 <tr>
                   <td><strong><?php echo htmlspecialchars($member['name']); ?></strong></td>
                   <td><?php echo (int) $member['damage_count']; ?></td>
-                  <td style="color: #dc2626; font-weight: 600;">Rp <?php echo number_format($member['total_fine']); ?></td>
-                  <td style="color: #10b981;">Rp <?php echo number_format($member['paid_amount']); ?></td>
-                  <td style="color: #ef4444;">Rp <?php echo number_format($member['pending_amount']); ?></td>
+                  <td class="fine-card-value danger" style="font-size: 14px;">Rp <?php echo number_format($member['total_fine']); ?></td>
+                  <td class="fine-card-value success" style="font-size: 14px;">Rp <?php echo number_format($member['paid_amount']); ?></td>
+                  <td class="fine-card-value danger" style="font-size: 14px;">Rp <?php echo number_format($member['pending_amount']); ?></td>
                 </tr>
               <?php endforeach; ?>
             <?php endif; ?>
@@ -438,11 +440,9 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
                 <td><?php echo htmlspecialchars($record['member_name']); ?></td>
                 <td><?php echo htmlspecialchars($record['book_title']); ?></td>
                 <td><?php echo htmlspecialchars($record['damage_type']); ?></td>
-                <td style="color: #dc2626; font-weight: 600;">Rp <?php echo number_format($record['fine_amount']); ?></td>
+                <td class="fine-card-value danger" style="font-size: 14px;">Rp <?php echo number_format($record['fine_amount']); ?></td>
                 <td>
-                  <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; 
-                    background: <?php echo $record['status'] === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'; ?>; 
-                    color: <?php echo $record['status'] === 'paid' ? '#10b981' : '#ef4444'; ?>;">
+                  <span class="status-pill <?php echo $record['status'] === 'paid' ? 'paid' : 'pending'; ?>">
                     <?php echo $record['status'] === 'paid' ? 'Lunas' : 'Tertunda'; ?>
                   </span>
                 </td>

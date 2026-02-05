@@ -71,10 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'email' => trim($_POST['school_email'] ?? '') ?: null,
                 'npsn' => trim($_POST['school_npsn'] ?? '') ?: null,
+                'borrow_duration' => (int) ($_POST['borrow_duration'] ?? 7),
+                'late_fine' => (float) ($_POST['late_fine'] ?? 500),
+                'max_books' => (int) ($_POST['max_books'] ?? 3),
             ];
 
             $schoolProfileModel->updateSchoolProfile($sid, $data);
-            $profile_success = 'Data profil sekolah berhasil diperbarui.';
+            $profile_success = 'Data profil dan peraturan berhasil diperbarui.';
         } catch (Exception $e) {
             $profile_error = 'Gagal memperbarui data profil: ' . $e->getMessage();
         }
@@ -192,7 +195,7 @@ if (!$school) {
 
     <div class="app">
         <div class="topbar">
-            <strong><iconify-icon icon="mdi:cog" style="vertical-align: middle;"></iconify-icon> Pengaturan Sekolah</strong>
+            <strong>Pengaturan Sekolah</strong>
         </div>
 
         <div class="content">
@@ -203,6 +206,9 @@ if (!$school) {
                 </div>
                 <div class="tab-link" data-tab="security">
                     <iconify-icon icon="mdi:shield-lock-outline"></iconify-icon> Keamanan
+                </div>
+                <div class="tab-link" data-tab="borrows">
+                    <iconify-icon icon="mdi:book-clock-outline"></iconify-icon> Peminjaman
                 </div>
                 <div class="tab-link" data-tab="themes">
                     <iconify-icon icon="mdi:palette-outline"></iconify-icon> Tema
@@ -279,8 +285,10 @@ if (!$school) {
                                         <img src="../<?php echo htmlspecialchars($school['photo_path']); ?>" 
                                              class="profile-photo" alt="Logo Sekolah" id="preview-img">
                                     <?php else: ?>
-                                        <img src="../assets/img/default-school.png" 
-                                             class="profile-photo" alt="Logo Sekolah" id="preview-img">
+                                        <div class="photo-placeholder" id="preview-placeholder">
+                                            <iconify-icon icon="mdi:school"></iconify-icon>
+                                        </div>
+                                        <img src="" class="profile-photo" alt="Logo Sekolah" id="preview-img" style="display: none;">
                                     <?php endif; ?>
                                     <label for="school_photo" class="photo-overlay">
                                         <iconify-icon icon="mdi:camera-outline"></iconify-icon>
@@ -394,6 +402,83 @@ if (!$school) {
                 </div>
             </div>
 
+            <!-- Tab: Peminjaman -->
+            <div class="tab-content" id="borrows">
+                <div class="settings-grid">
+                    <div class="card">
+                        <h2 class="card-title">
+                            <iconify-icon icon="mdi:book-cog-outline"></iconify-icon> Peraturan Peminjaman
+                        </h2>
+                        <p class="card-subtitle">Atur kebijakan peminjaman buku untuk seluruh anggota perpustakaan di sekolah Anda.</p>
+
+                        <form method="post">
+                            <input type="hidden" name="action" value="update_profile">
+                            
+                            <div class="form-group">
+                                <label for="borrow_duration">Durasi Peminjaman (Hari)</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <input id="borrow_duration" name="borrow_duration" type="number" required min="1"
+                                        value="<?php echo htmlspecialchars($school['borrow_duration'] ?? 7); ?>"
+                                        style="max-width: 120px;">
+                                    <span style="font-size: 14px; color: var(--muted);">Hari kerja</span>
+                                </div>
+                                <small style="display: block; margin-top: 8px; color: var(--muted);">Waktu maksimal seorang anggota boleh memegang buku sebelum harus dikembalikan.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="late_fine">Denda Keterlambatan (Rp)</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="font-size: 14px; color: var(--muted); font-weight: 600;">Rp</span>
+                                    <input id="late_fine" name="late_fine" type="number" required min="0" step="500"
+                                        value="<?php echo htmlspecialchars($school['late_fine'] ?? 500); ?>"
+                                        style="max-width: 150px;">
+                                    <span style="font-size: 14px; color: var(--muted);">/ hari</span>
+                                </div>
+                                <small style="display: block; margin-top: 8px; color: var(--muted);">Besar denda yang dikenakan per buku per satu hari keterlambatan.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="max_books">Maksimum Buku Dipinjam</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <input id="max_books" name="max_books" type="number" required min="1"
+                                        value="<?php echo htmlspecialchars($school['max_books'] ?? 3); ?>"
+                                        style="max-width: 120px;">
+                                    <span style="font-size: 14px; color: var(--muted);">Buku per Anggota</span>
+                                </div>
+                                <small style="display: block; margin-top: 8px; color: var(--muted);">Jumlah maksimal buku yang boleh dipinjam secara bersamaan oleh satu anggota.</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Simpan Peraturan</button>
+                        </form>
+                    </div>
+
+                    <div class="sidebar-widgets">
+                        <div class="card">
+                            <div class="info-block">
+                                <div class="info-icon warning">
+                                    <iconify-icon icon="mdi:information-outline"></iconify-icon>
+                                </div>
+                                <div class="info-text">
+                                    <h4 style="font-size: 14px;">Tips Peraturan</h4>
+                                    <p style="font-size: 13px;">Gunakan durasi 7-14 hari untuk sirkulasi buku yang optimal di lingkungan sekolah.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3 style="font-size: 14px; margin-bottom: 12px;">Statistik Saat Ini</h3>
+                            <div class="checklist-item done" style="margin-bottom: 8px;">
+                                <iconify-icon icon="mdi:check-circle"></iconify-icon>
+                                <span style="font-size: 13px;">Denda Otomatis Aktif</span>
+                            </div>
+                            <div class="checklist-item done">
+                                <iconify-icon icon="mdi:check-circle"></iconify-icon>
+                                <span style="font-size: 13px;">Validasi Limit Peminjaman</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tab: Themes -->
             <div class="tab-content" id="themes">
                 <div class="settings-grid">
@@ -501,10 +586,10 @@ if (!$school) {
                     </div>
 
                     <div class="sidebar-widgets">
-                        <div class="card" style="background: var(--accent); color: white;">
-                            <h3 class="card-title" style="font-size: 14px; color: white;">Butuh Bantuan?</h3>
-                            <p style="font-size: 12px; margin-bottom: 12px; opacity: 0.9;">Hubungi tim IT sekolah Anda jika mengalami kendala teknis yang berat.</p>
-                            <a href="mailto:support@sekolah.id" class="btn" style="width: 100%; border: none; font-size: 12px;">Email Support</a>
+                        <div class="card card-accent">
+                            <h3 class="card-title" style="font-size: 14px;">Butuh Bantuan?</h3>
+                            <p style="font-size: 12px; margin-bottom: 12px;">Hubungi tim IT sekolah Anda jika mengalami kendala teknis yang berat.</p>
+                            <a href="mailto:support@sekolah.id" class="btn btn-full" style="font-size: 12px;">Email Support</a>
                         </div>
                     </div>
                 </div>
@@ -553,15 +638,22 @@ if (!$school) {
         const photoInput = document.getElementById('school_photo');
         if (photoInput) {
             photoInput.addEventListener('change', function (e) {
-                const fileName = document.getElementById('file-name');
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
-                    fileName.textContent = 'File: ' + file.name;
                     
                     // Simple preview
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        document.getElementById('preview-img').src = e.target.result;
+                        const previewImg = document.getElementById('preview-img');
+                        const previewPlaceholder = document.getElementById('preview-placeholder');
+                        
+                        if (previewImg) {
+                            previewImg.src = e.target.result;
+                            previewImg.style.display = 'block';
+                        }
+                        if (previewPlaceholder) {
+                            previewPlaceholder.style.display = 'none';
+                        }
                     }
                     reader.readAsDataURL(file);
                 }
