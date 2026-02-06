@@ -99,7 +99,7 @@ $school = $stmt->fetch();
             font-size: 16px;
             font-weight: 500;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--card);
+            background: var(--bg);
             color: var(--text);
             box-shadow: var(--shadow-sm);
         }
