@@ -116,7 +116,9 @@ $sort = $_GET['sort'] ?? 'newest';
 // Build query to get books with availability status and current borrower
 $query = 'SELECT bk.*, 
                  curr_b.id as current_borrow_id, curr_b.due_at as borrower_due_at,
-                 m.name as borrower_name
+                 m.name as borrower_name,
+                 (SELECT AVG(rating) FROM rating_buku WHERE id_buku = bk.id) as avg_rating,
+                 (SELECT COUNT(*) FROM rating_buku WHERE id_buku = bk.id) as total_reviews
           FROM books bk
           LEFT JOIN borrows curr_b ON bk.id = curr_b.book_id AND curr_b.returned_at IS NULL
           LEFT JOIN members m ON curr_b.member_id = m.id
@@ -177,7 +179,9 @@ sort($categories);
 try {
     $booksAvailStmt = $pdo->prepare('SELECT bk.*, 
                                             curr_b.id as current_borrow_id, curr_b.due_at as borrower_due_at,
-                                            m.name as borrower_name
+                                            m.name as borrower_name,
+                                            (SELECT AVG(rating) FROM rating_buku WHERE id_buku = bk.id) as avg_rating,
+                                            (SELECT COUNT(*) FROM rating_buku WHERE id_buku = bk.id) as total_reviews
                                      FROM books bk
                                      LEFT JOIN borrows curr_b ON bk.id = curr_b.book_id AND curr_b.returned_at IS NULL
                                      LEFT JOIN members m ON curr_b.member_id = m.id
@@ -560,9 +564,21 @@ $pageTitle = 'Dashboard Siswa';
                                         <p style="font-size: 10px; color: var(--danger); margin: 0 0 4px 0;">Oleh: <?php echo htmlspecialchars($book['borrower_name']); ?></p>
                                     <?php endif; ?>
                                     <p class="book-category"><?php echo htmlspecialchars($book['category'] ?? 'Umum'); ?></p>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 8px 0;">
+                                        <div style="display: flex; align-items: center; gap: 2px; color: #FFD700; font-size: 13px;">
+                                            <iconify-icon icon="mdi:star"></iconify-icon>
+                                            <span style="font-weight: 700;"><?php echo $book['avg_rating'] ? round($book['avg_rating'], 1) : '0'; ?></span>
+                                        </div>
+                                        <span style="color: var(--text-muted); font-size: 11px;">(<?php echo (int)$book['total_reviews']; ?> Ulasan)</span>
+                                    </div>
+
                                     <div class="book-actions">
                                         <button class="btn-detail"
                                             onclick="openBookModal(<?php echo htmlspecialchars(json_encode($book)); ?>)">Detail</button>
+                                        <a href="book-rating.php?id=<?php echo $book['id']; ?>" class="btn-detail" style="background: rgba(58, 127, 242, 0.1); border-color: rgba(58, 127, 242, 0.3); color: var(--primary);">
+                                            <iconify-icon icon="mdi:star-outline"></iconify-icon> Rating
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -625,6 +641,9 @@ $pageTitle = 'Dashboard Siswa';
                     </div>
 
                     <div class="modal-actions">
+                        <a id="modalRatingBtn" href="#" class="modal-btn modal-btn-borrow" style="display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; background: rgba(58, 127, 242, 0.1); border: 1px solid var(--primary); color: var(--primary);">
+                            <iconify-icon icon="mdi:star-outline"></iconify-icon> Rating & Komentar
+                        </a>
                         <button class="modal-btn modal-btn-close" onclick="closeBookModal()">Tutup</button>
                     </div>
                 </div>
@@ -748,6 +767,9 @@ $pageTitle = 'Dashboard Siswa';
                             <button class="btn-detail" onclick="openBookModal(${JSON.stringify(book).replace(/"/g, '&quot;')})">
                                 Detail
                             </button>
+                            <a href="book-rating.php?id=${book.id}" class="btn-detail" style="background: rgba(58, 127, 242, 0.1); border-color: rgba(58, 127, 242, 0.3); color: var(--primary);">
+                                <iconify-icon icon="mdi:star-outline"></iconify-icon> Rating
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -781,7 +803,7 @@ $pageTitle = 'Dashboard Siswa';
             e.stopPropagation();
 
             const btn = e.currentTarget;
-            const icon = btn.querySelector('iconify-icon');
+            const icon = btn.querySelector('iconify-icon');     
             const isLoved = btn.classList.contains('loved');
 
             try {
@@ -849,12 +871,18 @@ $pageTitle = 'Dashboard Siswa';
                 coverIcon.style.display = 'block';
             }
 
-            // Set book details
+            // Set modal info
             document.getElementById('modalBookTitle').textContent = bookData.title || '-';
             document.getElementById('modalBookAuthor').textContent = bookData.author || '-';
             document.getElementById('modalBookCategory').textContent = bookData.category || 'Umum';
             document.getElementById('modalBookISBN').textContent = bookData.isbn || '-';
             document.getElementById('modalBookShelf').textContent = (bookData.shelf || '-') + (bookData.row_number ? ' (Baris ' + bookData.row_number + ')' : '');
+            
+            // Set rating link
+            document.getElementById('modalRatingBtn').href = 'book-rating.php?id=' + bookData.id;
+
+            // Show modal
+            document.getElementById('bookModal').classList.add('active');
 
             // Add borrower info if not available
             let borrowerInfoDiv = document.getElementById('modalBorrowerInfo');

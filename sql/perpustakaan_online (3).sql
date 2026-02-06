@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 30, 2026 at 08:47 AM
+-- Generation Time: Feb 06, 2026 at 04:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -73,7 +73,12 @@ INSERT INTO `books` (`id`, `school_id`, `title`, `author`, `isbn`, `category`, `
 (5, 4, 'The Psychology of Money', 'Morgan Housel', '9786238371044', 'Lainnya', 15, '2026-01-26 04:02:19', '1B', 5, 'book_1769400139_6976e74ba9d73.jpg'),
 (6, 4, 'Sang Alkemis', 'Paulo Coelho', '9786020656069', 'Lainnya', 2, '2026-01-26 04:03:53', '1B', 4, 'book_1769400245_6976e7b53bd5e.jpg'),
 (7, 4, 'B.J. Habibie : Sebuah Biografi', 'Fatimah Fayrus', '9786231643094', 'Biografi', 1, '2026-01-26 04:07:07', '1C', 2, 'book_1769400427_6976e86b698e3.jpg'),
-(8, 10, 'dfgdfg', 'dfgdfg', '232343', 'Referensi', 12, '2026-01-29 04:24:26', '1A', 3, 'book_1769660674_697ae1029671b.jpg');
+(8, 10, 'dfgdfg', 'dfgdfg', '232343', 'Referensi', 12, '2026-01-29 04:24:26', '1A', 3, 'book_1769660674_697ae1029671b.jpg'),
+(9, 4, 'the art of stoiscm', 'andora kinara', '956-079', 'Non-Fiksi', 5, '2026-02-05 02:15:32', '2b', 1, 'book_1770257732_6983fd444df29.jpg'),
+(10, 4, 'selamat tinggal', 'Tere liye', '957-785', 'Fiksi', 2, '2026-02-05 02:16:22', 'a1', 2, 'book_1770257782_6983fd76496df.jpg'),
+(11, 4, 'Bicara itu ada seninya', 'oh su hyang', '876-987', 'Referensi', 2, '2026-02-05 02:17:21', 'c3', 3, 'book_1770257841_6983fdb1694ff.jpg'),
+(12, 4, 'Belajar coding membuat program', 'someone', '757-876', 'Teknologi', 3, '2026-02-05 02:19:50', 'a2', 2, 'book_1770257990_6983fe468cd2f.jpg'),
+(13, 4, 'menyerah bukan pilihan', 'someone', '345-098', 'Fiksi', 2, '2026-02-05 02:20:43', 'a2', 3, 'book_1770258043_6983fe7bbcdea.jpg');
 
 -- --------------------------------------------------------
 
@@ -146,8 +151,11 @@ INSERT INTO `borrows` (`id`, `school_id`, `book_id`, `member_id`, `borrowed_at`,
 (26, 4, 7, 1, '2026-01-29 13:53:01', '2026-01-31 14:27:12', '2026-01-29 14:27:17', 'returned'),
 (27, 4, 1, 2, '2026-01-29 14:16:56', '2026-02-05 14:27:04', '2026-01-29 14:27:15', 'returned'),
 (28, 4, 7, 1, '2026-01-29 15:16:55', '2026-02-01 15:18:28', '2026-01-30 08:28:21', 'returned'),
-(30, 4, 1, 1, '2026-01-30 08:30:41', '2026-02-14 08:37:25', NULL, 'borrowed'),
-(31, 10, 8, 3, '2026-01-30 08:32:40', '2026-02-06 02:32:40', NULL, 'pending_confirmation');
+(30, 4, 1, 1, '2026-01-30 08:30:41', '2026-02-14 08:37:25', '2026-02-05 09:22:51', 'returned'),
+(31, 10, 8, 3, '2026-01-30 08:32:40', '2026-02-06 02:32:40', NULL, 'pending_confirmation'),
+(32, 4, 7, 2, '2026-02-05 09:53:22', '2026-02-12 09:53:22', '2026-02-05 11:14:19', 'returned'),
+(33, 4, 12, 2, '2026-02-05 09:53:43', '2026-02-12 09:53:43', '2026-02-05 11:14:16', 'returned'),
+(34, 4, 13, 2, '2026-02-05 10:46:07', '2026-02-12 10:46:07', '2026-02-05 11:14:07', 'returned');
 
 -- --------------------------------------------------------
 
@@ -186,17 +194,18 @@ CREATE TABLE `members` (
   `email` varchar(255) DEFAULT NULL,
   `nisn` varchar(20) DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT 'active',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `max_pinjam` int(11) DEFAULT 2
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `members`
 --
 
-INSERT INTO `members` (`id`, `school_id`, `name`, `email`, `nisn`, `status`, `created_at`) VALUES
-(1, 4, 'Anjali Saputra', 'anjalisaputra@gmail.com', '0094234', 'active', '2026-01-26 03:06:14'),
-(2, 4, 'Surya', 'surz@gmail.com', '000000', 'active', '2026-01-27 03:56:53'),
-(3, 10, 'fafas', 'asdas@gmail.com', '1211211', 'active', '2026-01-29 04:25:45');
+INSERT INTO `members` (`id`, `school_id`, `name`, `email`, `nisn`, `status`, `created_at`, `max_pinjam`) VALUES
+(1, 4, 'Anjali Saputra', 'anjalisaputra@gmail.com', '0094234', 'active', '2026-01-26 03:06:14', 2),
+(2, 4, 'Surya', 'surz@gmail.com', '000000', 'active', '2026-01-27 03:56:53', 3),
+(3, 10, 'fafas', 'asdas@gmail.com', '1211211', 'active', '2026-01-29 04:25:45', 2);
 
 -- --------------------------------------------------------
 
@@ -235,7 +244,27 @@ INSERT INTO `notifications` (`id`, `school_id`, `student_id`, `title`, `message`
 (13, 4, 4, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"The Psychology of Money\" ke koleksi favorit Anda.', 'info', 0, '2026-01-27 02:17:21', '2026-01-27 02:17:21'),
 (14, 4, 4, 'Peminjaman Berhasil', 'Anda telah meminjam buku \"The Psychology of Money\". Harap dikembalikan sebelum tanggal 03/02/2026.', 'borrow', 0, '2026-01-27 02:17:32', '2026-01-27 02:17:32'),
 (15, 4, 4, 'Peminjaman Berhasil', 'Anda telah meminjam buku \"Sebuah Seni Untuk Bersikap Bodoamat\". Harap dikembalikan sebelum tanggal 03/02/2026.', 'borrow', 0, '2026-01-27 02:17:43', '2026-01-27 02:17:43'),
-(16, 4, 4, 'Permintaan Pengembalian Dikirim', 'Permintaan pengembalian untuk buku \"The Psychology of Money\" menunggu konfirmasi admin.', 'return_request', 0, '2026-01-27 03:41:36', '2026-01-27 03:41:36');
+(16, 4, 4, 'Permintaan Pengembalian Dikirim', 'Permintaan pengembalian untuk buku \"The Psychology of Money\" menunggu konfirmasi admin.', 'return_request', 0, '2026-01-27 03:41:36', '2026-01-27 03:41:36'),
+(18, 4, 3, 'Buku Ditambahkan ke Favorit', 'Anda telah menambahkan \"Bu, aku ingin pelukmu\" ke koleksi favorit Anda.', 'info', 0, '2026-02-03 08:15:54', '2026-02-03 08:15:54'),
+(19, 4, 4, 'Buku Baru Tersedia', 'Buku \"the art of stoiscm\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:15:32', '2026-02-05 02:15:32'),
+(20, 4, 9, 'Buku Baru Tersedia', 'Buku \"the art of stoiscm\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:15:32', '2026-02-05 02:15:32'),
+(21, 4, 4, 'Buku Baru Tersedia', 'Buku \"selamat tinggal\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:16:22', '2026-02-05 02:16:22'),
+(22, 4, 9, 'Buku Baru Tersedia', 'Buku \"selamat tinggal\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:16:22', '2026-02-05 02:16:22'),
+(23, 4, 4, 'Buku Baru Tersedia', 'Buku \"Bicara itu ada seninya\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:17:21', '2026-02-05 02:17:21'),
+(24, 4, 9, 'Buku Baru Tersedia', 'Buku \"Bicara itu ada seninya\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:17:21', '2026-02-05 02:17:21'),
+(25, 4, 4, 'Buku Baru Tersedia', 'Buku \"Belajar coding membuat program\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:19:50', '2026-02-05 02:19:50'),
+(26, 4, 9, 'Buku Baru Tersedia', 'Buku \"Belajar coding membuat program\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:19:50', '2026-02-05 02:19:50'),
+(27, 4, 4, 'Buku Baru Tersedia', 'Buku \"menyerah bukan pilihan\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:20:43', '2026-02-05 02:20:43'),
+(28, 4, 9, 'Buku Baru Tersedia', 'Buku \"menyerah bukan pilihan\" telah ditambahkan ke perpustakaan. Silakan pinjam sekarang!', 'new_book', 0, '2026-02-05 02:20:43', '2026-02-05 02:20:43'),
+(29, 4, 9, 'Peminjaman Berhasil', 'Anda telah meminjam buku \"B.J. Habibie : Sebuah Biografi\". Harap dikembalikan sebelum tanggal 12/02/2026.', 'borrow', 0, '2026-02-05 02:53:22', '2026-02-05 02:53:22'),
+(30, 4, 9, 'Peminjaman Berhasil', 'Anda telah meminjam buku \"Belajar coding membuat program\". Harap dikembalikan sebelum tanggal 12/02/2026.', 'borrow', 0, '2026-02-05 02:53:43', '2026-02-05 02:53:43'),
+(31, 4, 9, 'Peminjaman Berhasil', 'Anda telah meminjam buku \"menyerah bukan pilihan\". Harap dikembalikan sebelum tanggal 12/02/2026.', 'borrow', 0, '2026-02-05 03:46:07', '2026-02-05 03:46:07'),
+(32, 4, 9, 'Permintaan Pengembalian Dikirim', 'Permintaan pengembalian untuk buku \"menyerah bukan pilihan\" menunggu konfirmasi admin.', 'return_request', 0, '2026-02-05 04:05:23', '2026-02-05 04:05:23'),
+(33, 4, 9, 'Permintaan Pengembalian Dikirim', 'Permintaan pengembalian untuk buku \"Belajar coding membuat program\" menunggu konfirmasi admin.', 'return_request', 0, '2026-02-05 04:05:27', '2026-02-05 04:05:27'),
+(34, 4, 9, 'Permintaan Pengembalian Dikirim', 'Permintaan pengembalian untuk buku \"B.J. Habibie : Sebuah Biografi\" menunggu konfirmasi admin.', 'return_request', 0, '2026-02-05 04:05:30', '2026-02-05 04:05:30'),
+(37, 4, 2, 'Pengembalian Disetujui', 'Admin telah mengonfirmasi pengembalian buku \"menyerah bukan pilihan\". Terima kasih!', 'return_confirm', 0, '2026-02-05 04:14:07', '2026-02-05 04:14:07'),
+(38, 4, 2, 'Pengembalian Disetujui', 'Admin telah mengonfirmasi pengembalian buku \"Belajar coding membuat program\". Terima kasih!', 'return_confirm', 0, '2026-02-05 04:14:16', '2026-02-05 04:14:16'),
+(39, 4, 2, 'Pengembalian Disetujui', 'Admin telah mengonfirmasi pengembalian buku \"B.J. Habibie : Sebuah Biografi\". Terima kasih!', 'return_confirm', 0, '2026-02-05 04:14:19', '2026-02-05 04:14:19');
 
 -- --------------------------------------------------------
 
@@ -254,6 +283,28 @@ CREATE TABLE `notifikasi` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rating_buku`
+--
+
+CREATE TABLE `rating_buku` (
+  `id_rating` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_buku` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `komentar` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rating_buku`
+--
+
+INSERT INTO `rating_buku` (`id_rating`, `id_user`, `id_buku`, `rating`, `komentar`, `created_at`) VALUES
+(1, 9, 7, 5, 'bgu\r\n', '2026-02-06 03:11:02');
 
 -- --------------------------------------------------------
 
@@ -291,7 +342,8 @@ INSERT INTO `schools` (`id`, `name`, `slug`, `status`, `activation_code`, `creat
 (7, 'sdfsdfasdasd', 'sdfsdfasdasd', 'pending', NULL, '2026-01-26 04:39:59', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (8, 'sdfbhsd', 'sdfbhsd', 'pending', NULL, '2026-01-26 04:42:48', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (9, 'hdgdfg', 'hdgdfg', 'pending', NULL, '2026-01-26 04:44:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 'smamaju', 'smamaju', 'pending', NULL, '2026-01-29 02:37:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(10, 'smamaju', 'smamaju', 'pending', NULL, '2026-01-29 02:37:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(11, 'smk bm3', 'smk-bm3', 'pending', NULL, '2026-02-02 02:46:29', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -315,7 +367,7 @@ CREATE TABLE `school_themes` (
 
 INSERT INTO `school_themes` (`id`, `school_id`, `theme_name`, `custom_colors`, `typography`, `created_at`, `updated_at`) VALUES
 (1, 3, 'light', NULL, NULL, '2026-01-26 02:41:21', '2026-01-26 02:41:21'),
-(2, 4, 'light', NULL, NULL, '2026-01-26 02:43:32', '2026-01-30 06:49:48');
+(2, 4, 'blue', NULL, NULL, '2026-01-26 02:43:32', '2026-02-03 08:11:43');
 
 -- --------------------------------------------------------
 
@@ -344,7 +396,10 @@ CREATE TABLE `siswa` (
 --
 
 INSERT INTO `siswa` (`id_siswa`, `nama_lengkap`, `nisn`, `kelas`, `jurusan`, `tanggal_lahir`, `jenis_kelamin`, `alamat`, `email`, `no_hp`, `foto`, `created_at`, `updated_at`) VALUES
-(4, 'Anjali Saputra', '0094234', 'XI', 'Rekayasa Perangkat Lunak', '2008-01-17', 'L', 'Limus', 'anjalisaputra@gmail.com', '089234234', 'uploads/siswa/siswa_4_1769479766_69781e562270d.webp', '2026-01-26 03:07:53', '2026-01-27 02:09:26');
+(3, 'Budi', NULL, NULL, NULL, NULL, NULL, NULL, 'australiaindependentsschool@sch.id', NULL, NULL, '2026-02-02 02:53:09', '2026-02-02 02:53:09'),
+(4, 'Anjali Saputra', '0094234', 'XI', 'Rekayasa Perangkat Lunak', '2008-01-17', 'L', 'Limus', 'anjalisaputra@gmail.com', '089234234', 'uploads/siswa/siswa_4_1769479766_69781e562270d.webp', '2026-01-26 03:07:53', '2026-01-27 02:09:26'),
+(9, 'Surya', '000000', NULL, NULL, NULL, NULL, NULL, 'surz@gmail.com', NULL, 'uploads/siswa/siswa_9_1770188218_6982edbac928b.jpg', '2026-02-02 02:50:24', '2026-02-04 06:56:58'),
+(11, 'fafas', '1211211', NULL, NULL, NULL, NULL, NULL, 'asdas@gmail.com', NULL, NULL, '2026-02-02 02:45:49', '2026-02-02 02:45:49');
 
 -- --------------------------------------------------------
 
@@ -374,14 +429,15 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `school_id`, `name`, `email`, `nisn`, `password`, `verification_code`, `code_expires_at`, `is_verified`, `verified_at`, `role`, `created_at`) VALUES
 (2, 3, 'Gani', 'gani@sch.id', NULL, '', NULL, '2026-01-25 20:55:51', 1, '2026-01-26 02:41:02', 'admin', '2026-01-26 02:40:51'),
 (3, 4, 'Budi', 'australiaindependentsschool@sch.id', NULL, '$2y$10$YYkXfCuDmZWDCEymXPClM.viULRMLWKBxk70BmOxepED0GMNeOWiS', NULL, '2026-01-25 20:57:13', 1, '2026-01-26 02:42:24', 'admin', '2026-01-26 02:42:14'),
-(4, 4, 'Anjali Saputra', 'anjalisaputra@gmail.com', '0094234', '$2y$10$0yfyoUtwXaZKiUjRe/VWd.e9Cv/8N5NiqhJcnlSsDm/aaay7p/0DC', NULL, NULL, 0, NULL, 'student', '2026-01-26 03:06:14'),
+(4, 4, 'Anjali Saputra', 'anjalisaputra@gmail.com', '0094234', '$2y$10$IHxKyizl1T.qiQprqXuZUOzeUF7znwlEnJGLiiik920r.muaAZccm', NULL, NULL, 0, NULL, 'student', '2026-01-26 03:06:14'),
 (5, 5, 'Gani', 'sdfdf@sch.id', NULL, '$2y$10$y5RgsJjO.nbQ3XXqFeQ4X.5zkiCKKAXEZnH.EhVXPdyvOPc/.MRDm', NULL, '2026-01-25 22:52:04', 1, '2026-01-26 04:37:14', 'admin', '2026-01-26 04:37:04'),
 (6, 7, 'sdfsdfasdasd', 'sdfsdfsf@sch.id', NULL, '$2y$10$qTK44/muE8jMTShecEdkZuPoFN3Kh9dDnc80qmzQo1bLNL6zgQ3ua', NULL, '2026-01-25 22:54:59', 1, '2026-01-26 04:40:09', 'admin', '2026-01-26 04:39:59'),
 (7, 8, 'sghdfgdf', 'sdsdfsfdf@sch.id', NULL, '$2y$10$E3CEHA.8I4ICe1cYR7hdve6bfeEtSuhXHjrf4q.D.Ux9h.QyZpaQG', NULL, '2026-01-25 22:57:48', 1, '2026-01-26 04:42:57', 'admin', '2026-01-26 04:42:48'),
 (8, 9, 'ertert', 'hgdfgdfg@sch.id', NULL, '$2y$10$kIJvRguAWIEKu6XrYqSjLOM8SRIDa0Tgz5PxDcTD1Lkdx7D0QpIpW', NULL, NULL, 1, '2026-01-26 04:44:53', 'admin', '2026-01-26 04:44:45'),
-(9, 4, 'Surya', 'surz@gmail.com', '000000', '$2y$10$pCjvGGyhUHrozsbvjWHwAebllSThpZ1VCIGvhwf7l9YbOq.Kchbwq', NULL, NULL, 0, NULL, 'student', '2026-01-27 03:56:53'),
+(9, 4, 'Surya', 'surz@gmail.com', '000000', '$2y$10$C/2P6bj.IQzTg2H8sgl/8OT4EID2HVAfPppSKndTr2gGr5wH7abNu', NULL, NULL, 0, NULL, 'student', '2026-01-27 03:56:53'),
 (10, 10, 'maju', 'maju@sch.id', NULL, '$2y$10$P0Dvl957VriyhB2Ss5ZQv.VvPhlJS0iRKgbFyeYnT58YQ9bCBsTS6', NULL, NULL, 1, '2026-01-29 02:37:56', 'admin', '2026-01-29 02:37:45'),
-(11, 10, 'fafas', 'asdas@gmail.com', '1211211', '$2y$10$kxRqC.NMu.l1Gt/nT6ITQ.8gRFdrhBww3Bc1AeUxU5qCQq5kbzJey', NULL, NULL, 0, NULL, 'student', '2026-01-29 04:25:45');
+(11, 10, 'fafas', 'asdas@gmail.com', '1211211', '$2y$10$kxRqC.NMu.l1Gt/nT6ITQ.8gRFdrhBww3Bc1AeUxU5qCQq5kbzJey', NULL, NULL, 0, NULL, 'student', '2026-01-29 04:25:45'),
+(12, 11, 'someone', 'ada@sch.id', NULL, '$2y$10$hK3aWhbPDT0JIxa.hKx1UOnsgOz554F0tAsK3j.KM4CVW5briRGXO', '548097', '2026-02-01 21:01:29', 0, NULL, 'admin', '2026-02-02 02:46:30');
 
 --
 -- Indexes for dumped tables
@@ -476,6 +532,12 @@ ALTER TABLE `notifikasi`
 ALTER TABLE `notifikasi` ADD FULLTEXT KEY `ft_search` (`judul`,`pesan`);
 
 --
+-- Indexes for table `rating_buku`
+--
+ALTER TABLE `rating_buku`
+  ADD PRIMARY KEY (`id_rating`);
+
+--
 -- Indexes for table `schools`
 --
 ALTER TABLE `schools`
@@ -525,7 +587,7 @@ ALTER TABLE `barcode_sessions`
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `book_damage_fines`
@@ -543,13 +605,13 @@ ALTER TABLE `book_maintenance`
 -- AUTO_INCREMENT for table `borrows`
 --
 ALTER TABLE `borrows`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `members`
@@ -561,7 +623,7 @@ ALTER TABLE `members`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `notifikasi`
@@ -570,10 +632,16 @@ ALTER TABLE `notifikasi`
   MODIFY `id_notifikasi` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `rating_buku`
+--
+ALTER TABLE `rating_buku`
+  MODIFY `id_rating` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `school_themes`
@@ -585,13 +653,13 @@ ALTER TABLE `school_themes`
 -- AUTO_INCREMENT for table `siswa`
 --
 ALTER TABLE `siswa`
-  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables
