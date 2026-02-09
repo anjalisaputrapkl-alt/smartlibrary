@@ -391,7 +391,7 @@ $pageTitle = 'Profil Saya';
             z-index: 2;
         }
         
-        .school-logo {
+        .id-card-mockup .school-logo {
             width: 48px;
             height: 48px;
             background: white;
@@ -410,7 +410,7 @@ $pageTitle = 'Profil Saya';
             object-fit: contain;
         }
         
-        .school-name {
+        .id-card-mockup .school-name {
             font-size: 16px;
             font-weight: 700;
             color: white;
@@ -506,8 +506,8 @@ $pageTitle = 'Profil Saya';
                 aspect-ratio: auto !important;
             }
             .id-card-header { padding-bottom: 2mm !important; gap: 3mm !important; }
-            .school-logo { width: 8mm !important; height: 8mm !important; border-radius: 2mm !important; } 
-            .school-name { font-size: 11pt !important; }
+            .id-card-mockup .school-logo { width: 8mm !important; height: 8mm !important; border-radius: 2mm !important; } 
+            .id-card-mockup .school-name { font-size: 11pt !important; }
             .id-card-body { padding: 2mm 0 !important; gap: 3mm !important; }
             .id-card-photo { width: 18mm !important; height: 22mm !important; }
             .id-card-details h3 { font-size: 14pt !important; margin-bottom: 1mm !important; }
@@ -537,6 +537,7 @@ $pageTitle = 'Profil Saya';
             }
             .library-card-wrapper { margin: 0 !important; padding: 0 !important; display: block !important; }
         }
+    </style>
     <style>
         :root {
             --primary: #3A7FF2;
@@ -604,107 +605,6 @@ $pageTitle = 'Profil Saya';
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        /* Navigation Sidebar */
-        .nav-sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: 240px;
-            background: linear-gradient(135deg, #0b3d61 0%, #062d4a 100%);
-            color: white;
-            padding: 24px 0;
-            z-index: 1002;
-            overflow-y: auto;
-            animation: slideInLeft 0.6s ease-out;
-        }
-
-        .nav-sidebar-header {
-            padding: 0 24px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: white;
-        }
-
-        .nav-sidebar-header-icon {
-            font-size: 32px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-        }
-
-        .nav-sidebar-header-icon iconify-icon {
-            width: 32px;
-            height: 32px;
-            color: white;
-        }
-
-        .nav-sidebar-header h2 {
-            font-size: 14px;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .nav-sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .nav-sidebar-menu li {
-            margin: 0;
-        }
-
-        .nav-sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 13px;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-            position: relative;
-        }
-
-        .nav-sidebar-menu a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .nav-sidebar-menu a.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border-left-color: white;
-            font-weight: 600;
-        }
-
-        .nav-sidebar-menu iconify-icon {
-            font-size: 18px;
-            width: 24px;
-            height: 24px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .nav-sidebar-menu a:hover iconify-icon,
-        .nav-sidebar-menu a.active iconify-icon {
-            color: white;
-        }
-
-        .nav-sidebar-divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 16px 0;
         }
 
         /* Hamburger Menu Button */
