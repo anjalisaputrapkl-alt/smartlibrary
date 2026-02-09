@@ -53,6 +53,26 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'Buku Baru (30 Hari)',
             endpoint: 'api/get-report-new-30.php?type=books',
             render: renderNewBooks
+        },
+        'total_copies': {
+            title: 'Detail Eksemplar Buku',
+            endpoint: 'api/get-report-books.php',
+            render: renderBooks
+        },
+        'borrows_today': {
+            title: 'Peminjaman Hari Ini',
+            endpoint: 'api/get-report-borrows-today.php',
+            render: renderBorrows
+        },
+        'returns_today': {
+            title: 'Pengembalian Hari Ini',
+            endpoint: 'api/get-report-returns-today.php',
+            render: renderReturns
+        },
+        'total_categories': {
+            title: 'Detail Kategori Buku',
+            endpoint: 'api/get-report-categories.php',
+            render: renderCategories
         }
     };
 
@@ -177,26 +197,39 @@ document.addEventListener('DOMContentLoaded', () => {
         ]);
     }
 
+    function renderCategories(data) {
+        renderTable(data, [
+            { label: 'Nama Kategori', key: 'category', html: (row) => `<strong>${row.category || 'Uncategorized'}</strong>` },
+            { label: 'Jumlah Judul', key: 'book_count', html: (row) => `${row.book_count} Judul` },
+            { label: 'Total Eksemplar', key: 'total_copies', html: (row) => `${row.total_copies} Buku` }
+        ]);
+    }
+
     function renderTable(data, cols) {
         if (!data || data.length === 0) {
-            modalBody.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">Tidak ada data ditemukan.</div>';
+            modalBody.innerHTML = `
+                <div style="text-align:center;padding:60px 20px;color:var(--muted);">
+                    <iconify-icon icon="mdi:database-off" style="font-size: 48px; opacity: 0.2; display: block; margin: 0 auto 16px;"></iconify-icon>
+                    Tidak ada data ditemukan.
+                </div>
+            `;
             return;
         }
 
-        let html = '<table class="modal-table"><thead><tr>';
-        cols.forEach(c => html += `<th>${c.label}</th>`);
+        let html = '<div class="borrows-table-wrap" style="border:none;"><table class="modal-table"><thead><tr>';
+        cols.forEach((c, idx) => html += `<th style="${idx === 0 ? 'padding-left:0;' : ''}">${c.label}</th>`);
         html += '</tr></thead><tbody>';
 
         data.forEach(row => {
             html += '<tr>';
-            cols.forEach(c => {
+            cols.forEach((c, idx) => {
                 const val = c.html ? c.html(row) : row[c.key];
-                html += `<td>${val}</td>`;
+                html += `<td style="${idx === 0 ? 'padding-left:0;' : ''}">${val}</td>`;
             });
             html += '</tr>';
         });
 
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         modalBody.innerHTML = html;
     }
 });

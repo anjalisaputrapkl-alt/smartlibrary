@@ -78,21 +78,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderData(data) {
         if (!data || data.length === 0) {
-            modalBody.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">Tidak ada data untuk kategori ini.</div>';
+            modalBody.innerHTML = `
+                <div style="text-align:center;padding:60px 20px;color:var(--muted);">
+                    <iconify-icon icon="mdi:database-off" style="font-size: 48px; opacity: 0.2; display: block; margin: 0 auto 16px;"></iconify-icon>
+                    Tidak ada data untuk kategori ini.
+                </div>
+            `;
             return;
         }
 
         let html = `
-            <table class="modal-table">
-                <thead>
-                    <tr>
-                        <th>Buku</th>
-                        <th class="col-hide-mobile">Peminjam</th>
-                        <th>Jatuh Tempo</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="borrows-table-wrap" style="border:none;">
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th style="padding-left: 0;">Buku</th>
+                            <th class="col-hide-mobile">Peminjam</th>
+                            <th>Jatuh Tempo</th>
+                            <th style="text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
         `;
 
         data.forEach(item => {
@@ -107,35 +113,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusLabel = 'Kembali';
             } else if (item.status === 'pending_confirmation') {
                 statusClass = 'badge-inactive';
-                statusLabel = 'Tunggu Konfirmasi';
+                statusLabel = 'Ditinjau';
             } else if (item.status === 'pending_return') {
                 statusClass = 'badge-inactive';
-                statusLabel = 'Tunggu Kembali';
+                statusLabel = 'Proses';
             } else {
-                statusLabel = 'Dipinjam';
+                statusLabel = 'Pinjam';
             }
 
-            const dueDate = item.due_at ? new Date(item.due_at).toLocaleDateString('id-ID') : '-';
+            const dueDate = item.due_at ? new Date(item.due_at).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            }) : '-';
 
             html += `
                 <tr>
-                    <td>
-                        <div style="font-weight:600;">${item.title}</div>
-                        <div style="font-size:11px;color:#888;">ISBN: ${item.isbn}</div>
+                    <td style="padding-left: 0;">
+                        <div style="font-weight:700; color:var(--text); line-height:1.2;">${item.title}</div>
+                        <div style="font-size:11px; color:var(--muted); margin-top: 2px;">ISBN: ${item.isbn}</div>
                     </td>
                     <td class="col-hide-mobile">
-                        <div style="font-weight:600;">${item.member_name}</div>
-                        <div style="font-size:11px;color:#888;">NISN: ${item.nisn}</div>
+                        <div style="font-weight:600; color:var(--text);">${item.member_name}</div>
+                        <div style="font-size:11px; color:var(--muted); margin-top: 2px;">NISN: ${item.nisn}</div>
                     </td>
-                    <td>${dueDate}</td>
-                    <td><span class="student-badge ${statusClass}">${statusLabel}</span></td>
+                    <td style="font-weight:600; color:var(--text);">${dueDate}</td>
+                    <td style="text-align: center;"><span class="student-badge ${statusClass}">${statusLabel}</span></td>
                 </tr>
             `;
         });
 
         html += `
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         `;
 
         modalBody.innerHTML = html;
