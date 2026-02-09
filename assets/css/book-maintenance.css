@@ -20,6 +20,21 @@
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --thead-bg: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+  --tbody-hover: linear-gradient(to right, rgba(59, 130, 246, 0.03), transparent);
+  --td-border: #f1f5f9;
+}
+
+/* Theme-specific overrides for dark and colored themes */
+[data-theme='dark'],
+[data-theme='blue'],
+[data-theme='monochrome'],
+[data-theme='sunset'],
+[data-theme='bookish'],
+[data-theme='ocean'] {
+  --thead-bg: var(--bg);
+  --tbody-hover: rgba(255, 255, 255, 0.03);
+  --td-border: var(--border);
 }
 
 * {
@@ -350,7 +365,7 @@ table {
 }
 
 thead {
-  background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+  background: var(--thead-bg);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -370,7 +385,7 @@ th {
 
 td {
   padding: 14px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--td-border);
   color: var(--text);
 }
 
@@ -379,7 +394,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: linear-gradient(to right, rgba(59, 130, 246, 0.03), transparent);
+  background: var(--tbody-hover);
 }
 
 tbody tr:last-child td {

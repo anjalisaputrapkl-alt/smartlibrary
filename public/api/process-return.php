@@ -109,7 +109,10 @@ try {
             'member_nisn' => $borrow['nisn'],
             'fine_amount' => $fineAmount,
             'late_days' => $lateDays,
-            'returned_at' => date('Y-m-d H:i:s')
+            'returned_at' => date('Y-m-d H:i:s'),
+            'borrow_id' => $borrow['id'],
+            'member_id' => $borrow['member_id'],
+            'book_id' => $book['id']
         ]
     ]);
 

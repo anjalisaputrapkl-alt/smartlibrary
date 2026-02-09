@@ -285,7 +285,11 @@ $categories = [
                     </div>
                   <?php endif; ?>
                   
-                  <div class="stock-badge-overlay" style="background: <?= $b['copies'] > 0 ? 'rgba(46, 204, 113, 0.9)' : 'rgba(231, 76, 60, 0.9)' ?>">
+                  <div class="stock-badge-overlay" style="
+                      background: <?= $b['copies'] > 0 ? 'color-mix(in srgb, var(--success) 15%, transparent)' : 'color-mix(in srgb, var(--danger) 15%, transparent)' ?>;
+                      color: <?= $b['copies'] > 0 ? 'var(--success)' : 'var(--danger)' ?>;
+                      border: 1px solid <?= $b['copies'] > 0 ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'color-mix(in srgb, var(--danger) 30%, transparent)' ?>;
+                  ">
                       <?= $b['copies'] > 0 ? 'Tersedia' : 'Dipinjam' ?>
                   </div>
                 </div>

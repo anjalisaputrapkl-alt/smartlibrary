@@ -72,9 +72,10 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
   echo '</thead>';
   echo '<tbody>';
 
+  $no = 1;
   foreach ($records as $r) {
     echo '<tr>';
-    echo '<td>' . htmlspecialchars($r['id']) . '</td>';
+    echo '<td>' . $no . '</td>';
     echo '<td>' . htmlspecialchars($r['member_name']) . '</td>';
     echo '<td>' . htmlspecialchars($r['book_title']) . '</td>';
     echo '<td>' . htmlspecialchars($damageTypes[$r['damage_type']]['name'] ?? $r['damage_type']) . '</td>';
@@ -82,6 +83,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     echo '<td>' . htmlspecialchars($r['status']) . '</td>';
     echo '<td>' . date('d-m-Y H:i', strtotime($r['created_at'])) . '</td>';
     echo '</tr>';
+    $no++;
   }
 
   echo '</tbody>';
@@ -213,25 +215,25 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
               <tbody>
                 <?php foreach ($records as $r): ?>
                   <tr>
-                    <td style="color: black;"><strong><?= htmlspecialchars($r['member_name']) ?></strong></td>
-                    <td style="color: black;"><?= htmlspecialchars($r['book_title']) ?></td>
-                    <td style="color: black;">
+                    <td><strong><?= htmlspecialchars($r['member_name']) ?></strong></td>
+                    <td><?= htmlspecialchars($r['book_title']) ?></td>
+                    <td data-damage-type="<?= htmlspecialchars($r['damage_type']) ?>">
                       <span class="damage-badge" style="background-color: rgba(220, 38, 38, 0.1); color: #dc2626;">
                         <?= htmlspecialchars($damageTypes[$r['damage_type']]['name'] ?? $r['damage_type']) ?>
                       </span>
                     </td>
-                    <td style="font-size: 12px; color: black;">
+                    <td style="font-size: 12px;">
                       <?= $r['damage_description'] ? htmlspecialchars(substr($r['damage_description'], 0, 30)) . (strlen($r['damage_description']) > 30 ? '...' : '') : '-' ?>
                     </td>
                     <td style="font-weight: 600; color: #dc2626;">Rp <?= number_format($r['fine_amount'], 0, ',', '.') ?>
                     </td>
-                    <td style="color: black;">
+                    <td>
                       <span class="status-badge status-<?= strtolower($r['status']) ?>">
                         <?= $r['status'] === 'paid' ? 'Lunas' : 'Tertunda' ?>
                       </span>
                     </td>
-                    <td style="font-size: 12px; color: black;"><?= date('d M Y H:i', strtotime($r['created_at'])) ?></td>
-                    <td class="text-center" style="color: black;">
+                    <td style="font-size: 12px;"><?= date('d M Y H:i', strtotime($r['created_at'])) ?></td>
+                    <td class="text-center">
                       <div class="actions">
                         <?php if ($r['status'] === 'pending'): ?>
                           <button class="btn btn-sm btn-success" onclick="markAsPaid(<?= $r['id'] ?>)"
@@ -265,7 +267,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
                   <option value="<?= $b['id'] ?>" data-member-id="<?= $b['member_id'] ?>"
                     data-book-id="<?= $b['book_id'] ?>">
                     <?= htmlspecialchars($b['member_name']) ?> - <?= htmlspecialchars($b['book_title']) ?>
-                    (<?= date('d M Y', strtotime($b['borrowed_at'])) ?>)
+                    (<?= $b['status'] === 'returned' ? 'Dikembalikan' : 'Dipinjam' ?> - <?= date('d M Y', strtotime($b['borrowed_at'])) ?>)
                   </option>
                 <?php endforeach; ?>
               </select>

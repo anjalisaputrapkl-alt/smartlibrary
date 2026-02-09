@@ -3,8 +3,12 @@ require __DIR__ . '/../src/auth.php';
 requireAuth();
 
 $pdo = require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/maintenance/DamageController.php';
+
 $user = $_SESSION['user'];
 $sid = $user['school_id'];
+$damageController = new DamageController($pdo, $sid);
+$damageTypes = $damageController->getDamageTypes();
 
 // Get some basic stats for the return page
 $stmt = $pdo->prepare(
@@ -128,6 +132,7 @@ $recentReturns = $stmt->fetchAll();
         border: 4px solid var(--surface);
     }
   </style>
+    <link rel="stylesheet" href="../assets/css/book-maintenance.css">
 </head>
 
 <body>
@@ -199,6 +204,13 @@ $recentReturns = $stmt->fetchAll();
                   Peminjam: <span style="font-weight: 700; color: var(--primary);" id="resMemberName">-</span>
                 </div>
                 <div id="fineDisplay"></div>
+                
+                <div style="margin-top: 16px;">
+                    <button class="btn btn-sm btn-danger-soft" onclick="openDamageModalForLastReturn()">
+                        <iconify-icon icon="mdi:alert-box-outline" style="vertical-align: middle; margin-right: 4px;"></iconify-icon>
+                        Lapor Kerusakan Buku Ini
+                    </button>
+                </div>
               </div>
               <div style="text-align: right;">
                 <div style="font-size: 12px; color: var(--muted);" id="resTime">-</div>
@@ -241,6 +253,53 @@ $recentReturns = $stmt->fetchAll();
 
       </div>
     </div>
+  <!-- Modal Add Damage Report (Simplified for Returns) -->
+    <div id="damageModal" class="modal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);">
+      <div class="modal-content" style="background: var(--surface); margin: 5% auto; width: 90%; max-width: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);">
+        <div class="modal-header" style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-weight: 700;">Lapor Kerusakan Buku</div>
+        <div class="modal-body" style="padding: 24px;">
+          <form id="damageForm">
+            <input type="hidden" id="damageBorrowId" name="borrow_id">
+            <input type="hidden" id="damageMemberId" name="member_id">
+            <input type="hidden" id="damageBookId" name="book_id">
+            
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px;">Buku</label>
+                <div id="damageBookTitle" style="font-weight: 600; color: var(--text);"></div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label for="damageType" style="display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px;">Tipe Kerusakan</label>
+              <select id="damageType" name="damage_type" required onchange="onDamageTypeChanged()" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                <option value="">-- Pilih Tipe Kerusakan --</option>
+                <?php foreach ($damageTypes as $key => $type): ?>
+                  <option value="<?= htmlspecialchars($key) ?>" data-fine="<?= $type['fine'] ?>">
+                    <?= htmlspecialchars($type['name']) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label for="damageDescription" style="display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px;">Deskripsi (Opsional)</label>
+              <textarea id="damageDescription" name="damage_description" placeholder="Detail kerusakan..." style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label style="display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px;">Denda Otomatis</label>
+              <div style="padding: 12px; background-color: rgba(220, 38, 38, 0.05); border-radius: 6px; border-left: 4px solid #dc2626;">
+                <div id="fineAmount" style="font-size: 20px; font-weight: 600; color: #dc2626;">Rp 0</div>
+              </div>
+              <input type="hidden" id="fineAmountInput" name="fine_amount" value="0">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px;">
+          <button class="btn btn-secondary" onclick="closeDamageModal()">Batal</button>
+          <button class="btn" onclick="saveDamageReport()">Simpan Laporan</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <audio id="soundSuccess" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
@@ -255,6 +314,8 @@ $recentReturns = $stmt->fetchAll();
     let sessionCount = 0;
     let cameraActive = false;
     let html5QrcodeScanner = null;
+    let lastReturnData = null; // Store last return data for damage reporting
+    const damageTypesData = <?php echo json_encode($damageTypes); ?>;
 
     // Auto-focus input
     document.addEventListener('keydown', (e) => {
@@ -297,6 +358,8 @@ $recentReturns = $stmt->fetchAll();
 
     function handleSuccess(data) {
       document.getElementById('soundSuccess').play();
+      
+      lastReturnData = data; // Store for damage modal
       
       sessionCount++;
       sessionCountEl.textContent = sessionCount;
@@ -371,6 +434,71 @@ $recentReturns = $stmt->fetchAll();
                 btn.innerHTML = '<iconify-icon icon="mdi:camera"></iconify-icon> Gunakan Kamera';
             });
         }
+    }
+
+    // --- Damage Reporting Logic ---
+    function openDamageModalForLastReturn() {
+        if (!lastReturnData) return;
+        
+        const modal = document.getElementById('damageModal');
+        const form = document.getElementById('damageForm');
+        
+        // Reset form
+        form.reset();
+        document.getElementById('fineAmount').textContent = 'Rp 0';
+        document.getElementById('fineAmountInput').value = 0;
+        
+        // Fill data
+        document.getElementById('damageBorrowId').value = lastReturnData.borrow_id;
+        document.getElementById('damageMemberId').value = lastReturnData.member_id;
+        document.getElementById('damageBookId').value = lastReturnData.book_id;
+        document.getElementById('damageBookTitle').textContent = lastReturnData.book_title;
+        
+        modal.style.display = 'block';
+    }
+
+    function closeDamageModal() {
+        document.getElementById('damageModal').style.display = 'none';
+    }
+
+    function onDamageTypeChanged() {
+        const select = document.getElementById('damageType');
+        const selectedOption = select.options[select.selectedIndex];
+        const fine = selectedOption.getAttribute('data-fine') || 0;
+        
+        const formattedFine = new Intl.NumberFormat('id-ID').format(fine);
+        document.getElementById('fineAmount').textContent = 'Rp ' + formattedFine;
+        document.getElementById('fineAmountInput').value = fine;
+    }
+
+    function saveDamageReport() {
+        const form = document.getElementById('damageForm');
+        const formData = new FormData(form);
+        formData.append('action', 'add');
+        
+        if (!formData.get('damage_type')) {
+            alert('Pilih tipe kerusakan');
+            return;
+        }
+
+        fetch('book-maintenance.php', { // Reuse existing controller endpoint
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Laporan kerusakan berhasil disimpan');
+                closeDamageModal();
+                // Optional: visual feedback
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menyimpan laporan');
+        });
     }
   </script>
 </body>

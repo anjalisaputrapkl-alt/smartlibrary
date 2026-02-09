@@ -340,7 +340,10 @@ class DamageFineModel
             FROM borrows b
             JOIN books bk ON b.book_id = bk.id
             JOIN members m ON b.member_id = m.id
-            WHERE bk.school_id = :school_id AND b.status IN ('borrowed', 'pending_return')";
+            WHERE bk.school_id = :school_id AND (
+                b.status IN ('borrowed', 'pending_return') 
+                OR (b.status = 'returned' AND b.returned_at >= DATE_SUB(NOW(), INTERVAL 30 DAY))
+            )";
 
         if ($member_id) {
             $sql .= " AND b.member_id = :member_id";

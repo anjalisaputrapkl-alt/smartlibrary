@@ -361,8 +361,18 @@ $pageTitle = 'Dashboard Siswa';
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             backdrop-filter: blur(4px);
         }
-        .badge-available { background: rgba(16, 185, 129, 0.9); color: white; }
-        .badge-borrowed { background: rgba(239, 68, 68, 0.9); color: white; }
+        .badge-available { 
+            background: color-mix(in srgb, var(--success) 15%, transparent); 
+            color: var(--success); 
+            border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
+            backdrop-filter: blur(4px);
+        }
+        .badge-borrowed { 
+            background: color-mix(in srgb, var(--danger) 15%, transparent); 
+            color: var(--danger); 
+            border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+            backdrop-filter: blur(4px);
+        }
     </style>
 </head>
 

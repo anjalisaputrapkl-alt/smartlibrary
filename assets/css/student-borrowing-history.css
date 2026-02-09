@@ -771,18 +771,27 @@ body {
 }
 
 .badge-borrowed {
-    background: #fef3c7;
-    color: #92400e;
+    background: color-mix(in srgb, var(--warning) 15%, transparent);
+    color: var(--warning);
+    border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent);
 }
 
 .badge-returned {
-    background: #d1fae5;
-    color: #065f46;
+    background: color-mix(in srgb, var(--success) 15%, transparent);
+    color: var(--success);
+    border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
 }
 
 .badge-pending {
-    background: #fef3c7;
-    color: #92400e;
+    background: color-mix(in srgb, var(--danger) 15%, transparent);
+    color: var(--danger);
+    border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+}
+
+.badge-overdue {
+    background: color-mix(in srgb, var(--danger) 15%, transparent);
+    color: var(--danger);
+    border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
 }
 
 /* Empty State */

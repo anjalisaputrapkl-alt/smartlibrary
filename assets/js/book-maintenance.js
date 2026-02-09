@@ -20,10 +20,10 @@ function filterTable() {
   const rows = document.querySelectorAll('tbody tr');
 
   rows.forEach(row => {
-    const memberName = row.cells[1].textContent.toLowerCase();
-    const bookTitle = row.cells[2].textContent.toLowerCase();
-    const damageType = row.cells[3].getAttribute('data-damage-type') || '';
-    const status = row.cells[6].textContent.trim();
+    const memberName = row.cells[0].textContent.toLowerCase();
+    const bookTitle = row.cells[1].textContent.toLowerCase();
+    const damageType = row.cells[2].getAttribute('data-damage-type') || '';
+    const status = row.cells[5].textContent.trim();
 
     const matchSearch = memberName.includes(searchText) || bookTitle.includes(searchText);
     const matchStatus = !statusFilter || status.toLowerCase().includes(statusFilter.toLowerCase());
@@ -59,7 +59,7 @@ function onDamageTypeChanged() {
   const select = document.getElementById('damageType');
   const selectedOption = select.options[select.selectedIndex];
   const fineAmount = selectedOption.getAttribute('data-fine') || '0';
-  
+
   document.getElementById('fineAmount').innerText = 'Rp ' + formatCurrency(fineAmount);
   document.getElementById('fineAmountInput').value = fineAmount;
 }
