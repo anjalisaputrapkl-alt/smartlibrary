@@ -53,6 +53,7 @@ $pageTitle = 'Koleksi Favorit';
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
     <link rel="stylesheet" href="../assets/css/sidebar.css">
     <link rel="stylesheet" href="../assets/css/school-profile.css">
+    <link rel="stylesheet" href="../assets/css/student-dashboard.css">
 
     <style>
         :root {
@@ -417,224 +418,12 @@ $pageTitle = 'Koleksi Favorit';
         }
 
         /* Favorites Grid */
-        .favorites-grid .book-card {
-            background: var(--card);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 0;
-            box-shadow: none;
-            border-left: none;
-            margin-bottom: 0;
-            gap: 0;
-            position: relative;
-        }
-
-        .favorites-grid .book-card::after {
-            content: '♡';
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        .favorites-grid .book-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 16px 32px rgba(58, 127, 242, 0.2);
-            border-color: var(--primary);
-        }
-
-        .favorites-grid .book-card-cover {
-            width: 100%;
-            aspect-ratio: 2 / 3;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 48px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            border-radius: 0;
-        }
-
-        .favorites-grid .book-card-cover .btn-love {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--text);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            font-size: 20px;
-            padding: 0;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .favorites-grid .book-card-cover .btn-love:hover {
-            background: white;
-            transform: scale(1.15);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .favorites-grid .book-card-cover .btn-love.loved {
-            color: var(--danger);
-            animation: heartBeat 0.3s ease;
-        }
-
-        @keyframes heartBeat {
-            0% {
-                transform: scale(1);
-            }
-            25% {
-                transform: scale(1.3);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1.15);
-            }
-        }
-
-        .favorites-grid .book-card-cover .btn-love iconify-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        .favorites-grid .book-card-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .favorites-grid .book-card-cover-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-size: 48px;
-        }
-
-        .favorites-grid .book-card-body {
-            flex: 1;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .favorites-grid .book-card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-            margin: 0;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-word;
-        }
-
-        .favorites-grid .book-card-author {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .favorites-grid .book-card-category {
-            font-size: 11px;
-            color: var(--accent);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: transparent;
-            padding: 0;
-            border-radius: 0;
-            margin-bottom: 8px;
-        }
+        /* Reuse standard card layout from student-dashboard.css */
 
 
 
-        .favorites-grid .book-card-action {
-            margin-top: auto;
-        }
-
-        .favorites-grid .book-card-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: auto;
-            justify-content: space-between;
-        }
-
-        .favorites-grid .btn-detail {
-            flex: 1;
-            padding: 10px 8px;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
 
 
-        .favorites-grid .btn-detail {
-            background: var(--bg);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .favorites-grid .btn-detail:hover {
-            background: var(--accent-light);
-            transform: translateY(-2px);
-        }
-
-        .favorites-grid .btn-detail iconify-icon {
-            width: 14px;
-            height: 14px;
-        }
 
         /* Favorites Controls */
         .favorites-controls {
@@ -1504,34 +1293,42 @@ $pageTitle = 'Koleksi Favorit';
                     <p>Mulai tambahkan buku favorit Anda sekarang!</p>
                 </div>
             <?php else: ?>
-                <div class="favorites-grid" id="favoritesList">
+                <div class="books-grid" id="favoritesList">
                     <?php foreach ($favorites as $fav): ?>
-                        <div class="book-card" data-favorite-id="<?php echo $fav['id_favorit']; ?>"
-                            data-book-id="<?php echo $fav['id_buku']; ?>">
-                            <div class="book-card-cover">
+                        <div class="book-card-vertical" data-favorite-id="<?php echo $fav['id_favorit']; ?>" data-book-id="<?php echo $fav['id_buku']; ?>">
+                            <div class="book-cover-container">
+                                <?php if ($fav['cover']): ?>
+                                    <img src="../img/covers/<?php echo htmlspecialchars($fav['cover']); ?>"
+                                        alt="<?php echo htmlspecialchars($fav['judul']); ?>" loading="lazy">
+                                <?php else: ?>
+                                    <div class="no-image-placeholder">
+                                        <iconify-icon icon="mdi:book-open-variant" style="font-size: 32px;"></iconify-icon>
+                                    </div>
+                                <?php endif; ?>
+
                                 <button class="btn-love loved"
                                     onclick="toggleFavorite(event, <?php echo $fav['id_buku']; ?>, '<?php echo htmlspecialchars(str_replace("'", "\\'", $fav['judul'])); ?>')">
                                     <iconify-icon icon="mdi:heart"></iconify-icon>
                                 </button>
-                                <?php if ($fav['cover']): ?>
-                                    <img src="../img/covers/<?php echo htmlspecialchars($fav['cover']); ?>"
-                                        alt="<?php echo htmlspecialchars($fav['judul']); ?>"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
-                                <?php else: ?>
-                                    <div class="book-card-cover-placeholder">
-                                        <iconify-icon icon="mdi:book-open-variant" width="48" height="48"></iconify-icon>
-                                    </div>
-                                <?php endif; ?>
                             </div>
+
                             <div class="book-card-body">
-                                <h3 class="book-card-title"><?php echo htmlspecialchars($fav['judul']); ?></h3>
-                                <p class="book-card-author"><?php echo htmlspecialchars($fav['penulis'] ?? '-'); ?></p>
-                                <p class="book-card-category"><?php echo htmlspecialchars($fav['buku_kategori'] ?? 'Umum'); ?>
-                                </p>
-                                <div class="book-card-actions">
-                                    <button class="btn-detail" onclick="viewDetail(<?php echo $fav['id_buku']; ?>)">
-                                        Detail
-                                    </button>
+                                <div class="book-category"><?php echo htmlspecialchars($fav['buku_kategori'] ?? 'Umum'); ?></div>
+                                <div class="book-title" title="<?php echo htmlspecialchars($fav['judul']); ?>"><?php echo htmlspecialchars($fav['judul']); ?></div>
+                                <div class="book-author"><?php echo htmlspecialchars($fav['penulis'] ?? '-'); ?></div>
+                                
+                                <div class="book-card-footer">
+                                    <div class="shelf-info">
+                                        <iconify-icon icon="mdi:star" style="color: #FFD700;"></iconify-icon> 
+                                        <span style="font-weight: 700;"><?php echo $fav['avg_rating'] ? round($fav['avg_rating'], 1) : '0'; ?></span>
+                                        <span style="opacity: 0.6; margin-left: 2px;">(<?php echo (int)$fav['total_reviews']; ?>)</span>
+                                    </div>
+                                    
+                                    <div class="action-buttons">
+                                        <button class="btn-icon-sm" onclick="viewDetail(<?php echo $fav['id_buku']; ?>)" title="Detail">
+                                            <iconify-icon icon="mdi:eye"></iconify-icon>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1829,29 +1626,40 @@ $pageTitle = 'Koleksi Favorit';
 
         function createBookCard(fav) {
             const card = document.createElement('div');
-            card.className = 'book-card';
+            card.className = 'book-card-vertical';
             card.setAttribute('data-favorite-id', fav.id_favorit);
             card.setAttribute('data-book-id', fav.id_buku);
 
-            const coverImg = fav.cover ? 
-                `<img src="../img/covers/${fav.cover}" alt="${fav.judul}" style="width: 100%; height: 100%; object-fit: cover;">` :
-                `<div class="book-card-cover-placeholder"><iconify-icon icon="mdi:book-open-variant" width="48" height="48"></iconify-icon></div>`;
+            const avgRating = fav.avg_rating ? parseFloat(fav.avg_rating).toFixed(1) : '0';
+            const totalReviews = parseInt(fav.total_reviews) || 0;
 
             card.innerHTML = `
-                <div class="book-card-cover">
+                <div class="book-cover-container">
+                    ${fav.cover ? 
+                        `<img src="../img/covers/${fav.cover}" alt="${fav.judul}" loading="lazy">` :
+                        `<div class="no-image-placeholder"><iconify-icon icon="mdi:book-open-variant" style="font-size: 32px;"></iconify-icon></div>`
+                    }
                     <button class="btn-love loved" onclick="toggleFavorite(event, ${fav.id_buku}, '${fav.judul.replace(/'/g, "\\'")}')">
                         <iconify-icon icon="mdi:heart"></iconify-icon>
                     </button>
-                    ${coverImg}
                 </div>
                 <div class="book-card-body">
-                    <h3 class="book-card-title">${fav.judul}</h3>
-                    <p class="book-card-author">${fav.penulis || '-'}</p>
-                    <p class="book-card-category">${fav.buku_kategori || 'Umum'}</p>
-                    <div class="book-card-actions">
-                        <button class="btn-detail" onclick="viewDetail(${fav.id_buku})">
-                            Detail
-                        </button>
+                    <div class="book-category">${fav.buku_kategori || 'Umum'}</div>
+                    <div class="book-title" title="${fav.judul}">${fav.judul}</div>
+                    <div class="book-author">${fav.penulis || '-'}</div>
+                    
+                    <div class="book-card-footer">
+                        <div class="shelf-info">
+                            <iconify-icon icon="mdi:star" style="color: #FFD700;"></iconify-icon> 
+                            <span style="font-weight: 700;">${avgRating}</span>
+                            <span style="opacity: 0.6; margin-left: 2px;">(${totalReviews})</span>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn-icon-sm" onclick="viewDetail(${fav.id_buku})" title="Detail">
+                                <iconify-icon icon="mdi:eye"></iconify-icon>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1889,7 +1697,7 @@ $pageTitle = 'Koleksi Favorit';
                         btn.classList.remove('loved');
                         icon.setAttribute('icon', 'mdi:heart-outline');
                         // Remove from list and update display
-                        const card = btn.closest('.book-card');
+                        const card = btn.closest('.book-card-vertical');
                         if (card) {
                             card.style.opacity = '0.5';
                             setTimeout(() => {
