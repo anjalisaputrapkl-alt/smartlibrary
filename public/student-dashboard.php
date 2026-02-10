@@ -346,33 +346,6 @@ $pageTitle = 'Dashboard Siswa';
                 width: 100%;
             }
         }
-
-        /* Status Badge on Cover */
-        .cover-status-badge {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            z-index: 10;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            backdrop-filter: blur(4px);
-        }
-        .badge-available { 
-            background: color-mix(in srgb, var(--success) 15%, transparent); 
-            color: var(--success); 
-            border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
-            backdrop-filter: blur(4px);
-        }
-        .badge-borrowed { 
-            background: color-mix(in srgb, var(--danger) 15%, transparent); 
-            color: var(--danger); 
-            border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
-            backdrop-filter: blur(4px);
-        }
     </style>
 </head>
 
@@ -542,53 +515,56 @@ $pageTitle = 'Dashboard Siswa';
                 <div class="books-grid">
                     <?php if (!empty($books)): ?>
                         <?php foreach ($books as $book): ?>
-                            <div class="book-card" data-book-id="<?php echo $book['id']; ?>">
-                                <div class="book-cover" style="position: relative;">
-                                    <?php 
-                                        $is_available = empty($book['current_borrow_id']);
-                                        if ($is_available): 
-                                    ?>
-                                        <div class="cover-status-badge badge-available">Tersedia</div>
-                                    <?php else: ?>
-                                        <div class="cover-status-badge badge-borrowed">Dipinjam</div>
-                                    <?php endif; ?>
-
+                            <?php $is_available = empty($book['current_borrow_id']); ?>
+                            <div class="book-card-vertical" data-book-id="<?php echo $book['id']; ?>">
+                                <div class="book-cover-container">
                                     <?php if (!empty($book['cover_image'])): ?>
                                         <img src="../img/covers/<?php echo htmlspecialchars($book['cover_image']); ?>"
-                                            alt="<?php echo htmlspecialchars($book['title']); ?>"
-                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                            alt="<?php echo htmlspecialchars($book['title']); ?>" loading="lazy">
                                     <?php else: ?>
-                                        <iconify-icon icon="mdi:book-open-variant" width="48" height="48"></iconify-icon>
-                                    <?php endif; ?>
-                                    <button class="btn-love"
-                                        onclick="toggleFavorite(event, <?php echo $book['id']; ?>, '<?php echo htmlspecialchars($book['title']); ?>')">
-                                        <iconify-icon icon="mdi:heart-outline" width="20" height="20"></iconify-icon>
-                                    </button>
-                                </div>
-                                <div class="book-info">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px;">
-                                        <h3 class="book-title" style="margin: 0; flex: 1;"><?php echo htmlspecialchars($book['title']); ?></h3>
-                                    </div>
-                                    <p class="book-author"><?php echo htmlspecialchars($book['author'] ?? '-'); ?></p>
-                                    <?php if (!$is_available): ?>
-                                        <p style="font-size: 10px; color: var(--danger); margin: 0 0 4px 0;">Oleh: <?php echo htmlspecialchars($book['borrower_name']); ?></p>
-                                    <?php endif; ?>
-                                    <p class="book-category"><?php echo htmlspecialchars($book['category'] ?? 'Umum'); ?></p>
-                                    
-                                    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 8px 0;">
-                                        <div style="display: flex; align-items: center; gap: 2px; color: #FFD700; font-size: 13px;">
-                                            <iconify-icon icon="mdi:star"></iconify-icon>
-                                            <span style="font-weight: 700;"><?php echo $book['avg_rating'] ? round($book['avg_rating'], 1) : '0'; ?></span>
+                                        <div class="no-image-placeholder">
+                                            <iconify-icon icon="mdi:book-open-variant" style="font-size: 32px;"></iconify-icon>
                                         </div>
-                                        <span style="color: var(--text-muted); font-size: 11px;">(<?php echo (int)$book['total_reviews']; ?> Ulasan)</span>
+                                    <?php endif; ?>
+
+                                    <div class="stock-badge-overlay" style="
+                                        background: <?= $is_available ? 'color-mix(in srgb, var(--success) 15%, transparent)' : 'color-mix(in srgb, var(--danger) 15%, transparent)' ?>;
+                                        color: <?= $is_available ? 'var(--success)' : 'var(--danger)' ?>;
+                                        border: 1px solid <?= $is_available ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'color-mix(in srgb, var(--danger) 30%, transparent)' ?>;
+                                    ">
+                                        <?= $is_available ? 'Tersedia' : 'Dipinjam' ?>
                                     </div>
 
-                                    <div class="book-actions">
-                                        <button class="btn-detail"
-                                            onclick="openBookModal(<?php echo htmlspecialchars(json_encode($book)); ?>)">Detail</button>
-                                        <a href="book-rating.php?id=<?php echo $book['id']; ?>" class="btn-detail" style="background: rgba(58, 127, 242, 0.1); border-color: rgba(58, 127, 242, 0.3); color: var(--primary);">
-                                            <iconify-icon icon="mdi:star-outline"></iconify-icon> Rating
-                                        </a>
+                                    <button class="btn-love"
+                                        onclick="toggleFavorite(event, <?php echo $book['id']; ?>, '<?php echo htmlspecialchars($book['title']); ?>')">
+                                        <iconify-icon icon="mdi:heart-outline"></iconify-icon>
+                                    </button>
+                                </div>
+
+                                <div class="book-card-body">
+                                    <div class="book-category"><?php echo htmlspecialchars($book['category'] ?? 'Umum'); ?></div>
+                                    <div class="book-title" title="<?php echo htmlspecialchars($book['title']); ?>"><?php echo htmlspecialchars($book['title']); ?></div>
+                                    <div class="book-author"><?php echo htmlspecialchars($book['author'] ?? '-'); ?></div>
+                                    
+                                    <?php if (!$is_available): ?>
+                                        <p style="font-size: 10px; color: var(--danger); margin: -8px 0 8px 0;">Oleh: <?php echo htmlspecialchars($book['borrower_name']); ?></p>
+                                    <?php endif; ?>
+
+                                    <div class="book-card-footer">
+                                        <div class="shelf-info">
+                                            <iconify-icon icon="mdi:star" style="color: #FFD700;"></iconify-icon> 
+                                            <span style="font-weight: 700;"><?php echo $book['avg_rating'] ? round($book['avg_rating'], 1) : '0'; ?></span>
+                                            <span style="opacity: 0.6; margin-left: 2px;">(<?php echo (int)$book['total_reviews']; ?>)</span>
+                                        </div>
+                                        
+                                        <div class="action-buttons">
+                                          <button class="btn-icon-sm" onclick="openBookModal(<?php echo htmlspecialchars(json_encode($book)); ?>)" title="Detail">
+                                             <iconify-icon icon="mdi:eye"></iconify-icon>
+                                          </button>
+                                          <a href="book-rating.php?id=<?php echo $book['id']; ?>" class="btn-icon-sm" title="Rating & Review" style="color: var(--primary);">
+                                             <iconify-icon icon="mdi:star-outline"></iconify-icon>
+                                          </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -750,36 +726,47 @@ $pageTitle = 'Dashboard Siswa';
 
             booksGrid.innerHTML = filteredBooks.map(book => {
                 const is_available = !book.current_borrow_id;
+                const avgRating = book.avg_rating ? parseFloat(book.avg_rating).toFixed(1) : '0';
+                const totalReviews = parseInt(book.total_reviews) || 0;
                 
                 return `
-                <div class="book-card" style="animation: fadeInScale 0.3s ease-out;">
-                    <div class="book-cover" style="position: relative;">
-                        ${is_available ? 
-                            '<div class="cover-status-badge badge-available">Tersedia</div>' : 
-                            '<div class="cover-status-badge badge-borrowed">Dipinjam</div>'
-                        }
+                <div class="book-card-vertical" style="animation: fadeInScale 0.3s ease-out;">
+                    <div class="book-cover-container">
                         ${book.cover_image ? 
-                            `<img src="../img/covers/${book.cover_image}" alt="${book.title}" style="width: 100%; height: 100%; object-fit: cover;">` :
-                            `<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white;"><iconify-icon icon="mdi:book-open-variant" width="48" height="48"></iconify-icon></div>`
+                            `<img src="../img/covers/${book.cover_image}" alt="${book.title}" loading="lazy">` :
+                            `<div class="no-image-placeholder"><iconify-icon icon="mdi:book-open-variant" style="font-size: 32px;"></iconify-icon></div>`
                         }
-                        <button class="btn-love ${favorites.has(book.id) ? 'loved' : ''}" onclick="toggleFavorite(event, ${book.id}, '${(book.title || '').replace(/'/g, "\\'")}')">
-                            <iconify-icon icon="mdi:heart"></iconify-icon>
+                        <div class="stock-badge-overlay" style="
+                            background: ${is_available ? 'color-mix(in srgb, var(--success) 15%, transparent)' : 'color-mix(in srgb, var(--danger) 15%, transparent)'};
+                            color: ${is_available ? 'var(--success)' : 'var(--danger)'};
+                            border: 1px solid ${is_available ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'color-mix(in srgb, var(--danger) 30%, transparent)'};
+                        ">
+                            ${is_available ? 'Tersedia' : 'Dipinjam'}
+                        </div>
+                        <button class="btn-love ${favorites.has(parseInt(book.id)) ? 'loved' : ''}" onclick="toggleFavorite(event, ${book.id}, '${(book.title || '').replace(/'/g, "\\'")}')">
+                            <iconify-icon icon="mdi:heart${favorites.has(parseInt(book.id)) ? '' : '-outline'}"></iconify-icon>
                         </button>
                     </div>
-                    <div class="book-info">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px;">
-                            <h3 class="book-title" style="margin: 0; flex: 1;">${book.title}</h3>
-                        </div>
-                        <p class="book-author">${book.author || '-'}</p>
-                        ${!is_available ? `<p style="font-size: 10px; color: var(--danger); margin: 0 0 4px 0;">Oleh: ${book.borrower_name}</p>` : ''}
-                        <p class="book-category">${book.category || 'Umum'}</p>
-                        <div class="book-actions">
-                            <button class="btn-detail" onclick="openBookModal(${JSON.stringify(book).replace(/"/g, '&quot;')})">
-                                Detail
-                            </button>
-                            <a href="book-rating.php?id=${book.id}" class="btn-detail" style="background: rgba(58, 127, 242, 0.1); border-color: rgba(58, 127, 242, 0.3); color: var(--primary);">
-                                <iconify-icon icon="mdi:star-outline"></iconify-icon> Rating
-                            </a>
+                    <div class="book-card-body">
+                        <div class="book-category">${book.category || 'Umum'}</div>
+                        <div class="book-title" title="${book.title}">${book.title}</div>
+                        <div class="book-author">${book.author || '-'}</div>
+                        ${!is_available ? `<p style="font-size: 10px; color: var(--danger); margin: -8px 0 8px 0;">Oleh: ${book.borrower_name}</p>` : ''}
+                        
+                        <div class="book-card-footer">
+                            <div class="shelf-info">
+                                <iconify-icon icon="mdi:star" style="color: #FFD700;"></iconify-icon>
+                                <span style="font-weight: 700;">${avgRating}</span>
+                                <span style="opacity: 0.6; margin-left: 2px;">(${totalReviews})</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn-icon-sm" onclick="openBookModal(${JSON.stringify(book).replace(/"/g, '&quot;')})" title="Detail">
+                                    <iconify-icon icon="mdi:eye"></iconify-icon>
+                                </button>
+                                <a href="book-rating.php?id=${book.id}" class="btn-icon-sm" title="Rating & Review" style="color: var(--primary);">
+                                    <iconify-icon icon="mdi:star-outline"></iconify-icon>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

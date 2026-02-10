@@ -107,8 +107,7 @@ function getLabel($type)
     <?php include 'partials/student-sidebar.php'; ?>
 
     <!-- Hamburger Menu Button -->
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" tabindex="0"
-        onclick="toggleNavSidebar(event)">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" tabindex="0">
         <iconify-icon icon="mdi:menu" width="24" height="24"></iconify-icon>
     </button>
 
@@ -411,7 +410,7 @@ function getLabel($type)
             }
         });
     </script>
-    <script src="../assets/js/notifications.js"></script>
+
     <script src="../assets/js/sidebar.js"></script>
 </body>
 
