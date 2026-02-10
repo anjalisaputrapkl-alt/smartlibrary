@@ -28,13 +28,6 @@ try {
     $user = $_SESSION['user'];
     $school_id = $user['school_id'];
 
-    // Get school settings for limits
-    $settingsStmt = $pdo->prepare('SELECT durasi_peminjaman, max_buku FROM schools WHERE id = :sid');
-    $settingsStmt->execute(['sid' => $school_id]);
-    $settings = $settingsStmt->fetch();
-    $maxLimit = $settings['max_buku'] ?? 3;
-    $defaultDuration = $settings['durasi_peminjaman'] ?? 7;
-
     $inserted = 0;
     $errors = [];
 
@@ -49,41 +42,24 @@ try {
                 continue;
             }
 
-            // A. Check student's current active borrow count
-            $countStmt = $pdo->prepare('SELECT COUNT(*) FROM borrows WHERE member_id = :mid AND status NOT IN ("returned", "rejected")');
-            $countStmt->execute(['mid' => $borrow['member_id']]);
-            $currentBorrows = $countStmt->fetchColumn();
-
-            if (($currentBorrows + $inserted) >= $maxLimit) {
-                $errors[] = "Siswa sudah mencapai batas maksimal peminjaman ($maxLimit buku)";
-                continue;
-            }
-
-            // B & C. Check if book is available and get its custom borrow limit
-            $checkStmt = $pdo->prepare('SELECT copies, title, max_borrow_days, boleh_dipinjam FROM books WHERE id = :bid');
+            // Check if book is available and get its custom borrow limit
+            $checkStmt = $pdo->prepare('SELECT copies, title, max_borrow_days FROM books WHERE id = :bid');
             $checkStmt->execute(['bid' => $borrow['book_id']]);
             $bookInfo = $checkStmt->fetch();
             
-            if (!$bookInfo) {
-                $errors[] = "Buku tidak ditemukan";
+            if (!$bookInfo || $bookInfo['copies'] < 1) {
+                $errors[] = "Buku '" . ($bookInfo['title'] ?? 'Unknown') . "' sedang tidak tersedia (Stok 0)";
                 continue;
             }
 
-            if ($bookInfo['boleh_dipinjam'] === 'NO') {
-                $errors[] = "Buku '" . $bookInfo['title'] . "' tidak bisa dipinjam sesuai kebijakan";
-                continue;
-            }
-
-            if ($bookInfo['copies'] < 1) {
-                $errors[] = "Buku '" . $bookInfo['title'] . "' sedang tidak tersedia (Stok 0)";
-                continue;
-            }
-
-            // D. Determine due date
+            // Determine due date
+            // 1. Priority: Book-specific limit
+            // 2. Fallback: Provided date in request
+            // 3. Last Fallback: Default +7 days
             if (!empty($bookInfo['max_borrow_days'])) {
                 $dueDate = date('Y-m-d H:i:s', strtotime('+' . $bookInfo['max_borrow_days'] . ' days'));
             } else {
-                $dueDate = $input['due_date'] ?? date('Y-m-d H:i:s', strtotime('+' . $defaultDuration . ' days'));
+                $dueDate = $input['due_date'] ?? date('Y-m-d H:i:s', strtotime('+7 days'));
             }
 
             // Insert into borrows table with pending_confirmation status

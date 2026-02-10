@@ -1,0 +1,171 @@
+[33m89017fa[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge branch 'main' of https://github.com/anjalisaputrapkl-alt/perpustakaan-online
+[33m1f8c05f[m .
+[33m72f86cf[m enhance student-dashboard
+[33m2053a10[m perbaikan hamburger bar di mobile
+[33md9db74c[m MEMBUAT SISTEM BATAS PEMINJAMAN BUKU KHUSUS DI BUKU TERTENTU
+[33m4444bf5[m menambahkan fitur guru dan karyawan pinjam buku
+[33m1598c7e[m .
+[33meb21377[m perbaikan returns.php
+[33meaf87f3[m m
+[33mb5e6eee[m upgrade rarting page design
+[33ma9b91a8[m profil.php
+[33m567d97c[m upgrade book-maintenance
+[33m8085886[m buku hanya boleh 1 stock
+[33mf7560a1[m new database (week 4)
+[33m7f890ae[m notifikasi via email
+[33m2273af1[m Resolve conflict using local version
+[33m1508ff3[m ratiaingngg
+[33m8ae773c[m perbaikan teks
+[33me0ce2b7[m pengembalian buku
+[33m5366389[m delay favoritesfixing
+[33mff76169[m notifikasi tema
+[33m75e25af[m pengoptimalan dark mode dan custom default
+[33m506fa9b[m m
+[33mff5fa79[m .
+[33m9c63588[m Merge branch 'main' of https://github.com/anjalisaputrapkl-alt/perpustakaan-online
+[33mcb65773[m design beberapa halamana
+[33mdd5f9bf[m Merge branch 'main' of https://github.com/anjalisaputrapkl-alt/perpustakaan-online
+[33m7b3e0c9[m .
+[33md8e4026[m penambahan kartu perpus di members.php
+[33mb449cc3[m simple design barcode student
+[33m82c07a0[m perbaikan barcode buku
+[33m7ee67c6[m ...
+[33m027163f[m kartu perpustakaan 70%
+[33m8f9100e[m barcode scanner
+[33m3badd0a[m kartu perpus prototype
+[33m07341fb[m cleaning file
+[33m5dce657[m jali pulang
+[33m4c2cb54[m balikan
+[33me739858[m Resolve merge conflict – remove IMPLEMENTATION_SUMMARY.md
+[33mc30cb88[m optimize 10%
+[33m27a5e97[m student-barcode-page
+[33m96997e2[m feat: add student barcode system with digital student card
+[33m1bccc5b[m cleanup: remove unnecessary documentation and test files
+[33m2e92db5[m menambahkan edit jatuh tempo/perpanjang tempo buku
+[33mf244bf1[m redesign scanner
+[33m904c68c[m konfigurasi scan dengan borrow
+[33m5cfc75f[m barcode berfungsi
+[33m5f7dac1[m ganti sistem barcode
+[33m313de22[m new database
+[33me689eb6[m barcode error scan error
+[33mc8f2dfc[m Fix merge conflict
+[33mb678bb6[m .
+[33m2120830[m integrasi handphone dengan scanner
+[33m9af013f[m .
+[33m24ab26d[m database update
+[33m8952196[m last
+[33mb949dcb[m error fixed
+[33m7195b10[m notification verification fix
+[33m72e0d4e[m real final
+[33mf538d4d[m finalss
+[33m3de2540[m modal fixed
+[33m21386de[m sidebar fixed
+[33ma07a2b2[m final
+[33m71ac21b[m ....
+[33m013f0c2[m ..
+[33me2535f5[m .
+[33ma102b48[m Merge branch 'main' of https://github.com/anjalisaputrapkl-alt/perpustakaan-online
+[33m48b3312[m laptop
+[33md84ce00[m new
+[33me88ae61[m Change: Ganti icon peringatan dengan SVG custom
+[33m86c792e[m Fix: Ubah grid layout dari 7 ke 6 kolom dan perbaiki styling icon di stat-card
+[33mbf635cd[m Change: Ubah teks 'Tidak Tersedia' menjadi 'HABIS' untuk status buku habis
+[33m4eb24c0[m Fix: Perbaiki logika pengecekan stok buku (habis vs tersedia)
+[33m796459d[m Fix: Hapus inline function dari student-borrowing-history.php (sudah ada di JS file)
+[33m0962a1e[m Fix: Perbaiki sidebar selector menggunakan querySelector dengan class .nav-sidebar
+[33m5b24b7f[m Refactor: Pisahkan CSS dan JS inline dari PHP files - cleanup completed
+[33mbbbb436[m Fix: Bersihkan CSS inline dari student-dashboard.php
+[33m5d99db4[m Fix: Bersihkan sisa CSS inline yang tertinggal di help.php
+[33mafc34da[m Cleanup: Hapus API endpoint notifikasi yang tidak digunakan
+[33m9c3d74d[m Cleanup: Hapus file dokumentasi dan folder migrations kosong
+[33m71fbd63[m Cleanup: Hapus file SQL dokumentasi yang redundan (schema sudah ada di database)
+[33m9aaa9de[m Cleanup: Hapus file migration runners yang sudah tidak perlu (sudah dijalankan)
+[33m0622078[m Cleanup: Hapus file public/login.php yang sudah tidak digunakan (digantikan oleh modal di index.php)
+[33mc1ce444[m Cleanup: Hapus file-file test, debug, dan dokumentasi redundan
+[33m36f85f9[m .
+[33m628408b[m responsiblity peminjaman
+[33m489a435[m peminjaman functionable
+[33m809277f[m fixing peminjaman
+[33m18cf317[m favorites
+[33me7434ae[m pinjam, notif, history testing
+[33m4f686e4[m Merge branch 'main' of https://github.com/anjalisaputrapkl-alt/perpustakaan-online
+[33md1ddc18[m keep local student dashboard
+[33med1ffd9[m .
+[33m8e549fc[m icon fix
+[33m2f64bc3[m prototype 2 email verification
+[33mdd25f13[m prototype email verification
+[33md9236cd[m only sch.id domain
+[33m2226ded[m fixing help icon
+[33ma05f49b[m add help page for student
+[33m3c7c1d5[m compres img
+[33mb27b738[m hapus file debug
+[33m19f919d[m pembersihan file
+[33m590aaf1[m theme sync
+[33m4c0fa58[m sync foto, nama, data, multi-tenant
+[33m539e737[m fixing foto sekolah
+[33mac0bb9c[m new database
+[33m25c1e75[m merge jali & surya
+[33m01ae5eb[m surya
+[33m561a511[m profile setting siswa
+[33m29774aa[m school photo profile
+[33m697ec59[m Update responsive design: tambah media query 480px dengan hide logo text di mobile sangat kecil
+[33m5f741cc[m Fix: tambah padding-left pada header-container di mobile agar logo tidak tertutup hamburger button
+[33md1a0fab[m Update responsive design: sesuaikan media queries header di semua halaman dengan student-dashboard.php
+[33m75eee30[m Update header styling: sesuaikan avatar background color dan logout button style dengan student-dashboard.php
+[33m21c03be[m Merge branch 'main' of https://github.com/anjalisaputrapkl-alt/smartlibrary
+[33m410627d[m new database
+[33m11f5a54[m Merge branch 'main' of https://github.com/anjalisaputrapkl-alt/smartlibrary
+[33m1a56112[m siswa 60%
+[33m00e88e4[m Update members.css
+[33mc2cb6bf[m .
+[33med150f2[m add new theme
+[33m8a97cd2[m 50%
+[33me5c5528[m docs: Add comprehensive final report for UI/UX standardization
+[33mef9b02c[m feat: UI/UX standardization across all admin pages
+[33m5509289[m docs: Tambahkan detailed changelog untuk UI/UX consistency implementation
+[33m619ec71[m feat: Implementasi UI/UX consistency system dengan global CSS, modern header, dan standardized button design
+[33m13f94b3[m lst
+[33m4658ad4[m repeat
+[33mad08424[m s
+[33m2309d40[m Add ultra-quick reference for error 401 solution
+[33m37da722[m Add comprehensive index for all error 401 documentation and tools
+[33m976ada0[m Add README for error 401 with quick reference and documentation index
+[33mbd0f07b[m Add comprehensive tools reference documentation
+[33mfb96dcb[m Add detailed error 401 explanation and debugging workflow
+[33m568c9d6[m Add quick fix guide for 401 error
+[33m99889e0[m Add comprehensive 401 error troubleshooting guide
+[33m1930d17[m Add comprehensive login debugging tools with enhanced API logging
+[33m406e3f8[m Add NISN login debugging tools and troubleshooting guide
+[33mdee2ab4[m student and school connection
+[33m4cf37b5[m Add NISN-based student login system
+[33m19db8e8[m new databases
+[33me126659[m tes surya
+[33ma5d434b[m .
+[33md0778da[m add design for student page
+[33m1e2409e[m Add design reference guide
+[33m44cceef[m Add design enhancement summary
+[33mc6a8477[m Add comprehensive design documentation
+[33m5604bd9[m Enhance featured sections design and layout
+[33m16092a0[m Add featured sections feature to student dashboard
+[33mb4fdb32[m add dashboard-student page
+[33m13c1575[m siswa or admin validator prototype
+[33m8bb9931[m hamburger bar
+[33mb85e474[m new databas
+[33me8bf6b7[m book maintenance fixed
+[33mb38a6e2[m book-maintennace
+[33mee3789e[m faq
+[33me4d9d66[m redesign laporan
+[33m99d4b1b[m merge
+[33m9c05528[m Add files via upload
+[33mc0b6171[m Add files via upload
+[33mbf8804f[m Update header.php
+[33m6335ad3[m Update reports.php
+[33meffd9d0[m Add files via upload
+[33mf30e1dd[m Add files via upload
+[33mdbbd037[m Add files via upload
+[33m2475e4c[m fixed theme
+[33mda0c6b9[m theme
+[33m062ac0b[m layout modified
+[33m3c3b371[m fix
+[33ma7b501b[m Add files via upload
+[33mbddcc80[m 

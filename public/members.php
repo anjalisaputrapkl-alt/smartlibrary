@@ -21,7 +21,7 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
       'email' => $_POST['email'],
       'nisn' => $_POST['nisn'],
       'role' => $_POST['role'] ?? 'student',
-      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? $school['max_buku'] ?? 3)
+      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? 2)
     ]);
 
     // Get the inserted NISN for password generation
@@ -74,7 +74,7 @@ if ($action === 'edit' && isset($_GET['id'])) {
       'email' => $_POST['email'],
       'nisn' => $_POST['nisn'],
       'role' => $_POST['role'] ?? 'student',
-      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? $school['max_buku'] ?? 3),
+      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? 2),
       'id' => $id,
       'sid' => $sid
     ]);
@@ -737,8 +737,8 @@ $members = $stmt->fetchAll();
             </div>
             <div class="form-group">
               <label>Batas Pinjam Buku (Maksimal)</label>
-              <input type="number" name="max_pinjam" min="1" required placeholder="Default: <?= (int)($school['max_buku'] ?? 3) ?>" autocomplete="off"
-                value="<?= $action === 'edit' && isset($member['max_pinjam']) ? (int)$member['max_pinjam'] : (int)($school['max_buku'] ?? 3) ?>">
+              <input type="number" name="max_pinjam" min="1" required placeholder="Default: 2" autocomplete="off"
+                value="<?= $action === 'edit' && isset($member['max_pinjam']) ? (int)$member['max_pinjam'] : '2' ?>">
             </div>
             <div class="form-group">
               <label>Password</label>

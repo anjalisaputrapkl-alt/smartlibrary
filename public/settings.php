@@ -71,9 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'email' => trim($_POST['school_email'] ?? '') ?: null,
                 'npsn' => trim($_POST['school_npsn'] ?? '') ?: null,
-                'durasi_peminjaman' => (int) ($_POST['durasi_peminjaman'] ?? 7),
-                'denda_per_hari' => (int) ($_POST['denda_per_hari'] ?? 500),
-                'max_buku' => (int) ($_POST['max_buku'] ?? 3),
+                'borrow_duration' => (int) ($_POST['borrow_duration'] ?? 7),
+                'late_fine' => (float) ($_POST['late_fine'] ?? 500),
+                'max_books' => (int) ($_POST['max_books'] ?? 3),
             ];
 
             $schoolProfileModel->updateSchoolProfile($sid, $data);
@@ -414,42 +414,41 @@ if (!$school) {
                         <form method="post">
                             <input type="hidden" name="action" value="update_profile">
                             
-                            <div class="form-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;">
-                                <div class="form-group">
-                                    <label for="durasi_peminjaman">
-                                        <iconify-icon icon="mdi:calendar-clock-outline" style="vertical-align: middle; margin-right: 4px;"></iconify-icon>
-                                        Durasi Peminjaman (Hari)
-                                    </label>
-                                    <input id="durasi_peminjaman" name="durasi_peminjaman" type="number" required min="1"
-                                        value="<?php echo htmlspecialchars($school['durasi_peminjaman'] ?? 7); ?>">
-                                    <small style="display: block; margin-top: 8px; color: var(--muted);">Contoh: 7 hari</small>
+                            <div class="form-group">
+                                <label for="borrow_duration">Durasi Peminjaman (Hari)</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <input id="borrow_duration" name="borrow_duration" type="number" required min="1"
+                                        value="<?php echo htmlspecialchars($school['borrow_duration'] ?? 7); ?>"
+                                        style="max-width: 120px;">
+                                    <span style="font-size: 14px; color: var(--muted);">Hari kerja</span>
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="denda_per_hari">
-                                        <iconify-icon icon="mdi:cash-multiple" style="vertical-align: middle; margin-right: 4px;"></iconify-icon>
-                                        Denda Keterlambatan (Rp)
-                                    </label>
-                                    <input id="denda_per_hari" name="denda_per_hari" type="number" required min="0" step="500"
-                                        value="<?php echo htmlspecialchars($school['denda_per_hari'] ?? 500); ?>">
-                                    <small style="display: block; margin-top: 8px; color: var(--muted);">Per buku per hari</small>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="max_buku">
-                                        <iconify-icon icon="mdi:book-multiple-outline" style="vertical-align: middle; margin-right: 4px;"></iconify-icon>
-                                        Maksimal Buku
-                                    </label>
-                                    <input id="max_buku" name="max_buku" type="number" required min="1"
-                                        value="<?php echo htmlspecialchars($school['max_buku'] ?? 3); ?>">
-                                    <small style="display: block; margin-top: 8px; color: var(--muted);">Batas buku per siswa</small>
-                                </div>
+                                <small style="display: block; margin-top: 8px; color: var(--muted);">Waktu maksimal seorang anggota boleh memegang buku sebelum harus dikembalikan.</small>
                             </div>
 
-                            <button type="submit" class="btn btn-primary" style="width: auto; padding: 12px 24px;">
-                                <iconify-icon icon="mdi:content-save-check" style="vertical-align: middle; margin-right: 6px;"></iconify-icon>
-                                Simpan Peraturan
-                            </button>
+                            <div class="form-group">
+                                <label for="late_fine">Denda Keterlambatan (Rp)</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="font-size: 14px; color: var(--muted); font-weight: 600;">Rp</span>
+                                    <input id="late_fine" name="late_fine" type="number" required min="0" step="500"
+                                        value="<?php echo htmlspecialchars($school['late_fine'] ?? 500); ?>"
+                                        style="max-width: 150px;">
+                                    <span style="font-size: 14px; color: var(--muted);">/ hari</span>
+                                </div>
+                                <small style="display: block; margin-top: 8px; color: var(--muted);">Besar denda yang dikenakan per buku per satu hari keterlambatan.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="max_books">Maksimum Buku Dipinjam</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <input id="max_books" name="max_books" type="number" required min="1"
+                                        value="<?php echo htmlspecialchars($school['max_books'] ?? 3); ?>"
+                                        style="max-width: 120px;">
+                                    <span style="font-size: 14px; color: var(--muted);">Buku per Anggota</span>
+                                </div>
+                                <small style="display: block; margin-top: 8px; color: var(--muted);">Jumlah maksimal buku yang boleh dipinjam secara bersamaan oleh satu anggota.</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Simpan Peraturan</button>
                         </form>
                     </div>
 

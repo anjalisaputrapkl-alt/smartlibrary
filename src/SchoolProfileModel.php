@@ -11,39 +11,6 @@ class SchoolProfileModel
     public function __construct($pdo)
     {
         $this->pdo = $pdo;
-        $this->ensureSchema();
-    }
-
-    /**
-     * Ensure required columns exist in the database
-     */
-    private function ensureSchema()
-    {
-        try {
-            // Check schools table
-            $stmt = $this->pdo->query("SHOW COLUMNS FROM schools");
-            $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            
-            if (!in_array('durasi_peminjaman', $columns)) {
-                $this->pdo->exec("ALTER TABLE schools ADD COLUMN durasi_peminjaman INT DEFAULT 7");
-            }
-            if (!in_array('denda_per_hari', $columns)) {
-                $this->pdo->exec("ALTER TABLE schools ADD COLUMN denda_per_hari INT DEFAULT 500");
-            }
-            if (!in_array('max_buku', $columns)) {
-                $this->pdo->exec("ALTER TABLE schools ADD COLUMN max_buku INT DEFAULT 3");
-            }
-
-            // Check books table
-            $stmt = $this->pdo->query("SHOW COLUMNS FROM books");
-            $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            
-            if (!in_array('boleh_dipinjam', $columns)) {
-                $this->pdo->exec("ALTER TABLE books ADD COLUMN boleh_dipinjam ENUM('YES', 'NO') DEFAULT 'YES'");
-            }
-        } catch (Exception $e) {
-            error_log('Schema migration error: ' . $e->getMessage());
-        }
     }
 
     /**
@@ -54,7 +21,7 @@ class SchoolProfileModel
         $stmt = $this->pdo->prepare('
             SELECT id, name, slug, email, phone, address, 
                    npsn, website, founded_year, photo_path, status,
-                   durasi_peminjaman, denda_per_hari, max_buku
+                   borrow_duration, late_fine, max_books
             FROM schools 
             WHERE id = :id
         ');
@@ -70,7 +37,7 @@ class SchoolProfileModel
         // Allowed fields to update
         $allowed = [
             'name', 'email', 'phone', 'address', 'npsn', 'website', 'founded_year',
-            'durasi_peminjaman', 'denda_per_hari', 'max_buku'
+            'borrow_duration', 'late_fine', 'max_books'
         ];
         $updates = [];
         $params = ['id' => $school_id];
