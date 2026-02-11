@@ -610,3 +610,405 @@
     
 ==================================================
 
+[2026-02-11 08:31:32] To: hdfgjhfg@sch.id | Subject: Verifikasi Email - Pendaftaran Perpustakaan Digital
+--------------------------------------------------
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8'>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb; border-radius: 10px; }
+            .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .content { background: white; padding: 30px; border-radius: 0 0 10px 10px; }
+            .verification-code { background: #f3f4f6; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
+            .code { font-size: 36px; font-weight: bold; color: #2563eb; letter-spacing: 4px; font-family: 'Courier New', monospace; }
+            .info { background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px; }
+            .footer { color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+            .btn { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>✓ Verifikasi Email</h1>
+                <p>Pendaftaran Perpustakaan Digital</p>
+            </div>
+            
+            <div class='content'>
+                <p>Halo <strong>dfshfjhfg</strong>,</p>
+                
+                <p>Terima kasih telah mendaftarkan <strong>ghdfh</strong> di Sistem Perpustakaan Digital kami!</p>
+                
+                <p>Untuk mengaktifkan akun Anda, silakan masukkan kode verifikasi di bawah ini:</p>
+                
+                <div class='verification-code'>
+                    <div class='code'>773271</div>
+                    <p style='margin: 10px 0 0 0; color: #6b7280; font-size: 13px;'>Kode ini berlaku selama 15 menit</p>
+                </div>
+                
+                <div class='info'>
+                    <strong>⚠️ Penting:</strong>
+                    <ul style='margin: 10px 0; padding-left: 20px;'>
+                        <li>Jangan bagikan kode ini kepada siapa pun</li>
+                        <li>Kode verifikasi berlaku 15 menit dari email ini dikirim</li>
+                        <li>Jika Anda tidak mendaftar, abaikan email ini</li>
+                    </ul>
+                </div>
+                
+                <div style='background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffeeba;'>
+                    <strong>Test Mode:</strong> Jika Anda melihat pesan ini, berarti sistem email SMTP sudah berfungsi.
+                </div>
+                
+                <p style='color: #6b7280;'>Dengan verifikasi ini, akun admin Anda akan segera aktif dan siap digunakan untuk mengelola perpustakaan sekolah.</p>
+                
+                <p>Pertanyaan? Hubungi tim support kami.</p>
+            </div>
+            
+            <div class='footer'>
+                <p>© 2026 Sistem Perpustakaan Digital Indonesia. Semua hak dilindungi.</p>
+                <p>Email ini dikirim karena ada permintaan verifikasi akun. Jika ini bukan Anda, abaikan email ini.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+==================================================
+
+[2026-02-11 08:34:35] To: dktyfdfg@sch.id | Subject: Verifikasi Email - Pendaftaran Perpustakaan Digital
+--------------------------------------------------
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8'>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb; border-radius: 10px; }
+            .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .content { background: white; padding: 30px; border-radius: 0 0 10px 10px; }
+            .verification-code { background: #f3f4f6; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
+            .code { font-size: 36px; font-weight: bold; color: #2563eb; letter-spacing: 4px; font-family: 'Courier New', monospace; }
+            .info { background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px; }
+            .footer { color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+            .btn { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>✓ Verifikasi Email</h1>
+                <p>Pendaftaran Perpustakaan Digital</p>
+            </div>
+            
+            <div class='content'>
+                <p>Halo <strong>dghdkfjfh</strong>,</p>
+                
+                <p>Terima kasih telah mendaftarkan <strong>jghcbnmghm</strong> di Sistem Perpustakaan Digital kami!</p>
+                
+                <p>Untuk mengaktifkan akun Anda, silakan masukkan kode verifikasi di bawah ini:</p>
+                
+                <div class='verification-code'>
+                    <div class='code'>259215</div>
+                    <p style='margin: 10px 0 0 0; color: #6b7280; font-size: 13px;'>Kode ini berlaku selama 15 menit</p>
+                </div>
+                
+                <div class='info'>
+                    <strong>⚠️ Penting:</strong>
+                    <ul style='margin: 10px 0; padding-left: 20px;'>
+                        <li>Jangan bagikan kode ini kepada siapa pun</li>
+                        <li>Kode verifikasi berlaku 15 menit dari email ini dikirim</li>
+                        <li>Jika Anda tidak mendaftar, abaikan email ini</li>
+                    </ul>
+                </div>
+                
+                <div style='background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffeeba;'>
+                    <strong>Test Mode:</strong> Jika Anda melihat pesan ini, berarti sistem email SMTP sudah berfungsi.
+                </div>
+                
+                <p style='color: #6b7280;'>Dengan verifikasi ini, akun admin Anda akan segera aktif dan siap digunakan untuk mengelola perpustakaan sekolah.</p>
+                
+                <p>Pertanyaan? Hubungi tim support kami.</p>
+            </div>
+            
+            <div class='footer'>
+                <p>© 2026 Sistem Perpustakaan Digital Indonesia. Semua hak dilindungi.</p>
+                <p>Email ini dikirim karena ada permintaan verifikasi akun. Jika ini bukan Anda, abaikan email ini.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+==================================================
+
+[2026-02-11 08:35:08] To: satu@sch.id | Subject: Verifikasi Email - Pendaftaran Perpustakaan Digital
+--------------------------------------------------
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8'>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb; border-radius: 10px; }
+            .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .content { background: white; padding: 30px; border-radius: 0 0 10px 10px; }
+            .verification-code { background: #f3f4f6; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
+            .code { font-size: 36px; font-weight: bold; color: #2563eb; letter-spacing: 4px; font-family: 'Courier New', monospace; }
+            .info { background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px; }
+            .footer { color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+            .btn { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>✓ Verifikasi Email</h1>
+                <p>Pendaftaran Perpustakaan Digital</p>
+            </div>
+            
+            <div class='content'>
+                <p>Halo <strong>SATUUU</strong>,</p>
+                
+                <p>Terima kasih telah mendaftarkan <strong>SATU</strong> di Sistem Perpustakaan Digital kami!</p>
+                
+                <p>Untuk mengaktifkan akun Anda, silakan masukkan kode verifikasi di bawah ini:</p>
+                
+                <div class='verification-code'>
+                    <div class='code'>086914</div>
+                    <p style='margin: 10px 0 0 0; color: #6b7280; font-size: 13px;'>Kode ini berlaku selama 15 menit</p>
+                </div>
+                
+                <div class='info'>
+                    <strong>⚠️ Penting:</strong>
+                    <ul style='margin: 10px 0; padding-left: 20px;'>
+                        <li>Jangan bagikan kode ini kepada siapa pun</li>
+                        <li>Kode verifikasi berlaku 15 menit dari email ini dikirim</li>
+                        <li>Jika Anda tidak mendaftar, abaikan email ini</li>
+                    </ul>
+                </div>
+                
+                <div style='background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffeeba;'>
+                    <strong>Test Mode:</strong> Jika Anda melihat pesan ini, berarti sistem email SMTP sudah berfungsi.
+                </div>
+                
+                <p style='color: #6b7280;'>Dengan verifikasi ini, akun admin Anda akan segera aktif dan siap digunakan untuk mengelola perpustakaan sekolah.</p>
+                
+                <p>Pertanyaan? Hubungi tim support kami.</p>
+            </div>
+            
+            <div class='footer'>
+                <p>© 2026 Sistem Perpustakaan Digital Indonesia. Semua hak dilindungi.</p>
+                <p>Email ini dikirim karena ada permintaan verifikasi akun. Jika ini bukan Anda, abaikan email ini.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+==================================================
+
+[2026-02-11 08:38:37] To: sdfssssdfsf@sch.id | Subject: Verifikasi Email - Pendaftaran Perpustakaan Digital
+--------------------------------------------------
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8'>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb; border-radius: 10px; }
+            .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .content { background: white; padding: 30px; border-radius: 0 0 10px 10px; }
+            .verification-code { background: #f3f4f6; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
+            .code { font-size: 36px; font-weight: bold; color: #2563eb; letter-spacing: 4px; font-family: 'Courier New', monospace; }
+            .info { background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px; }
+            .footer { color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+            .btn { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>✓ Verifikasi Email</h1>
+                <p>Pendaftaran Perpustakaan Digital</p>
+            </div>
+            
+            <div class='content'>
+                <p>Halo <strong>hgfjgkgh</strong>,</p>
+                
+                <p>Terima kasih telah mendaftarkan <strong>gdfgdfg</strong> di Sistem Perpustakaan Digital kami!</p>
+                
+                <p>Untuk mengaktifkan akun Anda, silakan masukkan kode verifikasi di bawah ini:</p>
+                
+                <div class='verification-code'>
+                    <div class='code'>338127</div>
+                    <p style='margin: 10px 0 0 0; color: #6b7280; font-size: 13px;'>Kode ini berlaku selama 15 menit</p>
+                </div>
+                
+                <div class='info'>
+                    <strong>⚠️ Penting:</strong>
+                    <ul style='margin: 10px 0; padding-left: 20px;'>
+                        <li>Jangan bagikan kode ini kepada siapa pun</li>
+                        <li>Kode verifikasi berlaku 15 menit dari email ini dikirim</li>
+                        <li>Jika Anda tidak mendaftar, abaikan email ini</li>
+                    </ul>
+                </div>
+                
+                <div style='background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffeeba;'>
+                    <strong>Test Mode:</strong> Jika Anda melihat pesan ini, berarti sistem email SMTP sudah berfungsi.
+                </div>
+                
+                <p style='color: #6b7280;'>Dengan verifikasi ini, akun admin Anda akan segera aktif dan siap digunakan untuk mengelola perpustakaan sekolah.</p>
+                
+                <p>Pertanyaan? Hubungi tim support kami.</p>
+            </div>
+            
+            <div class='footer'>
+                <p>© 2026 Sistem Perpustakaan Digital Indonesia. Semua hak dilindungi.</p>
+                <p>Email ini dikirim karena ada permintaan verifikasi akun. Jika ini bukan Anda, abaikan email ini.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+==================================================
+
+[2026-02-11 08:42:44] To: dfhryjfghdg@sch.id | Subject: Verifikasi Email - Pendaftaran Perpustakaan Digital
+--------------------------------------------------
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8'>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb; border-radius: 10px; }
+            .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .content { background: white; padding: 30px; border-radius: 0 0 10px 10px; }
+            .verification-code { background: #f3f4f6; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
+            .code { font-size: 36px; font-weight: bold; color: #2563eb; letter-spacing: 4px; font-family: 'Courier New', monospace; }
+            .info { background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px; }
+            .footer { color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+            .btn { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>✓ Verifikasi Email</h1>
+                <p>Pendaftaran Perpustakaan Digital</p>
+            </div>
+            
+            <div class='content'>
+                <p>Halo <strong>fcfvsdgjhg</strong>,</p>
+                
+                <p>Terima kasih telah mendaftarkan <strong>hdghfjfgh</strong> di Sistem Perpustakaan Digital kami!</p>
+                
+                <p>Untuk mengaktifkan akun Anda, silakan masukkan kode verifikasi di bawah ini:</p>
+                
+                <div class='verification-code'>
+                    <div class='code'>777300</div>
+                    <p style='margin: 10px 0 0 0; color: #6b7280; font-size: 13px;'>Kode ini berlaku selama 15 menit</p>
+                </div>
+                
+                <div class='info'>
+                    <strong>⚠️ Penting:</strong>
+                    <ul style='margin: 10px 0; padding-left: 20px;'>
+                        <li>Jangan bagikan kode ini kepada siapa pun</li>
+                        <li>Kode verifikasi berlaku 15 menit dari email ini dikirim</li>
+                        <li>Jika Anda tidak mendaftar, abaikan email ini</li>
+                    </ul>
+                </div>
+                
+                <div style='background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffeeba;'>
+                    <strong>Test Mode:</strong> Jika Anda melihat pesan ini, berarti sistem email SMTP sudah berfungsi.
+                </div>
+                
+                <p style='color: #6b7280;'>Dengan verifikasi ini, akun admin Anda akan segera aktif dan siap digunakan untuk mengelola perpustakaan sekolah.</p>
+                
+                <p>Pertanyaan? Hubungi tim support kami.</p>
+            </div>
+            
+            <div class='footer'>
+                <p>© 2026 Sistem Perpustakaan Digital Indonesia. Semua hak dilindungi.</p>
+                <p>Email ini dikirim karena ada permintaan verifikasi akun. Jika ini bukan Anda, abaikan email ini.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+==================================================
+
+[2026-02-11 08:45:32] To: hdihgsdfng@sch.id | Subject: Verifikasi Email - Pendaftaran Perpustakaan Digital
+--------------------------------------------------
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8'>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb; border-radius: 10px; }
+            .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .content { background: white; padding: 30px; border-radius: 0 0 10px 10px; }
+            .verification-code { background: #f3f4f6; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
+            .code { font-size: 36px; font-weight: bold; color: #2563eb; letter-spacing: 4px; font-family: 'Courier New', monospace; }
+            .info { background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px; }
+            .footer { color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+            .btn { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>✓ Verifikasi Email</h1>
+                <p>Pendaftaran Perpustakaan Digital</p>
+            </div>
+            
+            <div class='content'>
+                <p>Halo <strong>jjsbdfvx</strong>,</p>
+                
+                <p>Terima kasih telah mendaftarkan <strong>jkjusfghd</strong> di Sistem Perpustakaan Digital kami!</p>
+                
+                <p>Untuk mengaktifkan akun Anda, silakan masukkan kode verifikasi di bawah ini:</p>
+                
+                <div class='verification-code'>
+                    <div class='code'>894907</div>
+                    <p style='margin: 10px 0 0 0; color: #6b7280; font-size: 13px;'>Kode ini berlaku selama 15 menit</p>
+                </div>
+                
+                <div class='info'>
+                    <strong>⚠️ Penting:</strong>
+                    <ul style='margin: 10px 0; padding-left: 20px;'>
+                        <li>Jangan bagikan kode ini kepada siapa pun</li>
+                        <li>Kode verifikasi berlaku 15 menit dari email ini dikirim</li>
+                        <li>Jika Anda tidak mendaftar, abaikan email ini</li>
+                    </ul>
+                </div>
+                
+                <div style='background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffeeba;'>
+                    <strong>Test Mode:</strong> Jika Anda melihat pesan ini, berarti sistem email SMTP sudah berfungsi.
+                </div>
+                
+                <p style='color: #6b7280;'>Dengan verifikasi ini, akun admin Anda akan segera aktif dan siap digunakan untuk mengelola perpustakaan sekolah.</p>
+                
+                <p>Pertanyaan? Hubungi tim support kami.</p>
+            </div>
+            
+            <div class='footer'>
+                <p>© 2026 Sistem Perpustakaan Digital Indonesia. Semua hak dilindungi.</p>
+                <p>Email ini dikirim karena ada permintaan verifikasi akun. Jika ini bukan Anda, abaikan email ini.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+==================================================
+

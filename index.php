@@ -35,11 +35,13 @@
         <a href="#audience">Solusi</a>
         <a href="#stats">Statistik</a>
         <a href="#testimonials">Testimoni</a>
+        <!-- Mobile only login link style handled by current mobile flex logic -->
+        <a href="#" onclick="openLoginModal(event)" class="nav-btn login hide-on-desktop" style="margin-top: 10px; background: var(--primary); color: #fff; padding: 12px 32px; border-radius: 50px;">Masuk</a>
       </nav>
 
       <div class="nav-right">
         <a href="#" onclick="openLoginModal(event)" class="nav-btn login">Masuk</a>
-        <a href="#" onclick="openRegisterModal(event)" class="nav-btn register">Daftar Sekolah</a>
+        <a href="#" onclick="openRegisterModal(event)" class="nav-btn register hide-on-mobile">Daftar Sekolah</a>
       </div>
 
       <button class="nav-toggle" aria-label="Toggle menu">
@@ -60,7 +62,7 @@
           <h1>Transformasi Digital Perpustakaan Sekolah Anda</h1>
           <p class="lede">Platform manajemen perpustakaan modern yang terintegrasi, efisien, dan menyenangkan. Kelola buku, anggota, dan peminjaman dalam satu dashboard pintar.</p>
           <div class="hero-actions">
-            <a href="#" onclick="openRegisterModal(event)" class="btn btn-primary btn-lg">
+            <a href="#" onclick="openRegisterModal(event)" class="btn btn-primary btn-lg hide-on-mobile">
               Mulai Sekarang <iconify-icon icon="solar:arrow-right-linear"></iconify-icon>
             </a>
             <a href="#features" class="btn btn-outline btn-lg">Pelajari Fitur</a>
@@ -244,7 +246,7 @@
     </section>
 
     <!-- CTA -->
-    <section class="section cta-section animate-on-scroll">
+    <section class="section cta-section animate-on-scroll hide-on-mobile">
       <div class="container text-center">
         <div class="cta-box glass-card glow">
           <h2>Siap Modernisasi Perpustakaan Anda?</h2>
@@ -296,7 +298,7 @@
            <iconify-icon icon="solar:user-bold-duotone"></iconify-icon>
            <span>Siswa / Guru / Karyawan</span>
          </button>
-         <button onclick="selectUserType('school')" class="role-card">
+         <button onclick="selectUserType('school')" class="role-card hide-on-mobile">
            <iconify-icon icon="solar:shield-user-bold-duotone"></iconify-icon>
            <span>Admin / Pustakawan</span>
          </button>
@@ -337,10 +339,10 @@
             <input type="hidden" name="user_type" value="school">
              <div class="input-group">
                <iconify-icon icon="solar:letter-bold"></iconify-icon>
-               <input type="email" name="email" required placeholder="Email Sekolah">
+               <input type="email" name="email" required placeholder="Email">
             </div>
-             <div class="input-group">
-               <iconify-icon icon="solar:lock-password-bold"></iconify-icon>
+            <div class="input-group">
+            <iconify-icon icon="solar:buildings-bold"></iconify-icon>
                <input type="password" name="password" required placeholder="Password">
             </div>
             <button type="submit" class="btn btn-primary full-width">Masuk Admin</button>
@@ -356,7 +358,7 @@
    <div id="registerModal" class="modal" onclick="closeRegisterModal(event)">
       <div class="modal-content glass-modal" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
-        <h2 class="modal-title">Daftar Sekolah</h2>
+        <h2 class="modal-title" style="margin-bottom: 20px;">Daftar Sekolah</h2>
         <div id="registerError" class="login-error-msg"></div>
         <form onsubmit="handleRegister(event)" class="modern-form">
              <div class="input-group">
@@ -382,35 +384,60 @@
           </div>
       </div>
 
-   <!-- OTP Verification Modal - REBUILT FROM SCRATCH -->
-   <div id="otpModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99999; justify-content: center; align-items: center;">
-      <div style="background: white; border-radius: 20px; padding: 40px; max-width: 450px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative;">
-        <button onclick="closeOTPModalNew()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 28px; cursor: pointer; color: #666;">&times;</button>
+   <!-- OTP Verification Modal - MODERN PREMIUM DESIGN -->
+   <div id="otpModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 61, 97, 0.15); backdrop-filter: blur(10px); z-index: 99999; justify-content: center; align-items: center; animation: fadeIn 0.3s ease;">
+      <div style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border-radius: 24px; padding: 0; max-width: 480px; width: 90%; box-shadow: 0 25px 80px rgba(11, 61, 97, 0.25), 0 0 1px rgba(0,0,0,0.1); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.8);">
         
-        <h2 style="margin: 0 0 10px 0; font-size: 24px; color: #0B3D61;">Verifikasi Email</h2>
-        <p style="margin: 0 0 20px 0; color: #64748B; font-size: 14px;">Kode OTP telah dikirim ke email Anda</p>
-        
-        <!-- OTP Code Display for Demo -->
-        <div id="otpCodeDisplayNew" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center; display: none;">
-          <p style="margin: 0 0 10px 0; font-size: 13px; color: #1e40af; font-weight: 700;">🔑 Kode OTP Anda (Demo):</p>
-          <div id="otpCodeValueNew" style="font-size: 36px; font-weight: 900; color: #1e40af; letter-spacing: 10px; font-family: 'Courier New', monospace; margin: 10px 0;"></div>
-          <button type="button" onclick="copyOTPNew()" style="margin-top: 10px; padding: 8px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 600;">📋 Copy Kode</button>
+        <!-- Decorative gradient header -->
+        <div style="background: linear-gradient(135deg, #0B3D61 0%, #1e40af 100%); padding: 32px 40px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(40px);"></div>
+          <div style="position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(30px);"></div>
+          
+          <button onclick="closeOTPModalNew()" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.2); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; color: white; transition: all 0.3s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">&times;</button>
+          
+          <div style="position: relative; z-index: 1;">
+            <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h2 style="margin: 0 0 8px 0; font-size: 28px; color: white; font-weight: 700; letter-spacing: -0.5px;">Verifikasi Email</h2>
+            <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 15px; line-height: 1.5;">Masukkan kode OTP yang telah dikirim ke email Anda untuk melanjutkan</p>
+          </div>
         </div>
         
-        <div id="otpErrorNew" style="display: none; background: #fee; border: 1px solid #fcc; color: #c33; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px;"></div>
-        
-        <form onsubmit="handleOTPVerificationNew(event)" style="margin: 0;">
-          <input type="hidden" id="otpEmailNew" name="email">
+        <!-- Content area -->
+        <div style="padding: 32px 40px 40px;">
           
-          <div style="position: relative; margin-bottom: 20px;">
-            <input type="text" id="otpCodeNew" name="code" required placeholder="Masukkan 6 digit kode OTP" maxlength="6" pattern="[0-9]{6}" style="width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; box-sizing: border-box; font-family: monospace; letter-spacing: 4px; text-align: center; font-weight: bold;">
+          <!-- OTP Code Display - PREMIUM STYLE -->
+          <div id="otpCodeDisplayNew" style="display: none; background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%); border: 2px dashed #3b82f6; border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; filter: blur(30px);"></div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <p style="margin: 0; font-size: 13px; color: #1e40af; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Kode OTP Anda</p>
+            </div>
+            <div id="otpCodeValueNew" style="font-size: 40px; font-weight: 900; color: #1e40af; letter-spacing: 12px; font-family: 'Courier New', monospace; margin: 16px 0; text-shadow: 0 2px 4px rgba(30, 64, 175, 0.1); position: relative; z-index: 1;"></div>
+            <button type="button" onclick="copyOTPNew()" style="margin-top: 8px; padding: 10px 24px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 10px; font-size: 13px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Kode
+            </button>
           </div>
           
-          <button type="submit" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #0B3D61, #072a44); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer;">Verifikasi Sekarang</button>
-        </form>
-        
-        <div style="margin-top: 20px; text-align: center; font-size: 14px; color: #64748B;">
-          Tidak menerima kode? <a href="#" onclick="resendOTPNew(event)" style="color: #0B3D61; font-weight: 600; text-decoration: none;">Kirim Ulang</a>
+          <div id="otpErrorNew" style="display: none; background: linear-gradient(135deg, #fee 0%, #fdd 100%); border: 1px solid #fcc; color: #c33; padding: 14px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 500;"></div>
+          
+          <form onsubmit="handleOTPVerificationNew(event)" style="margin: 0;">
+            <input type="hidden" id="otpUserIdNew" name="user_id">
+            <input type="hidden" id="otpEmailNew" name="email">
+            
+            <label style="display: block; margin-bottom: 8px; color: #0f172a; font-size: 14px; font-weight: 600;">Kode Verifikasi</label>
+            <div style="position: relative; margin-bottom: 24px;">
+              <input type="text" id="otpCodeNew" name="verification_code" required placeholder="000000" maxlength="6" pattern="[0-9]{6}" style="width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 20px; box-sizing: border-box; font-family: 'Courier New', monospace; letter-spacing: 8px; text-align: center; font-weight: 800; transition: all 0.3s; background: #f8fafc;" onfocus="this.style.borderColor='#3b82f6'; this.style.background='white'; this.style.boxShadow='0 0 0 4px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.boxShadow='none'">
+            </div>
+            
+            <button type="submit" style="width: 100%; padding: 16px; background: linear-gradient(135deg, #0B3D61 0%, #1e40af 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(11, 61, 97, 0.3); transition: all 0.3s; letter-spacing: 0.5px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(11, 61, 97, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(11, 61, 97, 0.3)'">Verifikasi Sekarang</button>
+          </form>
+          
+          <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 14px; color: #64748b;">
+            Tidak menerima kode? <a href="#" onclick="resendOTPNew(event)" style="color: #0B3D61; font-weight: 700; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#1e40af'" onmouseout="this.style.color='#0B3D61'">Kirim Ulang</a>
+          </div>
         </div>
       </div>
    </div>
@@ -418,10 +445,40 @@
 
    <!-- JS Logic -->
    <script>
+    // --- Mobile Menu Logic ---
+    const navToggle = document.querySelector('.nav-toggle');
+    const mainNav = document.querySelector('.main-nav');
+    const toggleIcon = navToggle.querySelector('iconify-icon');
+
+    navToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('active');
+      
+      if (mainNav.classList.contains('active')) {
+        toggleIcon.setAttribute('icon', 'solar:close-circle-linear');
+        navToggle.style.transform = 'rotate(90deg)';
+      } else {
+        toggleIcon.setAttribute('icon', 'solar:hamburger-menu-linear');
+        navToggle.style.transform = 'rotate(0)';
+      }
+    });
+
+    // Close menu when clicking links
+    document.querySelectorAll('.main-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('active');
+        toggleIcon.setAttribute('icon', 'solar:hamburger-menu-linear');
+        navToggle.style.transform = 'rotate(0)';
+      });
+    });
+
     // --- Modal Logic ---
     function openLoginModal(e) {
       if(e) e.preventDefault();
-      document.getElementById('userTypeModal').classList.add('active');
+      if (window.innerWidth <= 768) {
+        selectUserType('student');
+      } else {
+        document.getElementById('userTypeModal').classList.add('active');
+      }
     }
     function closeUserTypeModal() {
       document.getElementById('userTypeModal').classList.remove('active');
@@ -630,7 +687,8 @@
           otpModal.style.zIndex = '99999'; // Even higher than before
           console.log('✅ OTP modal opened on top of register modal');
           
-          // Set email
+          // Set user_id and email
+          document.getElementById('otpUserIdNew').value = result.user_id;
           document.getElementById('otpEmailNew').value = result.email;
           
           // Display OTP code for demo
@@ -640,6 +698,14 @@
             document.getElementById('otpCodeValueNew').innerText = result.verification_code;
             document.getElementById('otpCodeNew').value = result.verification_code;
           }
+          
+          // SAVE to sessionStorage for persistence across refresh
+          sessionStorage.setItem('otpPending', JSON.stringify({
+            user_id: result.user_id,
+            email: result.email,
+            verification_code: result.verification_code || '',
+            timestamp: Date.now()
+          }));
           
           console.log('✅ Done - both modals open, OTP on top');
           
@@ -663,6 +729,9 @@
       document.getElementById('otpCodeNew').value = '';
       document.getElementById('otpCodeDisplayNew').style.display = 'none';
       document.getElementById('otpErrorNew').style.display = 'none';
+      
+      // Clear sessionStorage when modal is closed
+      sessionStorage.removeItem('otpPending');
     }
 
     function copyOTPNew() {
@@ -695,9 +764,21 @@
         const result = await response.json();
 
         if (result.success) {
+          // Clear sessionStorage on success
+          sessionStorage.removeItem('otpPending');
+          
           alert('✅ Email berhasil diverifikasi! Silakan login.');
           closeOTPModalNew();
-          openLoginModal();
+          
+          // Close register modal juga
+          document.getElementById('registerModal').classList.remove('active');
+          
+          // Redirect to dashboard if auto-login
+          if (result.redirect_url) {
+            window.location.href = result.redirect_url;
+          } else {
+            openLoginModal();
+          }
         } else {
           throw new Error(result.message || 'Kode OTP salah.');
         }
@@ -724,9 +805,19 @@
         
         if (result.success) {
           alert('📧 Kode OTP baru telah dikirim ke email Anda.');
+          
+          // Update displayed OTP code with NEW code
           if (result.verification_code) {
+            console.log('🔑 New OTP Code:', result.verification_code);
+            document.getElementById('otpCodeDisplayNew').style.display = 'block';
             document.getElementById('otpCodeValueNew').innerText = result.verification_code;
             document.getElementById('otpCodeNew').value = result.verification_code;
+            
+            // Update sessionStorage with new code
+            const otpData = JSON.parse(sessionStorage.getItem('otpPending') || '{}');
+            otpData.verification_code = result.verification_code;
+            otpData.timestamp = Date.now();
+            sessionStorage.setItem('otpPending', JSON.stringify(otpData));
           }
         } else {
           alert(result.message || 'Gagal mengirim ulang OTP.');
@@ -831,6 +922,62 @@
         console.log('🔍 Check after 1s - Display:', otpModal.style.display);
         console.log('🔍 Check after 1s - Computed:', window.getComputedStyle(otpModal).display);
       }, 1000);
+    }
+    
+    // --- RESTORE OTP MODAL ON PAGE LOAD ---
+    function restoreOTPModal() {
+      const otpPending = sessionStorage.getItem('otpPending');
+      console.log('🔍 Checking sessionStorage for OTP:', otpPending);
+      
+      if (otpPending) {
+        try {
+          const otpData = JSON.parse(otpPending);
+          console.log('📦 OTP Data found:', otpData);
+          
+          // Check if OTP is not too old (e.g., within 15 minutes)
+          const ageMinutes = (Date.now() - otpData.timestamp) / (1000 * 60);
+          console.log(`⏰ OTP age: ${ageMinutes.toFixed(2)} minutes`);
+          
+          if (ageMinutes < 15) {
+            console.log('🔄 Restoring OTP modal from sessionStorage...');
+            
+            // Restore OTP modal
+            const otpModal = document.getElementById('otpModal');
+            otpModal.style.display = 'flex';
+            otpModal.style.zIndex = '99999';
+            
+            // Restore form data
+            document.getElementById('otpUserIdNew').value = otpData.user_id || '';
+            document.getElementById('otpEmailNew').value = otpData.email || '';
+            
+            // Restore OTP code display
+            if (otpData.verification_code) {
+              document.getElementById('otpCodeDisplayNew').style.display = 'block';
+              document.getElementById('otpCodeValueNew').innerText = otpData.verification_code;
+              document.getElementById('otpCodeNew').value = otpData.verification_code;
+            }
+            
+            console.log('✅ OTP modal restored successfully!');
+          } else {
+            // Too old, remove from storage
+            console.log('⏰ OTP code expired, clearing sessionStorage');
+            sessionStorage.removeItem('otpPending');
+          }
+        } catch (err) {
+          console.error('❌ Error restoring OTP modal:', err);
+          sessionStorage.removeItem('otpPending');
+        }
+      } else {
+        console.log('ℹ️ No pending OTP in sessionStorage');
+      }
+    }
+    
+    // Run immediately AND on DOMContentLoaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', restoreOTPModal);
+    } else {
+      // DOM already loaded, run immediately
+      restoreOTPModal();
     }
    </script>
 </body>
