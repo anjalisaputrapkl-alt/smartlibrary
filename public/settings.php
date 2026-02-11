@@ -15,6 +15,16 @@ $user = $_SESSION['user'];
 $sid = $user['school_id'];
 $schoolProfileModel = new SchoolProfileModel($pdo);
 $themeModel = new ThemeModel($pdo);
+
+// Fetch school data BEFORE POST processing so we have current values for fallbacks
+$stmt = $pdo->prepare('SELECT * FROM schools WHERE id = :id');
+$stmt->execute(['id' => $sid]);
+$school = $stmt->fetch();
+
+if (!$school) {
+    die('Error: School data not found');
+}
+
 $error = null;
 $success = null;
 $profile_error = null;
@@ -25,10 +35,12 @@ $theme_error = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    if ($action === 'update_basic') {
-        // Update basic school info
+    if ($action === 'update_identity') {
+        // Update basic identity info
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
+        $npsn = trim($_POST['school_npsn'] ?? '') ?: null;
+        $email = trim($_POST['school_email'] ?? '') ?: null;
 
         if ($name === '') {
             $error = 'Nama sekolah wajib diisi.';
@@ -48,9 +60,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($exists) {
                 $error = 'Slug sudah digunakan oleh sekolah lain.';
             } else {
-                $stmt = $pdo->prepare('UPDATE schools SET name = :name, slug = :slug WHERE id = :id');
-                $stmt->execute(['name' => $name, 'slug' => $slug, 'id' => $sid]);
-                $success = 'Pengaturan dasar tersimpan.';
+                try {
+                    $schoolProfileModel->updateSchoolProfile($sid, [
+                        'name' => $name,
+                        'slug' => $slug,
+                        'npsn' => $npsn,
+                        'email' => $email
+                    ]);
+                    $success = 'Data identitas sekolah berhasil diperbarui.';
+                } catch (Exception $e) {
+                    $error = 'Gagal menyimpan data: ' . $e->getMessage();
+                }
             }
         }
     } elseif ($action === 'update_theme') {
@@ -65,21 +85,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Exception $e) {
             $theme_error = 'Gagal menyimpan tema: ' . $e->getMessage();
         }
-    } elseif ($action === 'update_profile') {
-        // Update school profile data
+    } elseif ($action === 'update_borrows') {
         try {
-            $data = [
-                'email' => trim($_POST['school_email'] ?? '') ?: null,
-                'npsn' => trim($_POST['school_npsn'] ?? '') ?: null,
-                'borrow_duration' => (int) ($_POST['borrow_duration'] ?? 7),
-                'late_fine' => (float) ($_POST['late_fine'] ?? 500),
-                'max_books' => (int) ($_POST['max_books'] ?? 3),
-            ];
-
-            $schoolProfileModel->updateSchoolProfile($sid, $data);
-            $profile_success = 'Data profil dan peraturan berhasil diperbarui.';
+            $schoolProfileModel->updateSchoolProfile($sid, [
+                'borrow_duration' => (int)($_POST['borrow_duration'] ?? $school['borrow_duration']),
+                'late_fine' => (float)($_POST['late_fine'] ?? $school['late_fine']),
+                'max_books_student' => (int)($_POST['max_books_student'] ?? $school['max_books_student']),
+                'max_books_teacher' => (int)($_POST['max_books_teacher'] ?? $school['max_books_teacher']),
+                'max_books_employee' => (int)($_POST['max_books_employee'] ?? $school['max_books_employee'])
+            ]);
+            $profile_success = 'Peraturan peminjaman berhasil diperbarui.';
         } catch (Exception $e) {
-            $profile_error = 'Gagal memperbarui data profil: ' . $e->getMessage();
+            $profile_error = 'Gagal memperbarui peraturan: ' . $e->getMessage();
         }
     } elseif ($action === 'update_password') {
         // Update user (admin) password
@@ -158,6 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Re-fetch school data after POST to reflect updates in the UI
 $stmt = $pdo->prepare('SELECT * FROM schools WHERE id = :id');
 $stmt->execute(['id' => $sid]);
 $school = $stmt->fetch();
@@ -227,14 +245,14 @@ if (!$school) {
                         </h2>
                         <p class="card-subtitle">Kelola informasi dasar dan kontak resmi sekolah Anda.</p>
                         
-                        <?php if (!empty($success) && ($action === 'update_basic' || $action === 'update_profile')): ?>
+                        <?php if (!empty($success) && $action === 'update_identity'): ?>
                             <div class="alert alert-success">
                                 <iconify-icon icon="mdi:check-circle" style="font-size: 20px;"></iconify-icon>
-                                <div>Tersimpan: <?php echo htmlspecialchars($success . ($profile_success ?? '')); ?></div>
+                                <div>Tersimpan: <?php echo htmlspecialchars($success); ?></div>
                             </div>
                         <?php endif; ?>
                         
-                        <?php if (!empty($error) && ($action === 'update_basic' || $action === 'update_profile')): ?>
+                        <?php if (!empty($error) && $action === 'update_identity'): ?>
                             <div class="alert alert-danger">
                                 <iconify-icon icon="mdi:alert-circle" style="font-size: 20px;"></iconify-icon>
                                 <div><?php echo htmlspecialchars($error); ?></div>
@@ -242,7 +260,7 @@ if (!$school) {
                         <?php endif; ?>
 
                         <form method="post">
-                            <input type="hidden" name="action" value="update_profile">
+                            <input type="hidden" name="action" value="update_identity">
                             <div class="form-group">
                                 <label for="name">Nama Lengkap Sekolah</label>
                                 <input id="name" name="name" type="text" required
@@ -411,41 +429,68 @@ if (!$school) {
                         </h2>
                         <p class="card-subtitle">Atur kebijakan peminjaman buku untuk seluruh anggota perpustakaan di sekolah Anda.</p>
 
+                        <?php if (!empty($profile_success) && $action === 'update_borrows'): ?>
+                            <div class="alert alert-success">
+                                <iconify-icon icon="mdi:check-circle" style="font-size: 20px;"></iconify-icon>
+                                <div><?php echo htmlspecialchars($profile_success); ?></div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($profile_error) && $action === 'update_borrows'): ?>
+                            <div class="alert alert-danger">
+                                <iconify-icon icon="mdi:alert-circle" style="font-size: 20px;"></iconify-icon>
+                                <div><?php echo htmlspecialchars($profile_error); ?></div>
+                            </div>
+                        <?php endif; ?>
+
                         <form method="post">
-                            <input type="hidden" name="action" value="update_profile">
+                            <input type="hidden" name="action" value="update_borrows">
                             
                             <div class="form-group">
                                 <label for="borrow_duration">Durasi Peminjaman (Hari)</label>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <input id="borrow_duration" name="borrow_duration" type="number" required min="1"
-                                        value="<?php echo htmlspecialchars($school['borrow_duration'] ?? 7); ?>"
-                                        style="max-width: 120px;">
-                                    <span style="font-size: 14px; color: var(--muted);">Hari kerja</span>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <input type="number" name="borrow_duration" class="form-control" value="<?= htmlspecialchars($school['borrow_duration'] ?? 7) ?>" min="1" style="width: 100px;">
+                                    <span>Hari kerja</span>
                                 </div>
-                                <small style="display: block; margin-top: 8px; color: var(--muted);">Waktu maksimal seorang anggota boleh memegang buku sebelum harus dikembalikan.</small>
+                                <small class="text-muted">Waktu maksimal seorang anggota boleh memegang buku sebelum harus dikembalikan.</small>
                             </div>
 
                             <div class="form-group">
                                 <label for="late_fine">Denda Keterlambatan (Rp)</label>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span style="font-size: 14px; color: var(--muted); font-weight: 600;">Rp</span>
-                                    <input id="late_fine" name="late_fine" type="number" required min="0" step="500"
-                                        value="<?php echo htmlspecialchars($school['late_fine'] ?? 500); ?>"
-                                        style="max-width: 150px;">
-                                    <span style="font-size: 14px; color: var(--muted);">/ hari</span>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span>Rp</span>
+                                    <input type="number" name="late_fine" class="form-control" value="<?= htmlspecialchars($school['late_fine'] ?? 500) ?>" min="0" step="100" style="width: 150px;">
+                                    <span>/ hari</span>
                                 </div>
-                                <small style="display: block; margin-top: 8px; color: var(--muted);">Besar denda yang dikenakan per buku per satu hari keterlambatan.</small>
+                                <small class="text-muted">Besar denda yang dikenakan per buku per satu hari keterlambatan.</small>
                             </div>
 
                             <div class="form-group">
-                                <label for="max_books">Maksimum Buku Dipinjam</label>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <input id="max_books" name="max_books" type="number" required min="1"
-                                        value="<?php echo htmlspecialchars($school['max_books'] ?? 3); ?>"
-                                        style="max-width: 120px;">
-                                    <span style="font-size: 14px; color: var(--muted);">Buku per Anggota</span>
+                                <label>Maksimum Buku Disimpan (Berdasarkan Role)</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 5px;">
+                                    <div>
+                                        <label style="font-size: 11px; color: var(--muted);">Siswa</label>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <input type="number" name="max_books_student" class="form-control" value="<?= htmlspecialchars($school['max_books_student'] ?? 3) ?>" min="1" max="50">
+                                            <span style="font-size: 12px;">Buku</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 11px; color: var(--muted);">Guru</label>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <input type="number" name="max_books_teacher" class="form-control" value="<?= htmlspecialchars($school['max_books_teacher'] ?? 10) ?>" min="1" max="50">
+                                            <span style="font-size: 12px;">Buku</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 11px; color: var(--muted);">Karyawan</label>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <input type="number" name="max_books_employee" class="form-control" value="<?= htmlspecialchars($school['max_books_employee'] ?? 5) ?>" min="1" max="50">
+                                            <span style="font-size: 12px;">Buku</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <small style="display: block; margin-top: 8px; color: var(--muted);">Jumlah maksimal buku yang boleh dipinjam secara bersamaan oleh satu anggota.</small>
+                                <small class="text-muted">Tentukan jatah pinjam buku maksimal per role. Ini akan menjadi default saat menambah anggota baru.</small>
                             </div>
 
                             <button type="submit" class="btn btn-primary">Simpan Peraturan</button>

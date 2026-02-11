@@ -48,7 +48,7 @@ try {
 
     // Check if borrow exists and status is pending_return
     $borrowStmt = $pdo->prepare(
-        'SELECT b.id, b.book_id, b.member_id, b.status, bk.title FROM borrows b
+        'SELECT b.id, b.book_id, b.member_id, b.status, b.due_at, bk.title FROM borrows b
          JOIN books bk ON b.book_id = bk.id
          WHERE b.id = :borrow_id 
          AND b.school_id = :school_id
@@ -67,12 +67,28 @@ try {
         exit;
     }
 
-    // Update borrow status to returned
+    // Calculate Fine
+    $schoolStmt = $pdo->prepare('SELECT late_fine FROM schools WHERE id = :sid');
+    $schoolStmt->execute(['sid' => $school_id]);
+    $late_fine = (int) ($schoolStmt->fetchColumn() ?: 500);
+
+    $fineAmount = 0;
+    if ($borrow['due_at']) {
+        $dueDate = new DateTime($borrow['due_at']);
+        $now = new DateTime();
+        if ($now > $dueDate) {
+            $diff = $now->diff($dueDate); // Absolute diff
+            $daysLate = $diff->days;
+            $fineAmount = $daysLate * $late_fine;
+        }
+    }
+
+    // Update borrow status to returned and save fine
     $updateBorrowStmt = $pdo->prepare(
-        'UPDATE borrows SET returned_at = NOW(), status = "returned" 
+        'UPDATE borrows SET returned_at = NOW(), status = "returned", fine_amount = :fine 
          WHERE id = :borrow_id'
     );
-    $updateBorrowStmt->execute(['borrow_id' => $borrow_id]);
+    $updateBorrowStmt->execute(['borrow_id' => $borrow_id, 'fine' => $fineAmount]);
 
     // Update book stock (Reset to 1)
     $updateBookStmt = $pdo->prepare(

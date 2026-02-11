@@ -42,6 +42,33 @@ try {
                 continue;
             }
 
+            // A. Check student's current active borrow count against their personal limit
+            // Fetch member's max_pinjam (synced with school max_books_{role})
+            $memStmt = $pdo->prepare('SELECT m.max_pinjam, m.role, s.max_books_student, s.max_books_teacher, s.max_books_employee 
+                                      FROM members m 
+                                      JOIN schools s ON s.id = m.school_id 
+                                      WHERE m.id = :mid');
+            $memStmt->execute(['mid' => $borrow['member_id']]);
+            $memberData = $memStmt->fetch();
+            $memberRole = $memberData['role'] ?? 'student';
+            
+            // Map role to school setting column
+            $roleDefaultLimit = 3;
+            if ($memberRole === 'teacher') $roleDefaultLimit = $memberData['max_books_teacher'] ?? 10;
+            elseif ($memberRole === 'employee') $roleDefaultLimit = $memberData['max_books_employee'] ?? 5;
+            else $roleDefaultLimit = $memberData['max_books_student'] ?? 3;
+
+            $maxLimit = $memberData['max_pinjam'] ?? $roleDefaultLimit;
+
+            $countStmt = $pdo->prepare('SELECT COUNT(*) as total FROM borrows WHERE member_id = :mid AND status NOT IN ("returned", "rejected")');
+            $countStmt->execute(['mid' => $borrow['member_id']]);
+            $currentBorrows = (int)$countStmt->fetchColumn();
+
+            if (($currentBorrows + $inserted) >= $maxLimit) {
+                $errors[] = "Siswa sudah mencapai batas maksimal peminjaman ($maxLimit buku)";
+                continue;
+            }
+
             // Check if book is available and get its custom borrow limit
             $checkStmt = $pdo->prepare('SELECT copies, title, max_borrow_days, access_level FROM books WHERE id = :bid');
             $checkStmt->execute(['bid' => $borrow['book_id']]);
@@ -56,22 +83,16 @@ try {
             // 1. Priority: Book-specific limit
             // 2. Fallback: Provided date in request
             // 3. Last Fallback: Default +7 days
-            if (!empty($bookInfo['max_borrow_days'])) {
-                $dueDate = date('Y-m-d H:i:s', strtotime('+' . $bookInfo['max_borrow_days'] . ' days'));
-            } else {
-                $dueDate = $input['due_date'] ?? date('Y-m-d H:i:s', strtotime('+7 days'));
-            }
+                // Get generic default duration
+                $schoolStmt = $pdo->prepare('SELECT borrow_duration FROM schools WHERE id = :sid');
+                $schoolStmt->execute(['sid' => $school_id]);
+                $defaultDuration = $schoolStmt->fetchColumn() ?: 7;
+                
+                $dueDate = $input['due_date'] ?? date('Y-m-d H:i:s', strtotime('+' . $defaultDuration . ' days'));
+
 
             // Enforce Access Level Restriction
             if (isset($bookInfo['access_level']) && $bookInfo['access_level'] === 'teacher_only') {
-                // Get member role
-                $memStmt = $pdo->prepare('SELECT role FROM members WHERE id = :mid');
-                $memStmt->execute(['mid' => $borrow['member_id']]);
-                $memberRole = $memStmt->fetchColumn();
-
-                $logMsg = date('Y-m-d H:i:s') . " [BORROW CHECK] Book: '{$bookInfo['title']}' (ID: {$borrow['book_id']}) is teacher_only. Member (ID: {$borrow['member_id']}) Role: '$memberRole'\n";
-                file_put_contents(__DIR__ . '/../../debug_borrow.log', $logMsg, FILE_APPEND);
-
                 if ($memberRole === 'student') {
                     $errors[] = "Buku '" . ($bookInfo['title'] ?? 'Unknown') . "' KHUSUS untuk Guru/Karyawan.";
                     file_put_contents(__DIR__ . '/../../debug_borrow.log', date('Y-m-d H:i:s') . " [BORROW BLOCKED] Blocked student.\n", FILE_APPEND);

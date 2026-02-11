@@ -8,6 +8,11 @@ $sid = $user['school_id'];
 
 $action = $_GET['action'] ?? 'list';
 
+// Get school info at the top so it's available for both POST and GET
+$schoolStmt = $pdo->prepare('SELECT * FROM schools WHERE id = :sid');
+$schoolStmt->execute(['sid' => $sid]);
+$school = $schoolStmt->fetch();
+
 if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
     // Insert into members table
@@ -21,7 +26,7 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
       'email' => $_POST['email'],
       'nisn' => $_POST['nisn'],
       'role' => $_POST['role'] ?? 'student',
-      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? 2)
+      'max_pinjam' => (int) ($_POST['max_pinjam'] ?? $school['max_books_' . ($_POST['role'] ?? 'student')] ?? 3)
     ]);
 
     // Get the inserted NISN for password generation
@@ -168,10 +173,7 @@ if ($action === 'delete' && isset($_GET['id'])) {
   }
 }
 
-// Get school info
-$schoolStmt = $pdo->prepare('SELECT * FROM schools WHERE id = :sid');
-$schoolStmt->execute(['sid' => $sid]);
-$school = $schoolStmt->fetch();
+// (School info already fetched at top)
 
 // Update query to join with users and siswa to get photo
 $stmt = $pdo->prepare('
@@ -737,8 +739,11 @@ $members = $stmt->fetchAll();
             </div>
             <div class="form-group">
               <label>Batas Pinjam Buku (Maksimal)</label>
-              <input type="number" name="max_pinjam" min="1" required placeholder="Default: 2" autocomplete="off"
-                value="<?= $action === 'edit' && isset($member['max_pinjam']) ? (int)$member['max_pinjam'] : '2' ?>">
+              <input type="number" name="max_pinjam" min="1" required 
+                placeholder="Default: <?= (int)($school['max_books_student'] ?? 3) ?>" autocomplete="off"
+                value="<?= $action === 'edit' && isset($member['max_pinjam']) 
+                  ? (int)$member['max_pinjam'] 
+                  : (int)($school['max_books_' . ($member['role'] ?? 'student')] ?? 3) ?>">
             </div>
             <div class="form-group">
               <label>Password</label>
@@ -1156,18 +1161,33 @@ $members = $stmt->fetchAll();
       const idInput = document.getElementById('id-input');
       const maxPinjamInput = document.querySelector('input[name="max_pinjam"]');
       
-      if (roleSelect.value === 'teacher') {
+      if (!roleSelect || !schoolData) return;
+
+      const role = roleSelect.value;
+      let defaultLimit = 3;
+      
+      if (role === 'teacher') {
         idLabel.textContent = 'NUPTK / ID Guru';
         idInput.placeholder = 'Nomor Unik Pendidik dan Tenaga Kependidikan';
-        if (!maxPinjamInput.value || maxPinjamInput.value == '2') maxPinjamInput.value = '5';
-      } else if (roleSelect.value === 'employee') {
+        defaultLimit = schoolData.max_books_teacher || 10;
+      } else if (role === 'employee') {
         idLabel.textContent = 'NIP / ID Karyawan';
         idInput.placeholder = 'Nomor Induk Pegawai';
-        if (!maxPinjamInput.value || maxPinjamInput.value == '2') maxPinjamInput.value = '3';
+        defaultLimit = schoolData.max_books_employee || 5;
       } else {
         idLabel.textContent = 'NISN Siswa';
         idInput.placeholder = 'Nomor Induk Siswa Nasional';
-        if (!maxPinjamInput.value || maxPinjamInput.value == '5' || maxPinjamInput.value == '3') maxPinjamInput.value = '2';
+        defaultLimit = schoolData.max_books_student || 3;
+      }
+
+      if (maxPinjamInput) {
+        maxPinjamInput.placeholder = 'Default: ' + defaultLimit;
+        
+        // Auto-update value ONLY if it's a NEW member addition (not edit mode)
+        const isEdit = window.location.search.includes('action=edit');
+        if (!isEdit) {
+            maxPinjamInput.value = defaultLimit;
+        }
       }
     }
 
@@ -1178,27 +1198,14 @@ $members = $stmt->fetchAll();
       }
     });
 
-    // Only reset form fields when in ADD mode, not EDIT mode
+    // Simplified form state handling
     document.addEventListener('DOMContentLoaded', function () {
       const form = document.getElementById('member-form');
       if (form) {
-        // Check if we're in edit mode by checking if name field has a value
-        const nameField = form.querySelector('input[name="name"]');
-        const isEditMode = nameField && nameField.value.trim() !== '';
-
-        // Only clear password field (always reset password on load)
+        // Only clear password field for security
         const passwordField = form.querySelector('input[name="password"]');
         if (passwordField) {
           passwordField.value = '';
-        }
-
-        // If in ADD mode, clear all fields
-        if (!isEditMode) {
-          form.reset();
-          const inputs = form.querySelectorAll('input');
-          inputs.forEach(input => {
-            input.value = '';
-          });
         }
       }
     });

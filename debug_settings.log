@@ -1,0 +1,20 @@
+Action: update_profile
+POST: Array
+(
+    [action] => update_profile
+    [borrow_duration] => 4
+    [late_fine] => 500
+    [max_books] => 3
+    [school_npsn] => 12345
+)
+
+Action: update_profile
+POST: Array
+(
+    [action] => update_profile
+    [borrow_duration] => 4
+    [late_fine] => 500
+    [max_books] => 3
+    [school_npsn] => 12345
+)
+

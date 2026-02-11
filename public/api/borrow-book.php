@@ -65,6 +65,20 @@ try {
         exit;
     }
 
+    // Check Access Level
+    if (isset($book['access_level']) && $book['access_level'] === 'teacher_only') {
+        $memStmt = $pdo->prepare('SELECT role FROM members WHERE id = :mid');
+        $memStmt->execute(['mid' => $member_id]);
+        $role = $memStmt->fetchColumn();
+
+        if ($role === 'student') {
+            $pdo->rollBack();
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Buku ini KHUSUS untuk Guru/Karyawan']);
+            exit;
+        }
+    }
+
     if ($book['copies'] <= 0) {
         $pdo->rollBack();
         http_response_code(400);
@@ -110,6 +124,11 @@ try {
     $memberMetaStmt->execute(['member_id' => $member_id]);
     $memberMeta = $memberMetaStmt->fetch();
     $max_pinjam = (int) ($memberMeta['max_pinjam'] ?? 2);
+
+    // Get school generic duration
+    $schoolSettingsStmt = $pdo->prepare('SELECT borrow_duration FROM schools WHERE id = :school_id');
+    $schoolSettingsStmt->execute(['school_id' => $school_id]);
+    $durasi_pinjam = (int) ($schoolSettingsStmt->fetchColumn() ?: 7);
 
     $countStmt = $pdo->prepare(
         'SELECT COUNT(*) as total FROM borrows 

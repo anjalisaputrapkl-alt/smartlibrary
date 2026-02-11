@@ -10,18 +10,34 @@ $sid = $user['school_id'];
 if (isset($_GET['action']) && $_GET['action'] === 'return' && isset($_GET['id'])) {
   $pdo->beginTransaction();
   try {
-    // 1. Get book_id
-    $stmt = $pdo->prepare('SELECT book_id FROM borrows WHERE id=:id AND school_id=:sid');
+    // 1. Get book_id AND due_at
+    $stmt = $pdo->prepare('SELECT book_id, due_at FROM borrows WHERE id=:id AND school_id=:sid');
     $stmt->execute(['id' => (int) $_GET['id'], 'sid' => $sid]);
     $borrowData = $stmt->fetch();
     
     if ($borrowData) {
+      // Calculate final fine
+      $schoolStmt = $pdo->prepare('SELECT late_fine FROM schools WHERE id = :sid');
+      $schoolStmt->execute(['sid' => $sid]);
+      $late_fine = (int) ($schoolStmt->fetchColumn() ?: 500);
+      
+      $fineAmount = 0;
+      if ($borrowData['due_at']) {
+        $dueDate = new DateTime($borrowData['due_at']);
+        $now = new DateTime();
+        if ($now > $dueDate) {
+            $diff = $now->diff($dueDate);
+            $daysLate = $diff->days;
+            $fineAmount = $daysLate * $late_fine;
+        }
+      }
+
       // 2. Update borrows
       $stmt = $pdo->prepare(
-        'UPDATE borrows SET returned_at=NOW(), status="returned"
+        'UPDATE borrows SET returned_at=NOW(), status="returned", fine_amount=:fine
          WHERE id=:id AND school_id=:sid'
       );
-      $stmt->execute(['id' => (int) $_GET['id'], 'sid' => $sid]);
+      $stmt->execute(['id' => (int) $_GET['id'], 'sid' => $sid, 'fine' => $fineAmount]);
 
       // 3. Update stock
       $stmt = $pdo->prepare('UPDATE books SET copies = 1 WHERE id = :bid');
@@ -38,11 +54,28 @@ if (isset($_GET['action']) && $_GET['action'] === 'return' && isset($_GET['id'])
   exit;
 }
 
-// Update overdue status
+// Update overdue status and Calculate Fines
+$schoolStmt = $pdo->prepare('SELECT late_fine FROM schools WHERE id = :sid');
+$schoolStmt->execute(['sid' => $sid]);
+$late_fine = (int) ($schoolStmt->fetchColumn() ?: 500);
+
+// 1. Mark overdue
 $pdo->prepare(
   'UPDATE borrows SET status="overdue"
-   WHERE school_id=:sid AND returned_at IS NULL AND due_at < NOW()'
+   WHERE school_id=:sid AND returned_at IS NULL AND due_at < NOW() AND status != "overdue"'
 )->execute(['sid' => $sid]);
+
+// 2. Calculate fines (Hanya untuk yang belum dikembalikan dan sudah lewat jatuh tempo)
+// Fine = (Now - DueDate in Days) * late_fine
+if ($late_fine > 0) {
+    $pdo->prepare(
+      'UPDATE borrows 
+       SET fine_amount = GREATEST(0, DATEDIFF(NOW(), due_at)) * :fine
+       WHERE school_id=:sid 
+       AND returned_at IS NULL 
+       AND due_at < NOW()'
+    )->execute(['sid' => $sid, 'fine' => $late_fine]);
+}
 
 // Get all borrowing data
 $stmt = $pdo->prepare(

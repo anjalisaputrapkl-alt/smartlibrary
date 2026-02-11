@@ -21,7 +21,8 @@ class SchoolProfileModel
         $stmt = $this->pdo->prepare('
             SELECT id, name, slug, email, phone, address, 
                    npsn, website, founded_year, photo_path, status,
-                   borrow_duration, late_fine, max_books
+                   borrow_duration, late_fine, max_books,
+                   max_books_student, max_books_teacher, max_books_employee
             FROM schools 
             WHERE id = :id
         ');
@@ -37,7 +38,8 @@ class SchoolProfileModel
         // Allowed fields to update
         $allowed = [
             'name', 'email', 'phone', 'address', 'npsn', 'website', 'founded_year',
-            'borrow_duration', 'late_fine', 'max_books'
+            'borrow_duration', 'late_fine', 'max_books',
+            'max_books_student', 'max_books_teacher', 'max_books_employee'
         ];
         $updates = [];
         $params = ['id' => $school_id];

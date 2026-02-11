@@ -6,7 +6,7 @@ $current = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $base = '/perpustakaan-online/public';
 
 // Load school profile data
-$school = null;
+$sidebarSchool = null;
 $school_photo = null;
 $school_email = null;
 $school_npsn = null;
@@ -16,12 +16,12 @@ if ($user) {
         $pdo = require __DIR__ . '/../../src/db.php';
         $stmt = $pdo->prepare('SELECT name, photo_path, email, npsn FROM schools WHERE id = :id');
         $stmt->execute(['id' => $user['school_id']]);
-        $school = $stmt->fetch();
+        $sidebarSchool = $stmt->fetch();
 
-        if ($school) {
-            $school_photo = $school['photo_path'] ?? null;
-            $school_email = $school['email'] ?? null;
-            $school_npsn = $school['npsn'] ?? null;
+        if ($sidebarSchool) {
+            $school_photo = $sidebarSchool['photo_path'] ?? null;
+            $school_email = $sidebarSchool['email'] ?? null;
+            $school_npsn = $sidebarSchool['npsn'] ?? null;
         }
     } catch (Exception $e) {
         // Fallback if database query fails
@@ -281,8 +281,8 @@ function _is_active_sidebar($path, $current)
         </div>
 
         <!-- School Name -->
-        <?php if ($school): ?>
-            <h3 class="school-name"><?php echo htmlspecialchars($school['name']); ?></h3>
+        <?php if ($sidebarSchool): ?>
+            <h3 class="school-name"><?php echo htmlspecialchars($sidebarSchool['name']); ?></h3>
 
             <!-- School Info -->
             <div class="school-info">

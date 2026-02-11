@@ -521,7 +521,10 @@ $pageTitle = 'Dashboard ' . $roleLabel;
                 <div class="books-grid">
                     <?php if (!empty($books)): ?>
                         <?php foreach ($books as $book): ?>
-                            <?php $is_available = empty($book['current_borrow_id']); ?>
+                            <?php 
+                                $is_available = empty($book['current_borrow_id']); 
+                                $is_teacher_only = ($book['access_level'] ?? 'all') === 'teacher_only';
+                            ?>
                             <div class="book-card-vertical" data-book-id="<?php echo $book['id']; ?>">
                                 <div class="book-cover-container">
                                     <?php if (!empty($book['cover_image'])): ?>
@@ -533,13 +536,24 @@ $pageTitle = 'Dashboard ' . $roleLabel;
                                         </div>
                                     <?php endif; ?>
 
-                                    <div class="stock-badge-overlay" style="
-                                        background: <?= $is_available ? 'color-mix(in srgb, var(--success) 15%, transparent)' : 'color-mix(in srgb, var(--danger) 15%, transparent)' ?>;
-                                        color: <?= $is_available ? 'var(--success)' : 'var(--danger)' ?>;
-                                        border: 1px solid <?= $is_available ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'color-mix(in srgb, var(--danger) 30%, transparent)' ?>;
-                                    ">
-                                        <?= $is_available ? 'Tersedia' : 'Dipinjam' ?>
-                                    </div>
+                                    <?php if ($is_teacher_only): ?>
+                                        <div class="stock-badge-overlay" style="
+                                            background: color-mix(in srgb, var(--warning) 15%, transparent);
+                                            color: var(--warning);
+                                            border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent);
+                                        ">
+                                            Khusus Guru
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="stock-badge-overlay" style="
+                                            background: <?= $is_available ? 'color-mix(in srgb, var(--success) 15%, transparent)' : 'color-mix(in srgb, var(--danger) 15%, transparent)' ?>;
+                                            color: <?= $is_available ? 'var(--success)' : 'var(--danger)' ?>;
+                                            border: 1px solid <?= $is_available ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'color-mix(in srgb, var(--danger) 30%, transparent)' ?>;
+                                        ">
+                                            <?= $is_available ? 'Tersedia' : 'Dipinjam' ?>
+                                        </div>
+                                    <?php endif; ?>
+
 
                                     <button class="btn-love"
                                         onclick="toggleFavorite(event, <?php echo $book['id']; ?>, '<?php echo htmlspecialchars($book['title']); ?>')">

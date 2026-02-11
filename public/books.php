@@ -137,6 +137,12 @@ if ($action === 'delete' && isset($_GET['id'])) {
   exit;
 }
 
+// Get school info needed for default settings
+$stmt = $pdo->prepare('SELECT borrow_duration FROM schools WHERE id = :sid');
+$stmt->execute(['sid' => $sid]);
+$school = $stmt->fetch();
+$defaultDuration = $school['borrow_duration'] ?? 7;
+
 $stmt = $pdo->prepare('SELECT * FROM books WHERE school_id=:sid ORDER BY id DESC');
 $stmt->execute(['sid' => $sid]);
 $books = $stmt->fetchAll();
@@ -244,9 +250,10 @@ $categories = [
                     </div>
                 </div>
                 <div class="form-col">
-                    <div class="form-group"><label>Batas Pinjam Khusus (Hari)</label>
-                        <input type="number" min="1" name="max_borrow_days" value="<?= $book['max_borrow_days'] ?? '' ?>" placeholder="Default Sekolah">
-                        <small style="color: var(--text-muted); font-size: 10px;">Kosongkan untuk menggunakan aturan sekolah</small>
+                    <div class="form-group"><label>Lama Pinjam (Hari)</label>
+                        <input type="number" name="max_borrow_days" placeholder="Default: <?= (int)$defaultDuration ?> hari" 
+                               value="<?= $action === 'edit' && isset($book['max_borrow_days']) ? (int)$book['max_borrow_days'] : '' ?>">
+                        <small style="color:var(--muted); font-size:11px;">Kosongkan untuk mengikuti default sekolah (<?= (int)$defaultDuration ?> hari)</small>
                     </div>
                 </div>
             </div>
