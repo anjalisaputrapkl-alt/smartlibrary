@@ -267,6 +267,7 @@ $pageTitle = 'Profil Saya';
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Profil Saya</title>
     <script src="../assets/js/db-theme-loader.js"></script>
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">

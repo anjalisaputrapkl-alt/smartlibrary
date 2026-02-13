@@ -104,7 +104,8 @@ function _is_active_sidebar($path, $current)
             top: 0;
             height: 100vh;
             width: 240px;
-            background: #062d4a;
+            background: var(--accent); /* Fallback to theme primary */
+            background-color: var(--bg); /* Use system bg variable */
             color: white;
             padding: 24px 0;
             z-index: 1002;

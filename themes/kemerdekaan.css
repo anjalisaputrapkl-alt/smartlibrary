@@ -1,0 +1,54 @@
+/* Tema Kemerdekaan RI - 17 Agustus (Refined V3) */
+:root {
+    --theme-primary: #d62828;
+    --theme-bg: #ffffff;
+    --theme-text: #1a1a1a;
+}
+
+/* Background Application to all main containers */
+body, .app, .content, .nav-sidebar, .sidebar, .header-container {
+    background-image: var(--theme-pattern) !important;
+    background-color: var(--theme-bg) !important;
+    background-repeat: repeat !important;
+    background-attachment: fixed !important;
+    background-size: 150px !important;
+}
+
+/* Sidebar Specificity */
+.nav-sidebar {
+    background-color: var(--theme-bg) !important;
+    border-right: 2px solid var(--theme-primary) !important;
+}
+
+.nav-sidebar .nav-link, .nav-sidebar .nav-sidebar-header {
+    color: var(--theme-text) !important;
+}
+
+.nav-sidebar .nav-link:hover {
+    background: rgba(214, 40, 40, 0.1) !important;
+    color: var(--theme-primary) !important;
+}
+
+/* Header & Topbar */
+.header, .topbar {
+    background: var(--theme-primary) !important;
+    border-bottom: 2px solid #ffffff !important;
+    color: #ffffff !important;
+}
+
+.header-brand-text h2, .header-brand-text p, .header-user-info .name, .header-user-info .role {
+    color: #ffffff !important;
+}
+
+/* Dashboard Sections / Cards */
+.card, .stat, .quick-actions a {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(5px) !important;
+    border: 1px solid var(--theme-primary) !important;
+    box-shadow: 0 4px 12px rgba(214, 40, 40, 0.1) !important;
+}
+
+.btn-primary {
+    background-color: var(--theme-primary) !important;
+    border-color: var(--theme-primary) !important;
+}

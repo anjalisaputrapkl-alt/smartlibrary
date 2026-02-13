@@ -1,0 +1,29 @@
+/* Tema Hari Kartini - Vibrant V6 */
+
+html body {
+    --sidebar-bg: #be185d !important;
+    /* Deep Pink */
+    --header-bg: #ffffff !important;
+    --body-bg: #fdf2f8 !important;
+}
+
+/* Header Clean with Pink Border */
+html body .header,
+html body .topbar {
+    background: #ffffff !important;
+    border-bottom: 3px solid #db2777 !important;
+    color: #db2777 !important;
+}
+
+/* Sidebar Active State White */
+html body .nav-sidebar-menu a.active {
+    background: #fdf2f8 !important;
+    color: #be185d !important;
+    font-weight: 700 !important;
+}
+
+/* Soft Cards */
+html body .card {
+    border-color: #fbcfe8 !important;
+    border-top: 4px solid #db2777 !important;
+}

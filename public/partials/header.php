@@ -32,6 +32,7 @@ function _is_active($path, $current)
     <script>window.isSpecialThemeActive = true;</script>
     <link rel="stylesheet" id="special-theme-css" href="<?php echo $base; ?>/themes/special/<?php echo htmlspecialchars($specialTheme); ?>.css">
   <?php endif; ?>
+  <?php require_once __DIR__ . '/../../theme-loader.php'; ?>
 </head>
 
 <body></body>

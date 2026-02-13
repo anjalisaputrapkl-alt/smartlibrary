@@ -258,6 +258,7 @@ if (!$school) {
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
     <link rel="stylesheet" href="../assets/css/animations.css">
     <link rel="stylesheet" href="../assets/css/settings.css">
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
     <?php if ($activeSpecialTheme): ?>
         <script>window.isSpecialThemeActive = true;</script>
         <link rel="stylesheet" id="special-theme-css" href="themes/special/<?php echo htmlspecialchars($activeSpecialTheme); ?>.css">
@@ -731,10 +732,28 @@ if (!$school) {
                                 <div class="form-group">
                                     <label style="font-weight: 600; margin-bottom: 8px; display: block;">File Tema (.css)</label>
                                     <select name="theme_key" required style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: white;">
-                                        <option value="kemerdekaan">kemerdekaan.css (Merah Putih)</option>
-                                        <option value="idulfitri">idulfitri.css (Lebaran)</option>
-                                        <option value="tahunbaru">tahunbaru.css (Festive)</option>
-                                        <option value="hariguru">hariguru.css (Education)</option>
+                                        <?php 
+                                        $configPath = __DIR__ . '/../theme-config.json';
+                                        if (file_exists($configPath)) {
+                                            $themeConfig = json_decode(file_get_contents($configPath), true);
+                                            foreach ($themeConfig as $key => $theme) {
+                                                $displayName = ucfirst($key);
+                                                if ($key === 'hariguru') $displayName = 'Hari Guru';
+                                                if ($key === 'tahunbaru') $displayName = 'Lunar New Year / Imlek';
+                                                if ($key === 'kemerdekaan' || $key === '17agustus') $displayName = 'Kemerdekaan / HUT RI';
+                                                if ($key === 'idulfitri') $displayName = 'Idul Fitri';
+                                                if ($key === 'kartini') $displayName = 'Hari Kartini';
+                                                if ($key === 'hardiknas') $displayName = 'Hardiknas';
+                                                
+                                                echo "<option value=\"$key\">" . htmlspecialchars($displayName) . " ($key.css)</option>";
+                                            }
+                                        } else {
+                                            echo '<option value="kemerdekaan">kemerdekaan.css (Merah Putih)</option>';
+                                            echo '<option value="idulfitri">idulfitri.css (Lebaran)</option>';
+                                            echo '<option value="tahunbaru">tahunbaru.css (Festive)</option>';
+                                            echo '<option value="hariguru">hariguru.css (Education)</option>';
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>

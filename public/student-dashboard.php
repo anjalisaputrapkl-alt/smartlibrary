@@ -225,6 +225,7 @@ $pageTitle = 'Dashboard ' . $roleLabel;
     <link rel="stylesheet" href="../assets/css/sidebar.css">
     <link rel="stylesheet" href="../assets/css/school-profile.css">
     <link rel="stylesheet" href="../assets/css/student-dashboard.css">
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
     <style>
         /* Small animation for sidebar stat when clicked */
         .stat-click-anim { transition: transform .18s ease, box-shadow .18s ease; }

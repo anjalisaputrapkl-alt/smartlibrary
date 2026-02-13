@@ -115,6 +115,7 @@ $new_books_30 = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE school_id = 
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/reports.css">
+  <?php require_once __DIR__ . '/../theme-loader.php'; ?>
 </head>
 
 <body>

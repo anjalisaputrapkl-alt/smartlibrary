@@ -1,47 +1,43 @@
-/* Tema Idul Fitri - Hijau Emas */
-:root {
-    --primary: #15803d;
-    --primary-2: #22c55e;
-    --primary-dark: #166534;
-    --bg: #f0fdf4;
-    --surface: #ffffff;
-    --text: #064e3b;
-    --accent: #ca8a04;
-    /* Gold */
-    --border: #dcfce7;
+/* Tema Idul Fitri - Total Section Theming V7 */
+
+html body {
+    --sidebar-bg: #115e59 !important;
+    --header-bg: #166534 !important;
+    --body-bg: #f0fdf4 !important;
 }
 
-body {
-    background-color: #f0fdf4 !important;
-    background-image: radial-gradient(circle at 2px 2px, rgba(21, 128, 61, 0.05) 1px, transparent 0) !important;
-    background-size: 24px 24px !important;
+/* Vibrant Sections */
+html body .card,
+html body .stat,
+html body .settings-tabs,
+html body .tab-content,
+html body .main-search-container,
+html body .table-wrap {
+    background-color: rgba(220, 252, 231, 0.9) !important;
+    /* Soft Green Background */
+    border: 2px solid #166534 !important;
+    backdrop-filter: blur(8px);
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 80px;
-    height: 80px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23ca8a04" d="M12 2L4.5 20.29l.71.71L12 18l6.79 3l.71-.71L12 2Z"/></svg>');
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.3;
-    pointer-events: none;
-    z-index: 9999;
+/* Header & Topbar */
+html body .header,
+html body .topbar {
+    background: linear-gradient(90deg, #166534 0%, #15803d 100%) !important;
+    border-bottom: 3px solid #ca8a04 !important;
 }
 
-.nav-sidebar {
-    background: linear-gradient(180deg, #166534 0%, #15803d 100%) !important;
-    border-right: 3px solid #ca8a04 !important;
+/* Action Buttons */
+html body .btn-primary,
+html body .tab-link.active {
+    background-color: #166534 !important;
+    border-color: #ca8a04 !important;
+    color: #ffffff !important;
 }
 
-.header-brand-icon {
-    background: #ca8a04 !important;
-    color: white !important;
-}
-
-.header-brand-icon iconify-icon {
-    color: white !important;
+/* Inputs */
+html body input,
+html body select,
+html body textarea {
+    background-color: #ffffff !important;
+    border-color: #166534 !important;
 }

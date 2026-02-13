@@ -26,6 +26,7 @@ $school = $stmt->fetch();
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
     <link rel="stylesheet" href="../assets/css/animations.css">
     <link rel="stylesheet" href="../assets/css/index.css">
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
     <style>
         .topbar {
             background: var(--surface);

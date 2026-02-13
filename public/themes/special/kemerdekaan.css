@@ -1,51 +1,31 @@
-/* Tema Kemerdekaan RI - 17 Agustus */
-:root {
-    --primary: #d62828;
-    /* Merah Bendera */
-    --primary-2: #ff4d4d;
-    --primary-dark: #8b0000;
-    --bg: #f8f9fa;
-    --surface: #ffffff;
-    --text: #1a1a1a;
-    --accent: #ffffff;
-    --border: #f1f1f1;
+/* Tema Kemerdekaan RI - Total Section Theming V7 */
+
+html body {
+    --sidebar-bg: #d62828 !important;
+    --header-bg: #d62828 !important;
+    --body-bg: #f8f9fa !important;
 }
 
-body {
-    background-color: #f8f9fa !important;
-    background-image: repeating-linear-gradient(45deg, rgba(214, 40, 40, 0.05) 0px, rgba(214, 40, 40, 0.05) 2px, transparent 2px, transparent 15px) !important;
-    border-top: 5px solid #d62828 !important;
+/* Vibrant Sections */
+html body .card,
+html body .stat,
+html body .settings-tabs,
+html body .tab-content {
+    background-color: rgba(254, 226, 226, 0.9) !important;
+    /* Soft Red Background */
+    border: 2px solid #d62828 !important;
+    backdrop-filter: blur(8px);
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 150px;
-    height: 150px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d62828" d="M0 0 L100 0 L100 100 Z" opacity="0.1"/><rect x="80" y="0" width="10" height="50" fill="%23d62828"/><rect x="90" y="0" width="10" height="50" fill="white"/></svg>');
-    background-size: contain;
-    background-repeat: no-repeat;
-    pointer-events: none;
-    z-index: 9999;
+/* Header & Topbar */
+html body .header,
+html body .topbar {
+    background: linear-gradient(135deg, #d62828 0%, #b31b1b 100%) !important;
+    border-bottom: 4px solid #ffffff !important;
 }
 
-.nav-sidebar {
-    background: linear-gradient(180deg, #d62828 0%, #8b0000 100%) !important;
-}
-
-.header,
-.topbar {
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(10px);
-}
-
-.header-brand-icon {
-    background: #d62828 !important;
-    color: white !important;
-}
-
-.header-brand-icon iconify-icon {
-    color: white !important;
+/* Sidebar Active */
+html body .nav-sidebar-menu a.active {
+    background: #ffffff !important;
+    color: #d62828 !important;
 }

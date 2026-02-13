@@ -260,6 +260,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
     </style>
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
 </head>
 
 <body>

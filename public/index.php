@@ -73,6 +73,7 @@ if ($is_authenticated) {
     <?php endif; ?>
     <link rel="stylesheet" href="../assets/css/animations.css">
     <link rel="stylesheet" href="../assets/css/index.css">
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
 </head>
 
 <body>

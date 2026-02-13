@@ -40,6 +40,7 @@ $recentReturns = $stmt->fetchAll();
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/borrows.css">
+  <?php require_once __DIR__ . '/../theme-loader.php'; ?>
   <style>
     .return-scanner-section {
       background: var(--primary-soft);

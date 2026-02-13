@@ -1,0 +1,41 @@
+/* Tema Idul Fitri - Hijau Emas - Tanpa dekorasi ganggu */
+body,
+.app,
+.content,
+.nav-sidebar,
+.sidebar {
+    background-image: var(--theme-pattern) !important;
+    background-color: var(--theme-bg) !important;
+    background-repeat: repeat !important;
+    background-size: 100px !important;
+}
+
+.nav-sidebar,
+.sidebar {
+    background-color: var(--theme-bg) !important;
+    color: var(--theme-text) !important;
+    border-right: 2px solid var(--theme-primary) !important;
+}
+
+.header,
+.topbar {
+    background: linear-gradient(90deg, #166534 0%, #15803d 100%) !important;
+    border-bottom: 2px solid #ca8a04 !important;
+    color: #fff !important;
+}
+
+.nav-sidebar .nav-link.active {
+    background: #ca8a04 !important;
+    color: #fff !important;
+}
+
+/* Hapus hiasan pseudo-element */
+body::before,
+body::after,
+.app::before,
+.app::after,
+.content::before,
+.content::after {
+    display: none !important;
+    content: none !important;
+}

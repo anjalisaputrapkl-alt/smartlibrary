@@ -219,6 +219,7 @@ requireAuth();
             to { transform: translateY(0); opacity: 1; }
         }
     </style>
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
 </head>
 <body>
     <div class="scanner-container">

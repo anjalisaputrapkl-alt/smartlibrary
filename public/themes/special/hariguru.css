@@ -1,40 +1,45 @@
-/* Tema Hari Guru - Education Doodle */
-:root {
-    --primary: #0ea5e9;
-    --primary-2: #38bdf8;
-    --primary-dark: #0284c7;
-    --bg: #f0f9ff;
-    --surface: #ffffff;
-    --text: #0c4a6e;
-    --border: #e0f2fe;
+/* Tema Hari Guru - Vibrant V7 */
+
+html body {
+    --sidebar-bg: #1e3a8a !important;
+    /* Navy */
+    --header-bg: #334155 !important;
+    /* Slate */
+    --body-bg: #f1f5f9 !important;
 }
 
-body {
-    background-color: #f0f9ff !important;
-    background-image: linear-gradient(#e0f2fe 1px, transparent 1px),
-        linear-gradient(90deg, #e0f2fe 1px, transparent 1px) !important;
-    background-size: 20px 20px !important;
+/* Vibrant Sections */
+html body .card,
+html body .stat,
+html body .settings-tabs {
+    background-color: rgba(226, 232, 240, 0.9) !important;
+    /* Soft Slate/Blue */
+    border: 2px solid #1e3a8a !important;
+    backdrop-filter: blur(8px);
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    width: 60px;
-    height: 60px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%230ea5e9" d="M12 3L1 9l11 6l9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z"/></svg>');
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.3;
-    pointer-events: none;
-    z-index: 9999;
+/* Header & Topbar */
+html body .header,
+html body .topbar,
+html body .topbar strong,
+html body .topbar .school-name,
+html body .header h1,
+html body .header p,
+html body .breadcrumb-item,
+html body .breadcrumb-item.active,
+html body .header .subtitle {
+    color: #ffffff !important;
+    background: none !important;
+    border: none !important;
 }
 
-.nav-sidebar {
-    background: #0c4a6e !important;
+html body .topbar iconify-icon,
+html body .header iconify-icon {
+    color: #ffffff !important;
 }
 
-.header-brand-icon {
-    background: #0ea5e9 !important;
+/* Action Buttons */
+html body .btn-primary {
+    background-color: #1e3a8a !important;
+    border-color: #facc15 !important;
 }

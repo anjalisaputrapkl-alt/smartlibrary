@@ -1,0 +1,51 @@
+/* Tema 17 Agustus / Kemerdekaan - Bersih tanpa dekorasi ganggu */
+:root {
+  --theme-bg-opacity: rgba(255, 255, 255, 0.9);
+}
+
+body,
+.app,
+.content,
+.nav-sidebar,
+.sidebar {
+  background-image: var(--theme-pattern) !important;
+  background-color: var(--theme-bg) !important;
+  background-repeat: repeat !important;
+  background-size: 150px !important;
+}
+
+/* Sidebar & Header Compatibility */
+.nav-sidebar,
+.sidebar {
+  background-color: var(--theme-bg) !important;
+  color: #000 !important;
+  border-right: 2px solid var(--theme-primary) !important;
+}
+
+.nav-sidebar .nav-link,
+.nav-sidebar .nav-sidebar-header {
+  color: #000 !important;
+}
+
+.header,
+.topbar {
+  background-color: var(--theme-primary) !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid #ffffff !important;
+}
+
+/* Hapus hiasan pseudo-element */
+body::before,
+body::after,
+.app::before,
+.app::after,
+.content::before,
+.content::after {
+  display: none !important;
+  content: none !important;
+}
+
+.card {
+  border-top: 4px solid var(--theme-primary) !important;
+  background: var(--theme-bg-opacity) !important;
+}

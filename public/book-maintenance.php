@@ -111,6 +111,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/index.css">
   <link rel="stylesheet" href="../assets/css/book-maintenance.css">
+  <?php require_once __DIR__ . '/../theme-loader.php'; ?>
 </head>
 
 <body>

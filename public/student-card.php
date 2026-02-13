@@ -168,6 +168,7 @@ $barcodeValue = trim($member['nisn'] ?? $member['student_uuid'] ?? $member['id']
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <!-- Load theme from database (runs first) -->
     <script src="../assets/js/db-theme-loader.js"></script>
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
     <style>
         :root {
             /* Default fallback colors - overridden by db-theme-loader.js */

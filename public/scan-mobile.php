@@ -381,6 +381,7 @@ requireAuth();
             to { transform: rotate(360deg); } 
         }
     </style>
+    <?php require_once __DIR__ . '/../theme-loader.php'; ?>
 </head>
 
 <body>

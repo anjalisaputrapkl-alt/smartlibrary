@@ -1,61 +1,98 @@
-/* Tema Tahun Baru - Dark Festive */
-:root {
-    --primary: #fbbf24;
-    /* Gold */
-    --primary-2: #f59e0b;
-    --primary-dark: #b45309;
-    --bg: #0f172a;
-    --surface: #1e293b;
-    --text: #f8fafc;
-    --border: #334155;
+/* Tema Lunar New Year / Imlek (Red & Gold) - Vibrant V8 */
+
+html body {
+    --sidebar-bg: #991b1b !important;
+    /* Deep Red */
+    --header-bg: #b91c1c !important;
+    /* Vibrant Red */
+    --body-bg: #450a0a !important;
+    /* Dark Red/Maroon */
+    --text: #ffffff !important;
 }
 
-body {
-    background-color: #0f172a !important;
-    background-image: radial-gradient(white, rgba(255, 255, 255, .2) 2px, transparent 40px),
-        radial-gradient(white, rgba(255, 255, 255, .15) 1px, transparent 30px),
-        radial-gradient(white, rgba(255, 255, 255, .1) 2px, transparent 40px) !important;
-    background-size: 550px 550px, 350px 350px, 250px 250px !important;
-    background-position: 0 0, 40px 60px, 130px 270px !important;
+/* Total Section Colorization */
+html body .card,
+html body .stat,
+html body .settings-tabs,
+html body .tab-content,
+html body .modal-content,
+html body .table-container {
+    background-color: rgba(127, 29, 29, 0.95) !important;
+    /* Maroon Glass */
+    border: 2px solid #facc15 !important;
+    /* Gold Border */
+    color: #ffffff !important;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(185, 28, 28, 0.3) !important;
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    top: 40px;
-    right: 40px;
-    width: 60px;
-    height: 60px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23fbbf24" d="M12 2.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5zm5.303 2.197a.5.5 0 0 1 0 .707l-3.535 3.535a.5.5 0 1 1-.708-.707l3.535-3.535a.5.5 0 0 1 .708 0zm-10.606 0a.5.5 0 0 1 .707 0l3.535 3.535a.5.5 0 1 1-.707.707L6.697 5.404a.5.5 0 0 1 0-.707z"/></svg>');
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-    pointer-events: none;
-    z-index: 9999;
+/* Text visibility on Red Sections */
+html body h1,
+html body h2,
+html body h3,
+html body h4,
+html body h5,
+html body label,
+html body p,
+html body span,
+html body strong {
+    color: #ffffff !important;
 }
 
-.nav-sidebar {
-    background: #0f172a !important;
-    border-right: 1px solid #fbbf24 !important;
+html body small,
+html body .muted,
+html body .text-muted {
+    color: #fef08a !important;
+    /* Soft Gold */
 }
 
-.card,
-.stat,
-.chart-box {
-    background: #1e293b !important;
-    color: white !important;
-    border-color: #334155 !important;
+/* Header & Topbar */
+html body .header,
+html body .topbar {
+    background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%) !important;
+    border-bottom: 4px solid #facc15 !important;
+    color: #ffffff !important;
 }
 
-.stat strong,
-.stat small,
-.card h3 {
-    color: white !important;
+html body .topbar strong,
+html body .school-name {
+    color: #ffffff !important;
 }
 
-.header,
-.topbar {
-    background: rgba(30, 41, 59, 0.8) !important;
-    color: white !important;
-    border-bottom: 1px solid #fbbf24 !important;
+/* Red Sidebar with Gold Icons */
+html body .nav-sidebar {
+    background: linear-gradient(to bottom, #991b1b, #450a0a) !important;
+}
+
+html body .nav-sidebar iconify-icon {
+    color: #facc15 !important;
+}
+
+/* Table styling for dark red theme */
+html body table {
+    color: #ffffff !important;
+}
+
+html body thead th {
+    background-color: #7f1d1d !important;
+    color: #facc15 !important;
+    border-bottom: 2px solid #facc15 !important;
+}
+
+/* Action Buttons as Gold */
+html body .btn-primary {
+    background: linear-gradient(135deg, #facc15 0%, #eab308 100%) !important;
+    color: #450a0a !important;
+    /* Dark Red text on Gold button */
+    border: none !important;
+    font-weight: 700 !important;
+}
+
+/* Inputs */
+html body input,
+html body select,
+html body textarea {
+    background-color: #7f1d1d !important;
+    border: 1px solid #facc15 !important;
+    color: #ffffff !important;
 }

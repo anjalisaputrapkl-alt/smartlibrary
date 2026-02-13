@@ -177,6 +177,7 @@ $categories = [
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/books.css">
+  <?php require_once __DIR__ . '/../theme-loader.php'; ?>
 </head>
 
 <body>
